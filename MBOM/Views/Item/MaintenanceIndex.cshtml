@@ -1,0 +1,87 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.MBOMIndex;
+}
+@section styles{
+    <style type="text/css">
+    </style>
+}
+@section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/views/item/maintenance.js"></script>
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div id="toolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <div>
+                <span>@Lang.ItemCode：</span>
+                <input type="text" name="CN_ITEM_CODE" class="easyui-textbox" />
+                <span>@Lang.ItemName：</span>
+                <input type="text" name="CN_NAME" class="easyui-textbox" />
+                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="showDetail()" data-options="iconCls:'icon-search'">@Lang.ItemBomDetail</a>
+            </div>
+            <div>
+                <a href="javascript:;" class="easyui-linkbutton" onclick="itemAdd()" data-options="iconCls:'icon-add'">@Lang.ItemAdd</a>
+                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="itemEdit()" data-options="iconCls:'icon-edit'">@Lang.ItemEdit</a>
+                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="itemDelete()" data-options="iconCls:'icon-cancel'">@Lang.ItemDelete</a>
+            </div>
+        </form>
+    </div>
+    <table id="dgItems"></table>
+</div>
+
+<div id="winItem" class="easyui-window">
+    <form id="frmItem" method="post">
+        <input type="hidden" name="CN_ID" />
+        <table class="table table-striped">
+            <tr>
+                <th>
+                    物料编码：
+                </th>
+                <td>
+                    <input id="txtItemCode" class="easyui-textbox" required name="CN_ITEM_CODE" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    物料名称：
+                </th>
+                <td>
+                    <input class="easyui-textbox" required name="CN_NAME" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    重量：
+                </th>
+                <td>
+                    <input class="easyui-textbox" required name="CN_WEIGHT" validType="number" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    单位：
+                </th>
+                <td>
+                    <input id="cboItemUnit" name="CN_UNIT" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    物料分类：
+                </th>
+                <td>
+                    <input id="cboItemType" name="CN_TYPE" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div id="winFooter">
+        <div class="text-right">
+            <a href="javascript:frmItem.submit();" class="easyui-linkbutton" data-options="iconCls:'icon-save'">@Lang.Save</a>
+            <a href="javascript:winItem.window('close');" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">@Lang.Cancel</a>
+        </div>
+    </div>
+</div>

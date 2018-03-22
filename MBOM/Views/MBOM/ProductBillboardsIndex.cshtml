@@ -1,0 +1,24 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.MBOMIndex;
+}
+@section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/views/mbom/productbillboards.js"></script>
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div id="toolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <span>@Lang.ProductCode：</span>
+            <input type="text" name="Code" class="easyui-textbox" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="ItemCode" class="easyui-textbox" />
+            <span>@Lang.ProductName：</span>
+            <input type="text" name="Name" class="easyui-textbox" />
+            <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+            <a href="javascript:;" class="easyui-linkbutton" onclick="productinfo()" data-options="iconCls:'icon-search'">@Lang.ProductDetail</a>
+        </form>
+    </div>
+    <table id="dgProducts"></table>
+</div>

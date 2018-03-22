@@ -1,0 +1,50 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.MBOMIndex;
+}
+@section styles{
+    <style type="text/css">
+        input[type="radio"], input[type="checkbox"] {
+            margin: 2px 0 0;
+        }
+    </style>
+}
+@section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/views/mbom/billboards.js"></script>
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div id="toolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <div>
+                <span>@Lang.ProductCode：</span>
+                <input type="text" name="Code" class="easyui-textbox" />
+                <span>@Lang.ItemCode：</span>
+                <input type="text" name="ItemCode" class="easyui-textbox" />
+                <span>@Lang.ItemName：</span>
+                <input type="text" name="ItemName" class="easyui-textbox" />
+            </div>
+            <div style="margin-top: 5px">
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="ItemSale" value="true" />@Lang.ItemSale
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="ItemPurchase" value="true" />@Lang.ItemPurchase
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="ItemSelfmade" value="true" />@Lang.ItemSelfmade
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="ItemVirtual" value="true" />@Lang.ItemVirtual
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="ItemCombine" value="true" />@Lang.ItemCombine
+                </label>
+                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="showDetail()" data-options="iconCls:'icon-search'">@Lang.ItemBomDetail</a>
+            </div>
+        </form>
+    </div>
+    <table id="dgProducts"></table>
+</div>

@@ -1,0 +1,166 @@
+﻿@using Localization;
+@section scripts{
+    @Scripts.Render("~/bundles/common")
+    <script type="text/javascript">
+        var URL_MENU = "/Menu/Tree";
+        var URL_MENUACTIONLIST = "/Menu/MenuActionList";
+        var URL_ACTIONLIST = "/Menu/ActionList";
+        var URL_ADDACTION = "/Menu/AddAction";
+        var URL_REMOVEACTION = "/Menu/RemoveAction";
+        var tree = $("#menutree");
+        var dg = $("#dg");
+        var dgActions = $("#dgActions");
+        var dlg = $("#dialog");
+        var currSelectId = undefined;
+        var treeOption = {
+            url: URL_MENU,
+            loadFilter: loadFilter,
+            onClick: function (node) {
+                if (node.id == currSelectId) {
+                    return false;
+                }
+                currSelectId = node.id;
+                dg.datagrid("load", { menuid: currSelectId });
+            },
+            formatter: function (node) {
+                node.text = node.name;
+                return node.name;
+            }
+        };
+        var baseOption = {
+            loadFilter: loadFilter,
+            height: "100%",
+            idField: "ID",
+            border: false,
+            columns: [[
+                {
+                    field:"ID", checkbox: true
+                },
+                {
+                    field: "Url", title: "链接", width: "250",
+                    formatter: function (value, row, index) {
+                        if (row.ActionInfo) {
+                            return row.ActionInfo.Url;
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: "Description", title: "备注", width: "250",
+                    formatter: function (value, row, index) {
+                        if (row.ActionInfo) {
+                            return row.ActionInfo.Description;
+                        } else {
+                            return value;
+                        }
+                    }
+                }
+            ]]
+        };
+        var dgOption = $.extend({}, baseOption, {
+            toolbar: "#toolbar"
+        });
+        var dgActionsOption = $.extend({}, baseOption, {
+            url: URL_ACTIONLIST,
+            footer: "#dlg-buttons"
+        })
+        var dialogOption = {
+            title: '选择要添加的操作权限',
+            width: 600,
+            height: 400,
+            closed: true,
+            modal: true
+        };
+        $(function () {
+            tree.tree(treeOption);
+            dlg.dialog(dialogOption);
+
+            dg.datagrid(dgOption);
+            dg.datagrid("options").url = URL_MENUACTIONLIST;
+
+            dgActions.datagrid(dgActionsOption);
+        });
+
+        function addAction() {
+            var node = tree.tree("getSelected");
+            if (node == null) {
+                AlertWin(lang.mbom.notSelect);
+                return false;
+            }
+            dgActions.datagrid("clearSelections");
+            dlg.dialog('open').dialog("center");
+        }
+
+        function saveAction() {
+            //
+            var node = tree.tree("getSelected");
+            var actions = dgActions.datagrid("getSelections");
+            var menuid = node.id;
+            var actionids = [];
+            if (actions.length == 0) {
+                AlertWin(lang.mbom.notSelect);
+                return false;
+            }
+            for (var i in actions) {
+                var action = actions[i];
+                actionids.push(action.ID);
+            }
+            postData(URL_ADDACTION, {
+                menuid: menuid,
+                actionids: actionids
+            }, function (result) {
+                if (result.success) {
+                    dg.datagrid("load", { menuid: currSelectId });
+                }
+                if (result.msg) {
+                    AlertWin(result.msg);
+                }
+            })
+            dgActions.datagrid("clearSelections");
+            dlg.dialog('close');
+        }
+
+        function removeAction() {
+            var data = dg.datagrid("getSelections");
+            if (data.length == 0) {
+                AlertWin(lang.mbom.notSelect);
+                return false;
+            }
+            var ids = [];
+            for (var i in data) {
+                var d = data[i];
+                ids.push(data[i].ID);
+            }
+            postData(URL_REMOVEACTION, { ids: ids }, function (result) {
+                if (result.success) {
+                    dg.datagrid("load", { menuid: currSelectId });
+                }
+                if (result.msg) {
+                    AlertWin(result.msg);
+                }
+                dg.datagrid("clearSelections");
+            });
+        }
+    </script>
+}
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',border:false,split:true,title:'@Lang.MenuTree'" style="width:200px;padding:5px;border-style:solid;border-width:0 1px 0 0;border-color:#D4D4D4;">
+        <ul id="menutree"></ul>
+    </div>
+    <div data-options="region:'center',border:false" style="background:#eee;border-style:solid;border-width:0 0 0 1px;border-color:#D4D4D4;">
+        <div id="toolbar">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addAction()">@Lang.AddAction</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="removeAction()">@Lang.RemoveAction</a>
+        </div>
+        <table id="dg"></table>
+    </div>
+</div>
+
+<div id="dialog">
+    <table id="dgActions"></table>
+    <div id="dlg-buttons" style="text-align:right">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveAction()">@Lang.Save</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="dlg.dialog('close')">@Lang.Cancel</a>
+    </div>
+</div>

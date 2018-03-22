@@ -1,0 +1,98 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.MBOMCreatePublish;
+}
+@section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/mbomcreatepublishdetail")
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div id="toolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <input type="hidden" id="itemcode" name="itemcode" value="@ViewData["itemcode"]" />
+            <span>
+                <select id="cboPublishFilter" name="istoerp">
+                    <option value="-1">发布状态</option>
+                    <option value="0">未发布</option>
+                    <option value="2">已发布</option>
+                </select>
+                <select id="cboChangeSignFilter" name="changesign">
+                    <option value="null">变更标志</option>
+                    <option value="Y">新增加</option>
+                    <option value="">未变更</option>
+                    <option value="N">已取消</option>
+                </select>
+                <select id="cboImpactDoFilter" name="impactdo">
+                    <option value="null">实施状态</option>
+                    <option value="">未实施</option>
+                    <option value="Y">已实施</option>
+                </select>
+            </span>
+            <a href="javascript:addItem();" class="easyui-linkbutton" data-options="iconCls:'icon-add'">@Lang.ItemAdd</a>
+            <a href="javascript:disableItem();" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">@Lang.ItemDelete</a>
+            <a href="javascript:applyItem();" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">@Lang.ApplyChange</a>
+            <a href="javascript:mbomPublish();" class="easyui-linkbutton" data-options="iconCls:'icon-checklist'">MBOM发布</a>
+        </form>
+    </div>
+    <div id="dg"></div>
+</div>
+
+<div id="win" class="easyui-window">
+    <div id="dgSelectToolbar" style="padding:5px;">
+        <form id="querySelectFrm">
+            <span>@Lang.ItemName：</span>
+            <input type="text" name="CN_NAME" class="easyui-textbox" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="CN_ITEM_CODE" class="easyui-textbox" />
+            <a href="javascript:dgSelectQuery();" class="easyui-linkbutton" data-options="iconCls:'icon-search'">@Lang.Find</a>
+        </form>
+    </div>
+    <div id="dgSelect">
+    </div>
+    <div id="winFooter" class="text-right">
+        <span>
+            引用数量：<input class="easyui-textbox" id="quantity" required="required" data-options="validType: 'number',width: 80" />
+        </span>
+        <span>
+            变更理由：<input class="easyui-textbox" id="bywhat" required="required" />
+        </span>
+        <a onclick="winConfirm()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">@Lang.Confirm</a>
+    </div>
+</div>
+
+<div id="winBom">
+    <div id="dgSelectBomToolbar" style="padding:5px;">
+        <form id="querySelectBomFrm">
+            <span>@Lang.ItemName：</span>
+            <input type="text" name="name" class="easyui-textbox" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="item_code" class="easyui-textbox" />
+            <a href="javascript:dgSelectBomQuery();" class="easyui-linkbutton" data-options="iconCls:'icon-search'">@Lang.Find</a>
+        </form>
+    </div>
+    <div id="dgSelectBom">
+    </div>
+    <div id="winBomFooter" class="text-right">
+        <span>*默认会显示当前组件，可使用查询功能选择其他组件</span>
+        <a onclick="winBomConfirm()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">@Lang.Confirm</a>
+    </div>
+</div>
+
+<div id="winPara">
+    <div id="dgSelectPara">
+    </div>
+    <div id="winParaFooter" class="text-right">
+        <a onclick="winParaConfirm()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">@Lang.Confirm</a>
+    </div>
+</div>
+
+
+<div id="winApply">
+    <span>
+        变更理由：<input type="text" id="applyreason" class="easyui-textbox" required="required" />
+    </span>
+    <div id="winApplyFooter" class="text-right">
+        <a onclick="winApplyConfirm()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">@Lang.Confirm</a>
+    </div>
+</div>

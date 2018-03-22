@@ -1,0 +1,64 @@
+﻿.tree-folder{
+    background: url('/Content/icons/assembly.png') no-repeat center center;
+}
+.tree-file{
+    background: url('/Content/icons/ulock.png') no-repeat center center;
+}
+.icon-assembly{
+    background: url('/Content/icons/assembly.png') no-repeat center center;
+}
+.icon-virtual{
+    background: url('/Content/icons/virtual.png') no-repeat center center;
+}
+.icon-combine{
+    background: url('/Content/icons/combine.png') no-repeat center center;
+}
+.icon-none{
+    display: none !important;
+    background: none;
+}
+
+.bgluotianyi{
+    background-color: #66ccff;
+}
+.main-virtual{
+    color:#f00;
+    font-weight:bold;
+}
+.main-combine{
+    color:#6045f4;
+    font-weight:bold;
+}
+.discrete-direct-virtual {
+    font-weight: bold;
+    color: #fff;
+    background-color: #f33;
+}
+.discrete-sub-virtual{
+    background-color: #ff3;
+}
+.discrete-combine{
+    font-weight: bold;
+    color: #fff;
+    background-color: #6045f4;
+}
+.discreteLinked{
+    color: #333;
+    background-color: #d0d0d0;
+}
+.order{
+    color: #0094ff;
+}
+.dlgFooter{
+    text-align: right;
+    padding: 5px 10px;
+}
+a.bg-success{
+    color: #fff !important;
+    text-decoration: none;
+    background-color: #5cb85c;
+}
+.datagrid-row-selected {
+    background: #0081c2;
+    color: #fff;
+}

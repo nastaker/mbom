@@ -1,0 +1,25 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.BOMList;
+}
+@section styles{
+    <style type="text/css">
+    </style>
+}
+@section scripts{
+    <script type="text/javascript">
+        var param = { code: "@Request.Params["code"]" };
+        var URL_ITEMLIST = "/Item/ProductList"
+    </script>
+
+    <!-- import js -->
+    <!-- common js -->
+    <script src="~/Scripts/views/lang.js"></script>
+    <script src="~/Scripts/views/common.js"></script>
+    <!-- page js -->
+    <script src="~/Scripts/views/maintenance/bomlist.js"></script>
+}
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <table id="dgItems"></table>
+</div>

@@ -1,0 +1,22 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.SellList;
+}
+@section scripts{
+    <!-- common js -->
+    @Scripts.Render("~/bundles/common")
+    <script type="text/javascript">
+        var param = {
+            code: "@Request.Params["code"]",
+            catename: lang.bomlist.sell
+        };
+        var URL_ITEMCATELIST = "/Item/ProductCateList"
+    </script>
+    <!-- import js -->
+    <!-- page js -->
+    @Scripts.Render("~/bundles/sell")
+}
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <table id="dgItems"></table>
+</div>

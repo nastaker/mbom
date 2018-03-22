@@ -1,0 +1,156 @@
+﻿@using Localization;
+@section scripts{
+    <script type="text/javascript">
+        var URL_ROLEUSERS = "/UserRole/GetRoleUsers";
+        var url;
+        var currSelectIndex = undefined;
+        var dgRoles = $('#dgRoles');
+        var dlg = $('#dlg');
+        var frm = $('#fm');
+        function newUser() {
+            dlg.dialog('open').dialog('center').dialog('setTitle', '@Lang.NewRole');
+            frm.form('clear');
+            url = '/Role/Add';
+        }
+        function editUser() {
+            var row = dgRoles.datagrid('getSelected');
+            if (row) {
+                dlg.dialog('open').dialog('center').dialog('setTitle', '@Lang.EditRole');
+                frm.form('load', row);
+                url = '/Role/Edit?ID=' + row.ID;
+            }
+        }
+        function saveUser() {
+            frm.form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (!result.success) {
+                        $.messager.show({
+                            title: '@Lang.Error',
+                            msg: result.msg
+                        });
+                    } else {
+                        dlg.dialog('close');        // close the dialog
+                        dgRoles.datagrid('reload');    // reload the user data
+                    }
+                }
+            });
+        }
+        function destroyUser() {
+            var url = '/Role/Delete';
+            var row = dgRoles.datagrid('getSelected');
+            if (row) {
+                $.messager.confirm('@Lang.Confirm', '@Lang.ConfirmDeleteRole', function (r) {
+                    if (r) {
+                        $.post(url, { ID: row.ID }, function (result) {
+                            if (result.success) {
+                                dgRoles.datagrid('reload');    // reload the user data
+                            } else {
+                                $.messager.show({    // show error message
+                                    title: '@Lang.Error',
+                                    msg: result.msg
+                                });
+                            }
+                        }, 'json');
+                    }
+                });
+            }
+        }
+
+        $(function () {
+
+            $("#dgRoles").datagrid({
+                url: "/Role/PageList",
+                width: "100%",
+                height: "100%",
+                toolbar: "#toolbar",
+                striped: true,
+                border: false,
+                fitColumns: true,
+                singleSelect: true,
+                rownumbers: true,
+                pagination: true,
+                onSelect: function (index, row) {
+                    if (currSelectIndex == index) {
+                        return false;
+                    }
+                    currSelectIndex = index;
+                    $("#dgUsers").datagrid("load", { roleid: row["ID"] });
+                },
+                columns: [[
+                    { field: 'RoleName', title: '@Lang.RoleName', width: 1 },
+                    { field: 'Description', title: '@Lang.RoleDescription', width: 3 }
+                ]],
+                loadFilter: function (result) {
+                    if (result.success) {
+                        return result.data;
+                    } else {
+                        return [];
+                    }
+                }
+            });
+
+            $("#dlg").dialog({
+                width: "350px",
+                closed: true,
+                modal: true,
+                buttons: "#dlg-buttons"
+            });
+            $("#dlgRoleUsers").dialog({
+                width: "350px",
+                height: "350px",
+                closed: true,
+                modal: true
+            })
+
+            $("#dgUsers").datagrid({
+                height: "100%",
+                singleSelect: true,
+                border: false,
+                columns: [[
+                    {field:'Name', title:'姓名', width: "100%"}
+                ]],
+                loadFilter: function (result) {
+                    if (result.success) {
+                        return result.data;
+                    } else {
+                        return [];
+                    }
+                }
+            });
+            $("#dgUsers").datagrid("options").url = URL_ROLEUSERS;
+        })
+    </script>
+}
+<div class="easyui-layout" data-options="fit:true" style="height:100%">
+    <div data-options="region:'center',border:false">
+        <div id="toolbar">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">@Lang.NewRole</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">@Lang.EditRole</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUser()">@Lang.RemoveRole</a>
+        </div>
+        <table id="dgRoles"></table>
+    </div>
+    <div data-options="region:'east',border:false" style="width:200px;border-left:1px solid #efefef;">
+        <table id="dgUsers"></table>
+    </div>
+</div>
+<div id="dlg">
+    <form id="fm" method="post" novalidate style="margin:0;padding:10px">
+        <div style="margin-bottom:20px;font-size:14px;border-bottom:1px solid #ccc">@Lang.RoleInformation</div>
+        <div style="margin-bottom:10px">
+            <input name="RoleName" class="easyui-textbox" required="true" label="@Lang.RoleName：" style="width:100%">
+        </div>
+        <div style="margin-bottom:10px">
+            <input name="Description" class="easyui-textbox" label="@Lang.Description：" style="width:100%">
+        </div>
+    </form>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveUser()">@Lang.Save</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="dlg.dialog('close')">@Lang.Cancel</a>
+    </div>
+</div>

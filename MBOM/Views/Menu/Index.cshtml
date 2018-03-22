@@ -1,0 +1,148 @@
+﻿
+@section scripts{ 
+    @Scripts.Render("~/bundles/common")
+    <script type="text/javascript">
+        var URL_MENU = "/Menu/Tree"
+        var URL_MENU_NEW = "/Menu/New"
+        var URL_MENU_EDIT = "/Menu/Edit"
+        var URL_MENU_DEL = "/Menu/Delete"
+        var URL_MENU_ADD_CHILD = "/Menu/AddChild"
+        var tg = $("#tgMenu");
+        var frm = $("#frmMenu");
+
+        var tgOption = {
+            url: URL_MENU,
+            height: "100%",
+            singleSelect: true,
+            rownumbers: true,
+            border: false,
+            fitColumns: true,
+            idField: 'id',
+            treeField: "name",
+            toolbar: "#tgToolbar",
+            loadFilter: loadFilter,
+            columns: [[
+                { field: 'name', title: lang.menu.name, width:2 },
+                { field: 'url', title: lang.menu.url, width: 2 },
+                { field: 'iconcls', title: lang.menu.iconcls, width: 2 },
+                { field: 'description', title: lang.menu.desc, width: 3 },
+                { field: 'order', title: lang.menu.order, width: 1 }
+            ]]
+        };
+
+        var frmOption = {
+            success: function (data) {
+                var data = eval('(' + data + ')');
+                if (data.success) {
+                    if (data.msg) {
+                        alert(data.msg)
+                    }
+                    tg.treegrid("reload");
+                    $("#dlgMenu").dialog("close");
+                } else {
+                    if (data.msg) {
+                        alert(data.msg)
+                    }
+                }
+            }
+        };
+
+        $(function () {
+            tg.treegrid(tgOption);
+            frm.form(frmOption);
+        });
+
+        function addMenu() {
+            $("#dlgMenu").dialog("open");
+            frm.form("clear");
+            frm.form({
+                url: URL_MENU_NEW
+            });
+        }
+        function addChild() {
+            $("#dlgMenu").dialog("open");
+            var data = tg.treegrid("getSelected");
+            frm.form("clear");
+            frm.form('load', { parentid: data.id });
+            frm.form({
+                url: URL_MENU_ADD_CHILD
+            });
+        }
+        function editMenu() {
+            $("#dlgMenu").dialog("open");
+            var data = tg.treegrid("getSelected");
+            frm.form("clear");
+            frm.form('load', data);
+            frm.form({
+                url: URL_MENU_EDIT
+            });
+        }
+        function delMenu() {
+            var data = tg.treegrid("getSelected");
+            var id = data.id;
+            $.messager.confirm('确认', '确认要删除菜单:['+data.name+"]嘛?", function (r) {
+                if (r) {
+                    postData(URL_MENU_DEL, { id: id }, function (result) {
+                        if (result.success) {
+                            if (result.msg) {
+                                alert(result.msg);
+                            }
+                            tg.treegrid("reload");
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
+<div class="easyui-layout" data-options="fit:true" style="height:100%">
+    <div id="tgToolbar" style="padding: 5px;">
+        <a href="javascript:;" class="easyui-linkbutton" onclick="addMenu()">添加菜单</a>
+        <a href="javascript:;" class="easyui-linkbutton" onclick="addChild()">添加子菜单</a>
+        <a href="javascript:;" class="easyui-linkbutton" onclick="editMenu()">修改菜单</a>
+        <a href="javascript:;" class="easyui-linkbutton" onclick="delMenu()">删除菜单</a>
+    </div>
+    <table id="tgMenu"></table>
+</div>
+
+<div id="dlgMenu" class="easyui-dialog" data-options="closed:true,width:500" style="padding: 20px;">
+    <form id="frmMenu" class="form-horizontal" method="post">
+        <input type="hidden" name="id" />
+        <input type="hidden" name="parentid" />
+        <div class="form-group">
+            <label for="exampleInputEmail1" class="col-sm-2 control-label">菜单名称</label>
+            <div class="col-sm-10">
+                <input class="form-control" name="name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1" class="col-sm-2 control-label">链接</label>
+            <div class="col-sm-10">
+                <input class="form-control" name="url">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputFile" class="col-sm-2 control-label">图标</label>
+            <div class="col-sm-10">
+                <input class="form-control" name="iconcls">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputFile" class="col-sm-2 control-label">描述</label>
+            <div class="col-sm-10">
+                <input class="form-control" name="description">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputFile" class="col-sm-2 control-label">排序</label>
+            <div class="col-sm-10">
+                <input class="form-control" name="order">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">保存</button>
+            </div>
+        </div>
+    </form>
+</div>

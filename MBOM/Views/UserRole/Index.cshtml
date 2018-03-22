@@ -1,0 +1,187 @@
+﻿@using Localization;
+@section styles{
+    <style type="text/css">
+        a.opEditRole{
+
+        }
+        a.opEditRole:hover{
+
+        }
+        .datagrid-row-selected a.opEditRole{
+            color: #fff;
+        }
+        .tree-folder{
+            background: url('/Content/icons/organization.png') no-repeat center center;
+        }
+        
+        .tree-file{
+            background-image: url('/Content/icons/user.png');
+            background-repeat:no-repeat;
+            background-position: center center;
+            background-size: 13px 17px;
+        }
+
+    </style>
+}
+@section scripts{
+    @Scripts.Render("~/bundles/common")
+    <script type="text/javascript">
+        var URL_ROLELIST = "/Role/PageList";
+        var URL_ORGTREE = "/UserRole/OrganizationTree";
+        var URL_EDITUSERROLE = "/UserRole/Edit";
+        var URL_GETUSERROLES = "/UserRole/GetUserRoles";
+        var loading = false;
+        var tree = $("#treeOrganization");
+        var dg = $("#dgRoles")
+        $(function () {
+            tree.tree({
+                url: URL_ORGTREE,
+                lines: true,
+                checkbox:true,
+                toolbar: "#pnl",
+                formatter: function (node) {
+                    node.text = node.name;
+                    return node.text;
+                },
+                onBeforeSelect: function(node){
+                    if (loading) {
+                        return false;
+                    }
+                },
+                onClick: function (node) {
+                    dg.datagrid("clearSelections");
+                    if (node.type == "部门") {
+                        return false;
+                    }
+                    if (loading) {
+                        return false;
+                    }
+                    if (!node.roles) {
+                        showUserRoles(node);
+                    } else {
+                        selectRecords(node.roles);
+                    }
+                },
+                loadFilter: loadFilter
+            });
+
+            dg.datagrid({
+                url: URL_ROLELIST,
+                height: "100%",
+                pagination: true,
+                rownumbers: true,
+                border: false,
+                toolbar: "#dgToolbar",
+                idField: "ID",
+                columns: [[
+                    { field: "ID", checkbox: true },
+                    { field: "RoleName", title: "角色名称" },
+                    { field: "Description", title: "描述" }
+                ]],
+                loadFilter: loadFilter
+            });
+        });
+
+        function filterTree() {
+            var text = $("#txtName").textbox("getText");
+            tree.tree("doFilter", text);
+        }
+
+        function setUserRole() {
+            var users = tree.tree("getChecked");
+            var roles = dg.datagrid("getChecked");
+            var userData = [];
+            var roleIds = [];
+            for (var i in users) {
+                var user = users[i];
+                if (user["type"] == "人员") {
+                    userData.push({ UserId: user["id"], Name: user["name"] });
+                }
+            }
+            for (var i in roles) {
+                var role = roles[i];
+                roleIds.push(role["ID"])
+            }
+            if (userData.length == 0) {
+                AlertWin(lang.role.notSelectUsers)
+                return;
+            }
+            if (roleIds.length == 0) {
+                $.messager.confirm('提示', '您未选中任何权限，确认将清除选中人员的所有权限，确认吗？', function (r) {
+                    if (r) {
+                        setUserRoleConfirm(userData, roleIds);
+                        clearUserRoles(users);
+                    }
+                })
+            } else {
+                setUserRoleConfirm(userData, roleIds);
+                clearUserRoles(users);
+            }
+        }
+
+        function clearUserRoles(users) {
+            for (var i in users) {
+                var user = users[i];
+                user.roles = null;
+            }
+        }
+
+        function setUserRoleConfirm(users, roleids) {
+            dg.datagrid("loading")
+            postData(URL_EDITUSERROLE, { users: users, roleIds: roleids }, function (result) {
+                dg.datagrid("loaded")
+                dg.datagrid("clearSelections")
+                if (result.success) {
+                    if (result.msg) {
+                        InfoWin(result.msg);
+                    }
+                } else {
+                    if (result.msg) {
+                        AlertWin(result.msg);
+                    }
+                }
+            })
+        }
+
+        function showUserRoles(node) {
+            loading = true;
+            dg.datagrid("loading")
+            postData(URL_GETUSERROLES, { userid: node.id }, function (result) {
+                loading = false;
+                dg.datagrid("loaded")
+                if (result.success) {
+                    selectRecords(result.data)
+                    node.roles = result.data;
+                    if (result.msg) {
+                        InfoWin(result.msg);
+                    } 
+                } else {
+                    if (result.msg) {
+                        AlertWin(result.msg);
+                    }
+                }
+            });
+        }
+
+        function selectRecords(data) {
+            dg.datagrid("clearSelections")
+            for (var i in data) {
+                dg.datagrid("selectRecord", data[i]["RoleId"]);
+            }
+        }
+    </script>
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',border:false,split:true,title:'@Lang.OrganizationTree'" style="width:200px;padding:5px;border-style:solid;border-width:0 1px 0 0;border-color:#D4D4D4;">
+        <div id="pnl" class="easyui-panel" data-options="border:false">
+            <input id="txtName" class="easyui-textbox" data-options="buttonText:'查询',buttonAlign:'right',buttonIcon:'icon-search',prompt:'请输入姓名...',onClickButton:filterTree" style="width:90%">
+        </div>
+        <ul id="treeOrganization"></ul>
+    </div>
+    <div data-options="region:'center',border:false" style="background:#eee;border-style:solid;border-width:0 0 0 1px;border-color:#D4D4D4;">
+        <div id="dgToolbar" style="padding: 5px;">
+            <a href="javascript:setUserRole();" class="easyui-linkbutton" data-options="iconCls:'icon-add'">设置选中用户权限</a>
+        </div>
+        <table id="dgRoles"></table>
+    </div>
+</div>

@@ -1,0 +1,561 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddRoleInfoSuccess" xml:space="preserve">
+    <value>添加角色信息成功</value>
+  </data>
+  <data name="BaseInfo" xml:space="preserve">
+    <value>基本信息</value>
+  </data>
+  <data name="BOMList" xml:space="preserve">
+    <value>物料清单</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>中航精机</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="ConfirmDeleteRole" xml:space="preserve">
+    <value>是否确认删除此角色信息？</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>&lt;strong&gt;Copyright &amp;copy; 2017 &lt;a href="javascript:;"&gt;OpenInfo Studio&lt;/a&gt;.&lt;/strong&gt; All rights reserved.</value>
+  </data>
+  <data name="CurrentTableDate3" xml:space="preserve">
+    <value>当前三表日期</value>
+  </data>
+  <data name="CurrentTableVersion3" xml:space="preserve">
+    <value>当前三表版本</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="DeleteRoleInfoSuccess" xml:space="preserve">
+    <value>删除角色信息成功</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>部门</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="Distribution" xml:space="preserve">
+    <value>权限分配</value>
+  </data>
+  <data name="DoNotHaveAnyRights" xml:space="preserve">
+    <value>没有任何权限</value>
+  </data>
+  <data name="EditRole" xml:space="preserve">
+    <value>编辑角色信息</value>
+  </data>
+  <data name="EditRoleInfoSuccess" xml:space="preserve">
+    <value>编辑角色信息成功</value>
+  </data>
+  <data name="EditRoleRightSuccess" xml:space="preserve">
+    <value>编辑角色权限成功</value>
+  </data>
+  <data name="EditUser" xml:space="preserve">
+    <value>编辑用户信息</value>
+  </data>
+  <data name="EditUserRoleSuccess" xml:space="preserve">
+    <value>编辑用户角色信息成功</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>电子邮件</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>查找</value>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>控制面板</value>
+  </data>
+  <data name="HomePage" xml:space="preserve">
+    <value>首页</value>
+  </data>
+  <data name="IncorrectUsernameOrPassword" xml:space="preserve">
+    <value>用户名或密码不正确</value>
+  </data>
+  <data name="IntegrityCheck" xml:space="preserve">
+    <value>完整性核查</value>
+  </data>
+  <data name="IntegrityCheckedStatus" xml:space="preserve">
+    <value>完整性核查状态</value>
+  </data>
+  <data name="IsIntegrityChecked" xml:space="preserve">
+    <value>是否已完成完整性核查</value>
+  </data>
+  <data name="IsSaleSet" xml:space="preserve">
+    <value>是否已完成销售件设置</value>
+  </data>
+  <data name="Keywords" xml:space="preserve">
+    <value>关键字</value>
+  </data>
+  <data name="LeftSidebar" xml:space="preserve">
+    <value>管理菜单</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="LoginName" xml:space="preserve">
+    <value>登录名</value>
+  </data>
+  <data name="LogoLarge" xml:space="preserve">
+    <value>&lt;b&gt;Admin&lt;/b&gt;LTE</value>
+  </data>
+  <data name="LogoMini" xml:space="preserve">
+    <value>&lt;b&gt;A&lt;/b&gt;LT</value>
+  </data>
+  <data name="MinLength" xml:space="preserve">
+    <value>{0} 至少为 {1} 位长度</value>
+  </data>
+  <data name="ModuleDescription" xml:space="preserve">
+    <value>模块描述</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>模块名称</value>
+  </data>
+  <data name="NewRole" xml:space="preserve">
+    <value>新建角色</value>
+  </data>
+  <data name="NewUser" xml:space="preserve">
+    <value>新建用户</value>
+  </data>
+  <data name="NotLogin" xml:space="preserve">
+    <value>用户尚未登录</value>
+  </data>
+  <data name="Operation" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="PBOMList" xml:space="preserve">
+    <value>工艺BOM</value>
+  </data>
+  <data name="ProcessFlowList" xml:space="preserve">
+    <value>工序流程清单</value>
+  </data>
+  <data name="ProductCode" xml:space="preserve">
+    <value>产品编码</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>产品名称</value>
+  </data>
+  <data name="ProductReleaseMaintenance" xml:space="preserve">
+    <value>产品发布维护</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>个人资料</value>
+  </data>
+  <data name="ProjectCode" xml:space="preserve">
+    <value>项目编号</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>项目名称</value>
+  </data>
+  <data name="ProjectPublish" xml:space="preserve">
+    <value>项目发布</value>
+  </data>
+  <data name="PurchaseList" xml:space="preserve">
+    <value>采购件清单</value>
+  </data>
+  <data name="Remarks" xml:space="preserve">
+    <value>备注</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>记住我</value>
+  </data>
+  <data name="RemoveRole" xml:space="preserve">
+    <value>删除角色</value>
+  </data>
+  <data name="RemoveUser" xml:space="preserve">
+    <value>删除用户</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>{0} 不能为空</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="RoleDescription" xml:space="preserve">
+    <value>角色描述</value>
+  </data>
+  <data name="RoleInformation" xml:space="preserve">
+    <value>角色信息</value>
+  </data>
+  <data name="RoleName" xml:space="preserve">
+    <value>角色名称</value>
+  </data>
+  <data name="RoleNotExist" xml:space="preserve">
+    <value>角色不存在</value>
+  </data>
+  <data name="RoleRights" xml:space="preserve">
+    <value>角色权限</value>
+  </data>
+  <data name="SaleSet" xml:space="preserve">
+    <value>销售件设置</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="SelfMadeList" xml:space="preserve">
+    <value>自制件清单</value>
+  </data>
+  <data name="SellList" xml:space="preserve">
+    <value>销售件清单</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>登出</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="TableDesigner3" xml:space="preserve">
+    <value>三表设计者</value>
+  </data>
+  <data name="TEL" xml:space="preserve">
+    <value>电话号码</value>
+  </data>
+  <data name="UserLogin" xml:space="preserve">
+    <value>用户登录</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>用户名</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>&lt;b&gt;Version&lt;/b&gt; 0.0.1</value>
+  </data>
+  <data name="StandardList" xml:space="preserve">
+    <value>标准件清单</value>
+  </data>
+  <data name="CancelSelections" xml:space="preserve">
+    <value>取消选择</value>
+  </data>
+  <data name="SetSaleItems" xml:space="preserve">
+    <value>设置为销售件</value>
+  </data>
+  <data name="RejectChanges" xml:space="preserve">
+    <value>撤销更改</value>
+  </data>
+  <data name="SaveAndSubmit" xml:space="preserve">
+    <value>保存并提交</value>
+  </data>
+  <data name="SetItems" xml:space="preserve">
+    <value>设置为零部件</value>
+  </data>
+  <data name="ParamIsEmpty" xml:space="preserve">
+    <value>参数为空</value>
+  </data>
+  <data name="IntegrityCheckStatus" xml:space="preserve">
+    <value>当前产品完整性核查状态</value>
+  </data>
+  <data name="ProductCheckStatus" xml:space="preserve">
+    <value>核查状态</value>
+  </data>
+  <data name="ProductStatus" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="TransferInitiate" xml:space="preserve">
+    <value>转批发起</value>
+  </data>
+  <data name="MBOMIndex" xml:space="preserve">
+    <value>MBOM维护</value>
+  </data>
+  <data name="MBOMPublish" xml:space="preserve">
+    <value>MBOM发布</value>
+  </data>
+  <data name="MBOMPublishMaintenance" xml:space="preserve">
+    <value>MBOM发布维护</value>
+  </data>
+  <data name="MaintenanceIndex" xml:space="preserve">
+    <value>MBOM发布维护</value>
+  </data>
+  <data name="ClearCheckedAll" xml:space="preserve">
+    <value>清空所有选中项</value>
+  </data>
+  <data name="CompositePiecesCancel" xml:space="preserve">
+    <value>删除合件</value>
+  </data>
+  <data name="CompositePiecesOperation" xml:space="preserve">
+    <value>合件操作</value>
+  </data>
+  <data name="CompositePiecesQuoteCancel" xml:space="preserve">
+    <value>删除合件引用</value>
+  </data>
+  <data name="CompositePiecesQuoteSet" xml:space="preserve">
+    <value>引用合件</value>
+  </data>
+  <data name="CompositePiecesSet" xml:space="preserve">
+    <value>新建合件</value>
+  </data>
+  <data name="DesignChange" xml:space="preserve">
+    <value>设计变更</value>
+  </data>
+  <data name="ItemBuckleSet" xml:space="preserve">
+    <value>扣料设置</value>
+  </data>
+  <data name="ItemBuckleStart" xml:space="preserve">
+    <value>启动扣料</value>
+  </data>
+  <data name="TableOperation" xml:space="preserve">
+    <value>表格操作</value>
+  </data>
+  <data name="VirtualPiecesCancel" xml:space="preserve">
+    <value>取消虚件标识</value>
+  </data>
+  <data name="VirtualPiecesOperation" xml:space="preserve">
+    <value>虚件操作</value>
+  </data>
+  <data name="VirtualPiecesQuoteCancel" xml:space="preserve">
+    <value>删除虚件引用</value>
+  </data>
+  <data name="VirtualPiecesQuoteSet" xml:space="preserve">
+    <value>引用虚件下级</value>
+  </data>
+  <data name="VirtualPiecesSet" xml:space="preserve">
+    <value>设为虚件</value>
+  </data>
+  <data name="ToggleCheckStateOnSelect" xml:space="preserve">
+    <value>点击行时切换选中状态</value>
+  </data>
+  <data name="ConvertDtoFail" xml:space="preserve">
+    <value>数据信息转换实体类失败</value>
+  </data>
+  <data name="ReloadTable" xml:space="preserve">
+    <value>重新加载表格</value>
+  </data>
+  <data name="ConvertFail" xml:space="preserve">
+    <value>转换失败</value>
+  </data>
+  <data name="ItemCode" xml:space="preserve">
+    <value>物料编码</value>
+  </data>
+  <data name="ItemCombine" xml:space="preserve">
+    <value>MBOM合件</value>
+  </data>
+  <data name="ItemName" xml:space="preserve">
+    <value>物料名称</value>
+  </data>
+  <data name="ItemPurchase" xml:space="preserve">
+    <value>采购件</value>
+  </data>
+  <data name="ItemSale" xml:space="preserve">
+    <value>销售件</value>
+  </data>
+  <data name="ItemSelfmade" xml:space="preserve">
+    <value>自制件</value>
+  </data>
+  <data name="ItemVirtual" xml:space="preserve">
+    <value>MBOM虚件</value>
+  </data>
+  <data name="ShowItemProcessInfo" xml:space="preserve">
+    <value>显示物料流程信息</value>
+  </data>
+  <data name="CompleteSettings" xml:space="preserve">
+    <value>设置完成</value>
+  </data>
+  <data name="MBOMList" xml:space="preserve">
+    <value>MBOM列表</value>
+  </data>
+  <data name="ProductMBomDetail" xml:space="preserve">
+    <value>产品MBOM详情</value>
+  </data>
+  <data name="ProductPBomDetail" xml:space="preserve">
+    <value>产品PBOM详情</value>
+  </data>
+  <data name="OrganizationTree" xml:space="preserve">
+    <value>组织架构树</value>
+  </data>
+  <data name="ProductDetail" xml:space="preserve">
+    <value>产品详情</value>
+  </data>
+  <data name="AttachmentsUpload" xml:space="preserve">
+    <value>附件上传</value>
+  </data>
+  <data name="ItemBomDetail" xml:space="preserve">
+    <value>物料BOM详情</value>
+  </data>
+  <data name="BomDiffDetail" xml:space="preserve">
+    <value>物料BOM差异</value>
+  </data>
+  <data name="ViewRoleUsers" xml:space="preserve">
+    <value>查看角色用户</value>
+  </data>
+  <data name="MenuTree" xml:space="preserve">
+    <value>菜单树</value>
+  </data>
+  <data name="AddAction" xml:space="preserve">
+    <value>添加操作权限</value>
+  </data>
+  <data name="RemoveAction" xml:space="preserve">
+    <value>删除操作权限</value>
+  </data>
+  <data name="ItemAdd" xml:space="preserve">
+    <value>添加新物料</value>
+  </data>
+  <data name="ItemLink" xml:space="preserve">
+    <value>引用物料</value>
+  </data>
+  <data name="ItemOperation" xml:space="preserve">
+    <value>物料操作</value>
+  </data>
+  <data name="ItemUnlink" xml:space="preserve">
+    <value>删除引用物料</value>
+  </data>
+  <data name="ItemEditQuantity" xml:space="preserve">
+    <value>修改物料数量</value>
+  </data>
+  <data name="ItemDelete" xml:space="preserve">
+    <value>删除物料</value>
+  </data>
+  <data name="ItemEdit" xml:space="preserve">
+    <value>修改物料信息</value>
+  </data>
+  <data name="OptionalItemsAdd" xml:space="preserve">
+    <value>添加选装件</value>
+  </data>
+  <data name="OptionalItemsIndex" xml:space="preserve">
+    <value>产品选装关系设置</value>
+  </data>
+  <data name="MBOMCreatePublish" xml:space="preserve">
+    <value>MBOM版本创建修改</value>
+  </data>
+  <data name="PBomChangeItemIndex" xml:space="preserve">
+    <value>PBOM变更（部件）</value>
+  </data>
+  <data name="PBomChangeProdIndex" xml:space="preserve">
+    <value>PBOM变更（产品）</value>
+  </data>
+  <data name="DefaultList" xml:space="preserve">
+    <value>默认列表</value>
+  </data>
+  <data name="FindOthers" xml:space="preserve">
+    <value>查找所有件</value>
+  </data>
+  <data name="ApplyChange" xml:space="preserve">
+    <value>应用变更</value>
+  </data>
+</root>

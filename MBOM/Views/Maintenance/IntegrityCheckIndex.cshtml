@@ -1,0 +1,24 @@
+﻿@using Localization;
+@model MBOM.Models.IntegrityCheckView
+@{
+    ViewBag.Title = Lang.IntegrityCheck;
+}
+<div class="easyui-layout" data-options="fit:true" style="padding:10px;">
+    <table class="table table-bordered">
+        <caption>
+            <h3 class="text-left">@Lang.IntegrityCheckStatus</h3>
+        </caption>
+        <tr>
+            <th class="col-sm-3">@Lang.ProductCheckStatus：</th>
+            <td>@Model.CHECK_STATUS</td>
+        </tr>
+        <tr>
+            <th>@Lang.SaleSet：</th>
+            <td>@Model.SALE_SET</td>
+        </tr>
+        <tr>
+            <th>@Lang.ProductStatus：</th>
+            <td>@Model.STATUS</td>
+        </tr>
+    </table>
+</div>

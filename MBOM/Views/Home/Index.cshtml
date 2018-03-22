@@ -1,0 +1,46 @@
+﻿@using Localization;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Lang.HomePage - @Lang.CompanyName</title>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @Styles.Render("~/bundles/css")
+    @Styles.Render("~/bundles/fonts")
+    @Styles.Render("~/bundles/easyui")
+    <script src="~/Scripts/easyui/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body class="easyui-layout">
+    <div data-options="region:'north',border:false" style="background-color:#fff;height: 50px;overflow:hidden">
+        <img src="~/Content/images/logo.png" style="height:50px;" />
+    </div>
+    <div data-options="region:'west',title:'@Lang.LeftSidebar',split:true" style="width:180px;">
+        <div id="accordion" class="easyui-accordion" data-options="border:false,fit:true">
+        </div>
+    </div>
+    <div data-options="region:'center'" style="background:#eee;">
+        <div id="Mytab" data-options="fit:true,border:false" class="easyui-tabs">
+            <div title="@Lang.Header">
+                <img src="~/Content/images/logo.png" />
+                <p>
+                    @User.Identity.Name @Html.ActionLink(Lang.SignOut, "SignOut", "User")
+                </p>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'south',border:false">
+        @Html.Raw(Lang.Copyright)
+    </div>
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/views/index.js"></script>
+</body>
+</html>
+@Html.Partial("_TabContextMenu")

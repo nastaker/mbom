@@ -1,0 +1,42 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.OptionalItemsIndex;
+}
+@section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/optionalitemsindex")
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div id="toolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <span>@Lang.ItemName：</span>
+            <input type="text" name="name" class="easyui-textbox" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="itemcode" class="easyui-textbox" />
+            <a href="#" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a> 
+            <a href="#" class="easyui-linkbutton" onclick="openDialog()" data-options="iconCls:'icon-add'">添加选装件...</a>
+            <a href="#" class="easyui-linkbutton" onclick="delOptionalItem()" data-options="iconCls:'icon-cancel'">删除选装件</a>
+            <a href="#" class="easyui-linkbutton" onclick="openOptionalItemTab()" data-options="iconCls:'icon-edit'">选装关系设置...</a>
+        </form>
+    </div>
+    <table id="dgOptionalItems"></table>
+</div>
+
+
+<div id="dlgOptionalItems">
+    <div id="dlgToolbar">
+        <form id="dlgQueryFrm">
+            <span>@Lang.ItemName：</span>
+            <input type="text" name="name" class="easyui-textbox" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="itemcode" class="easyui-textbox" />
+            <a href="#" class="easyui-linkbutton" onclick="dlgQuery()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+        </form>
+    </div>
+    <table id="dgItems"></table>
+    <div id="dlgOptionalItemsFooter" class="text-right">
+        <a href="#" class="easyui-linkbutton" onclick="setOptionalItems()" data-options="iconCls:'icon-ok'">设置为选装件</a>
+        <a href="javascript:dlg.dialog('close')" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+    </div>
+</div>

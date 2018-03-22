@@ -1,0 +1,39 @@
+﻿@using Localization;
+@model MBOM.Models.ViewProjectProductPbomView
+@{
+    Layout = null;
+}
+<div id="panelbox" class="easyui-layout" style="padding:5px;font-size:14px;">
+    <table class="table table-bordered">
+        <tr>
+            <th>@Lang.ProjectCode：</th>
+            <td>@Model.CODE</td>
+            <th>@Lang.ProjectName：</th>
+            <td>@Model.PROJECT_NAME</td>
+        </tr>
+        <tr>
+            <th>@Lang.ProductCode：</th>
+            <td>@Model.PRODUCT_CODE</td>
+            <th>@Lang.ProductName：</th>
+            <td>@Model.PRODUCT_CODE</td>
+        </tr>
+        <tr>
+            <th>@Lang.CurrentTableDate3：</th>
+            <td>@Model.DT_VER</td>
+            <th>@Lang.CurrentTableVersion3：</th>
+            <td>@Model.VER</td>
+        </tr>
+        <tr>
+            <th>@Lang.TableDesigner3：</th>
+            <td colspan="3">@Model.CREATE_NAME</td>
+        </tr>
+        <tr class="active">
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <th>@Lang.IsSaleSet：</th>
+            <td colspan="3">@Model.SALE_SET</td>
+        </tr>
+    </table>
+</div>
+

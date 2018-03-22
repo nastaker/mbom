@@ -1,0 +1,35 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.MBOMIndex;
+}
+@section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/views/mbom/itemwithprocess.js"></script>
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div id="toolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <span>@Lang.ProductCode：</span>
+            <input type="text" name="Code" class="easyui-textbox" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="ItemCode" class="easyui-textbox" />
+            <span>@Lang.ItemName：</span>
+            <input type="text" name="Name" class="easyui-textbox" />
+            <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+            <a href="javascript:;" class="easyui-linkbutton" onclick="openProcessWindow()" data-options="iconCls:'icon-search'">@Lang.ShowItemProcessInfo</a>
+        </form>
+    </div>
+    <table id="dgProducts"></table>
+</div>
+
+<div id="winProcessInfo">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west',split:true,border:false" style="width: 200px;">
+            <table id="dgProcessVer"></table>
+        </div>
+        <div data-options="region:'center',border:false">
+            <table id="dgProcess"></table>
+        </div>
+    </div>
+</div>

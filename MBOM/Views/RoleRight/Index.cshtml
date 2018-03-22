@@ -1,0 +1,39 @@
+﻿@using Localization;
+@section styles{
+    <link href="~/Content/ztree/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <style type="text/css">
+        .rolelist{
+            float: left;
+            width: 180px;
+            height: 500px;
+        }
+
+        .menulist{
+            float: left;
+            width: 180px;
+            height: 500px;
+            padding-left: 20px;
+        }
+
+    </style>    
+}
+@section scripts{
+    @Scripts.Render("~/bundles/ztree")
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/ztree/jquery.ztree.excheck.min.js"></script>
+    <script src="~/Scripts/views/roleright.js"></script>
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west'" class="rolelist">
+        <ul id="dlRoles" title="@Lang.RoleName"></ul>
+    </div>
+    <div data-options="region:'center'" title="@Lang.RoleRights" class="menulist">
+        <ul id="treeMenus" class="ztree"></ul>
+    </div>
+    <div data-options="region:'north',border:false" style="overflow:hidden">
+        <div class="easyui-panel" data-options="border:false" style="padding:5px;">
+            <a href="#" id="btnSave" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">@Lang.Save</a>
+            <a href="#" id="btnReset" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">@Lang.Reset</a>
+        </div>
+    </div>
+</div>

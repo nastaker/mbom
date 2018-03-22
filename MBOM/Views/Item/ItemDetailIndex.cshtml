@@ -1,0 +1,26 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.ProductDetail;
+}
+@section scripts{
+    <script type="text/javascript">
+        var params = { code: "@Request.Params["code"]" };
+    </script>
+    @Scripts.Render("~/bundles/common")
+    <!-- jQuery Plugins -->
+    <script src="~/Scripts/jquery.mask.js"></script>
+    <!-- custom js -->
+    <script src="~/Scripts/views/item/menuData.js"></script>
+    @Scripts.Render("~/bundles/menu")
+}
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',border:false,split:true,title:'@Lang.CompanyName'" style="width:150px;border-style:solid;border-width:0 1px 0 0;border-color:#D4D4D4;">
+        <ul id="tree" class="myMenu"></ul>
+    </div>
+    <div data-options="region:'center',border:false" style="background:#eee;border-style:solid;border-width:0 0 0 1px;border-color:#D4D4D4;">
+        <div id="Mytab" data-options="fit:true,border:false" class="easyui-tabs">
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_TabContextMenu")

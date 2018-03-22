@@ -1,0 +1,27 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.PBOMList;
+}
+@section styles{
+    @Styles.Render("~/bundles/ztreecss")
+}
+@section scripts{
+    <script type="text/javascript">
+        var param = { code: "@Request.Params["code"]" };
+        var URL_ITEMTREE = "/Item/ProductTree"
+    </script>
+    <!-- import js -->
+    <!-- zTree -->
+    @Scripts.Render("~/bundles/ztree")
+    <!-- common js -->
+    @Scripts.Render("~/bundles/common")
+    <!-- page js -->
+    @Scripts.Render("~/bundles/pbom")
+}
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false">
+        <ul id="treeItems" class="ztree"></ul>
+    </div>
+</div>
+

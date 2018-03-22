@@ -1,0 +1,55 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.ProductPBomDetail;
+}
+@section styles{
+    @Styles.Render("~/bundles/ztreecss")
+    <style type="text/css">
+        #win{
+            display: none;
+        }
+        .ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+        .ztree li span.button.addlib {margin-left:2px; margin-right: -1px; background-position:-127px -64px; vertical-align:top; *vertical-align:middle}
+    </style>
+}
+@section scripts{
+    <!-- jQuery Plugins -->
+    <script src="~/Scripts/jquery.mask.js"></script>
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    <!-- custom js -->
+    @Scripts.Render("~/bundles/common")
+    <!-- zTree -->
+    @Scripts.Render("~/bundles/ztree")
+    <script src="~/Scripts/ztree/jquery.ztree.exedit.min.js"></script>
+<script src="~/Scripts/views/mbom/productlibrary.js"></script>
+
+}
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',border:false,split:true" style="width:200px;border-style:solid;border-width:0 1px 0 0;border-color:#D4D4D4;">
+        <ul id="tree" class="ztree"></ul>
+    </div>
+    <div data-options="region:'center',border:false" style="background:#eee;border-style:solid;border-width:0 0 0 1px;border-color:#D4D4D4;">
+        <div id="toolbar" style="padding:5px;">
+            <button class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="addProduct()">添加产品</button>
+            <button class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="deleteProduct()">删除选中</button>
+        </div>
+        <table id="dgList"></table>
+    </div>
+</div>
+
+<div id="win">
+    <div id="dgProductstoolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <span>@Lang.ProductCode：</span>
+            <input type="text" name="Code" class="easyui-textbox" style="width:150px" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="ItemCode" class="easyui-textbox" style="width:150px" />
+            <br/>
+            <span>@Lang.ProductName：</span>
+            <input type="text" name="Name" class="easyui-textbox" style="width:150px" />
+            <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+            <a href="javascript:;" class="easyui-linkbutton" onclick="productinfo()" data-options="iconCls:'icon-search'">@Lang.ProductDetail</a>
+        </form>
+    </div>
+    <table id="dgProducts"></table>
+</div>

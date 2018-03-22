@@ -1,0 +1,26 @@
+﻿@using Localization;
+@model DAL.Models.AppItem
+@{
+    Layout = null;
+}
+<div id="panelbox" class="easyui-layout" style="padding:5px;font-size:14px;">
+    <table class="table table-bordered">
+        <tr>
+            <th>物料名称</th>
+            <td colspan="3">@Model.CN_NAME</td>
+        </tr>
+        <tr>
+            <th>物料号</th>
+            <td>@Model.CN_ITEM_CODE</td>
+            <th>编码</th>
+            <td>@Model.CN_CODE</td>
+        </tr>
+        <tr>
+            <th>单位</th>
+            <td>@Model.CN_UNIT</td>
+            <th>重量</th>
+            <td>@Model.CN_WEIGHT</td>
+        </tr>
+    </table>
+</div>
+

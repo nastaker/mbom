@@ -1,0 +1,29 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.ProcessFlowList;
+}
+@section scripts{
+    <script type="text/javascript">
+        var param = {
+            code: "@Request.Params["code"]"
+        };
+        var URL_PROCESSINFO = "/Item/ProductProcessList";
+        var URL_ITEMPROCESSINFO = "/Item/ProductProcessInfo";
+    </script>
+    <!-- import js -->
+    <!-- common js -->
+    @Scripts.Render("~/bundles/common")
+    <!-- page js -->
+    @Scripts.Render("~/bundles/processflow")
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',border:false" style="width:35%">
+        <!-- 拥有工序的零件 -->
+        <table id="dgItems"></table>
+    </div>
+    <div data-options="region:'center',border:false" style="border-style: solid;border-width:0 0 0 1px;border-color:#D4D4D4;">
+        <!-- 零件详细工序流程 -->
+        <table id="dgItemProcess"></table>
+    </div>
+</div>
+

@@ -1,0 +1,43 @@
+﻿@using Localization;
+@model DAL.Models.AppItem
+@{
+    ViewBag.Title = Lang.PBOMList;
+}
+@section styles{
+    @Styles.Render("~/bundles/ztreecss")
+}
+@section scripts{
+    <script type="text/javascript">
+        @if (Model!=null)
+        {
+        <text>
+        var data = [{
+            ITEMID: @Model.CN_ID,
+            NAME: "@Model.CN_NAME",
+            CODE: "@Model.CN_CODE",
+            isParent: true,
+        }];
+        </text>
+        }
+        else
+        {
+        <text>
+        var data = [];
+        </text>
+        }
+    </script>
+    <!-- import js -->
+    <!-- zTree -->
+    @Scripts.Render("~/bundles/ztree")
+    <!-- common js -->
+    @Scripts.Render("~/bundles/common")
+    <!-- page js -->
+    @*@Scripts.Render("~/bundles/bomparent")*@
+    <script src="~/Scripts/views/maintenance/bomparent.js"></script>
+}
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:false">
+        <ul id="treeItems" class="ztree"></ul>
+    </div>
+</div>

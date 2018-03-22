@@ -1,0 +1,27 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.MBOMList;
+}
+@section styles{
+    @Styles.Render("~/bundles/ztreecss")
+}
+@section scripts{
+    <script type="text/javascript">
+        var params = { code: "@Request.Params["code"]" };
+        var URL_ITEMTREE = "/MBOM/List"
+    </script>
+    <!-- import js -->
+    <!-- zTree -->
+    @Scripts.Render("~/bundles/ztree")
+    <!-- common js -->
+    @Scripts.Render("~/bundles/common")
+    <!-- page js -->
+    @Scripts.Render("~/bundles/mbom")
+}
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div style="height:100%;overflow: auto;">
+        <ul id="treeItems" class="ztree"></ul>
+    </div>
+</div>
+

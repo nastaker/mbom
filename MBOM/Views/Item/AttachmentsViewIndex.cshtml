@@ -1,0 +1,64 @@
+﻿@using Localization;
+@model List<MBOM.Models.FileResponse>
+@{
+    bool hasFile = false;
+    ViewBag.Title = Lang.AttachmentsUpload;
+}
+@section styles{
+    <link href="~/Scripts/viewerjs/viewer.css" rel="stylesheet" />
+    <style type="text/css">
+        .gallery ul#images{
+            margin: 0;
+            padding: 0;
+            list-style-type:none;
+        }
+        .gallery ul#images li{
+            float: left;
+            list-style-type:none;
+        }
+        .gallery ul#images li img{
+            width: 50px;
+            height: 50px;
+        }
+        #images{
+            display: none;
+        }
+    </style>
+}
+@section scripts{
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/viewerjs/viewer.js"></script>
+    <script type="text/javascript">
+        var viewer = new Viewer(document.getElementById('images'), {
+            inline: true,
+            button: false
+        });
+        var timer = setInterval(function () {
+            this.viewer.full();
+            if (this.viewer.fulled) {
+                clearInterval(timer);
+            }
+        }, 200);
+    </script>
+}
+<div class="gallery">
+    <ul id="images">
+        @foreach (var m in Model)
+        {
+            if (!File.Exists(Server.MapPath(m.url)))
+            {
+                continue;
+            }
+            <li>
+                <img src="@m.thumbnailUrl" />
+            </li>
+            hasFile = true;
+        }
+    </ul>
+</div>
+@if (!hasFile)
+{
+    <div id="tooltip" style="font-size:2em;text-align:center;color:#ffd800;line-height:3em;">
+        本产品尚未上传任何相关图片，或上传的图片已经失效
+    </div>
+}
