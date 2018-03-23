@@ -35,6 +35,8 @@ namespace MBOM.Controllers
         [Dependency]
         public ViewPbomChangeItemBLL viewpcibll { get; set; }
         [Dependency]
+        public ViewPbomChangeItemAllBLL viewpciabll { get; set; }
+        [Dependency]
         public ViewItemChangeDetailBLL viewicdbll { get; set; }
         [Dependency]
         public ViewCreatePublishDetailBLL viewcpdbll { get; set; }
@@ -217,6 +219,13 @@ namespace MBOM.Controllers
                 return HttpNotFound();
             }
             ViewData["itemcode"] = itemcode;
+            return View();
+        }
+
+        //
+        [Description("物料分类标识设置")]
+        public ActionResult ItemHlinkSetIndex()
+        {
             return View();
         }
 
@@ -928,6 +937,18 @@ namespace MBOM.Controllers
         public JsonResult PBOMChangeItemPageList(ViewPbomChangeItem view, int page = 1, int rows = 10)
         {
             var query = viewpcibll.GetQueryable();
+            if (!string.IsNullOrWhiteSpace(view.CN_ITEM_CODE))
+            {
+                query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.CN_ITEM_CODE));
+            }
+            var projs = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows);
+            var count = query.Count();
+            return Json(ResultInfo.Success(new { rows = projs, total = count }));
+        }
+
+        public JsonResult PBOMChangeItemAllPageList(ViewPbomChangeItemAll view, int page = 1, int rows = 10)
+        {
+            var query = viewpciabll.GetQueryable();
             if (!string.IsNullOrWhiteSpace(view.CN_ITEM_CODE))
             {
                 query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.CN_ITEM_CODE));

@@ -558,4 +558,13 @@
   <data name="ApplyChange" xml:space="preserve">
     <value>应用变更</value>
   </data>
+  <data name="Code" xml:space="preserve">
+    <value>代号</value>
+  </data>
+  <data name="FindAll" xml:space="preserve">
+    <value>查找所有</value>
+  </data>
+  <data name="ItemHlinkSetIndex" xml:space="preserve">
+    <value>物料分类标识设置</value>
+  </data>
 </root>

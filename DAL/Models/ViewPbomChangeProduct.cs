@@ -27,6 +27,16 @@ namespace DAL.Models
         public string CN_DESC { get; set; }
     }
 
+    [Table("VIEW_PBOM_CHANGE_ITEM_ALL")]
+    public class ViewPbomChangeItemAll
+    {
+        [Key]
+        public string CN_ITEM_CODE { get; set; }
+        public string CN_NAME { get; set; }
+        public string CN_PRODUCT_BASE { get; set; }
+        public string CN_DESC { get; set; }
+    }
+
     [Table("VIEW_ITEM_CHANGE_DETAIL")]
     public class ViewItemChangeDetail
     {

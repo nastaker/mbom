@@ -52,6 +52,7 @@ namespace DAL
         const string PROC_BOMHLINK_ADD = "PROC_BOMHLINK_ADD @parentitemcode,@itemid,@bywhat,@userid,@name,@login";
         const string PROC_DISABLE_BOMHLINK = "PROC_DISABLE_BOMHLINK @hlinkid,@userid,@name,@login";
         const string PROC_APPLY_BOM_CHANGE = "PROC_APPLY_BOMHLINK @hlinkid,@bywhat,@userid,@name,@login";
+        const string PROC_ITEM_TYPE_TRANS = "PROC_ITEM_TYPE_TRANS @itemid,@userid,@name,@login";
 
         public List<ProcItemTree> ProcGetItemTree(string code)
         {
@@ -156,6 +157,19 @@ namespace DAL
                 new SqlParameter("@login", userinfo.Login)
             };
             var result = _context.Database.SqlQuery<ProcReturnMsg>(PROC_BOMHLINK_ADD, param).SingleOrDefault();
+            return result;
+        }
+
+        public ProcReturnMsg ProcItemTypeTrans(int itemid, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@itemid", itemid),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = _context.Database.SqlQuery<ProcReturnMsg>(PROC_ITEM_TYPE_TRANS, param).SingleOrDefault();
             return result;
         }
 

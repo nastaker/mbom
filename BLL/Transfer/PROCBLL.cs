@@ -215,5 +215,10 @@ namespace BLL
         {
             return dal.ProcApplyBomChange(hlinkid, bywhat, userInfo);
         }
+
+        public ProcReturnMsg ProcItemTypeTrans(int itemid, UserInfo userInfo)
+        {
+            return dal.ProcItemTypeTrans(itemid, userInfo);
+        }
     }
 }

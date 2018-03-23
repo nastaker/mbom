@@ -74,6 +74,9 @@ namespace MBOM
                       "~/Scripts/views/mbom/menuData.js"));
             bundles.Add(new ScriptBundle("~/bundles/menuData3").Include(
                       "~/Scripts/views/mbom/productmenuData.js"));
+            bundles.Add(new ScriptBundle("~/bundles/itemhlinksetindex").Include(
+                        "~/Scripts/views/mbom/itemhlinksetindex.js"));
+
 
             bundles.Add(new StyleBundle("~/bundles/ztreecss").Include(
                       "~/Content/ztree/zTreeStyle/zTreeStyle.css", new CssRewriteUrlTransform()));

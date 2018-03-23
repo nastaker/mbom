@@ -38,11 +38,19 @@ namespace BLL.MBOM
     {
     }
 
+    public class ViewPbomChangeItemAllBLL : BaseBLL<ViewPbomChangeItemAll>
+    {
+    }
+
     public class ViewItemChangeDetailBLL : BaseBLL<ViewItemChangeDetail>
     {
     }
 
     public class ViewCreatePublishDetailBLL : BaseBLL<ViewCreatePublishDetail>
+    {
+    }
+
+    public class ViewItemByTypeBLL : BaseBLL<ViewItemByType>
     {
     }
 }

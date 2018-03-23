@@ -51,7 +51,8 @@ namespace MBOM.Controllers
         public AppOptionalItemHlinkBLL aoihbll { get; set; }
         [Dependency]
         public ViewNoOptionalItemBLL viewnoibll { get; set; }
-
+        [Dependency]
+        public ViewItemByTypeBLL vibytbll { get; set; }
 
         const string PATH_ATTACHMENTS_FOLDER = "~/Upload/Attachments/";
 
@@ -503,6 +504,25 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(dtoModel));
         }
 
+        [Description("物料分类标识设置")]
+        public JsonResult ItemTypeTrans(int itemid)
+        {
+            if (itemid == 0)
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
+            ResultInfo rt = null;
+            try
+            {
+                rt = ResultInfo.Parse(procbll.ProcItemTypeTrans(itemid, LoginUserInfo.GetUserInfo()));
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
+        }
+
         [Description("物料维护分页列表")]
         public JsonResult MaintenancePageList(ViewItemMaintenance view, int page = 1, int rows = 10)
         {
@@ -570,6 +590,32 @@ namespace MBOM.Controllers
         public JsonResult NoOptionalItemPageList(ViewNoOptionalItem view, int page = 1, int rows = 10)
         {
             var query = viewnoibll.GetQueryable();
+            if (!string.IsNullOrWhiteSpace(view.code))
+            {
+                query = query.Where(obj => obj.code.Contains(view.code));
+            }
+            if (!string.IsNullOrWhiteSpace(view.name))
+            {
+                query = query.Where(obj => obj.name.Contains(view.name));
+            }
+            if (!string.IsNullOrWhiteSpace(view.itemcode))
+            {
+                query = query.Where(obj => obj.itemcode.Contains(view.itemcode));
+            }
+            var list = query.OrderByDescending(obj => obj.code).Skip((page - 1) * rows).Take(rows).ToList();
+            var count = query.Count();
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
+        }
+
+        [Description("物料分类标识列表（分页）")]
+        public JsonResult SearchByTypePageList(ViewItemByType view, string[] typenames, int page = 1, int rows = 10)
+        {
+            if(typenames == null || typenames.Length == 0)
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
+            
+            var query = vibytbll.GetQueryable(where=> typenames.Contains(where.typename));
             if (!string.IsNullOrWhiteSpace(view.code))
             {
                 query = query.Where(obj => obj.code.Contains(view.code));

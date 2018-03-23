@@ -19,7 +19,7 @@ namespace Localization {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Lang {
@@ -147,6 +147,15 @@ namespace Localization {
         public static string ClearCheckedAll {
             get {
                 return ResourceManager.GetString("ClearCheckedAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 代号 的本地化字符串。
+        /// </summary>
+        public static string Code {
+            get {
+                return ResourceManager.GetString("Code", resourceCulture);
             }
         }
         
@@ -421,6 +430,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 查找所有 的本地化字符串。
+        /// </summary>
+        public static string FindAll {
+            get {
+                return ResourceManager.GetString("FindAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 查找所有件 的本地化字符串。
         /// </summary>
         public static string FindOthers {
@@ -579,6 +597,15 @@ namespace Localization {
         public static string ItemEditQuantity {
             get {
                 return ResourceManager.GetString("ItemEditQuantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 物料分类标识设置 的本地化字符串。
+        /// </summary>
+        public static string ItemHlinkSetIndex {
+            get {
+                return ResourceManager.GetString("ItemHlinkSetIndex", resourceCulture);
             }
         }
         

@@ -96,6 +96,7 @@
     <Compile Include="Models\AppMbomVer.cs" />
     <Compile Include="Models\DicItemUnit.cs" />
     <Compile Include="Models\ViewCreatePublishDetail.cs" />
+    <Compile Include="Models\ViewItemByType.cs" />
     <Compile Include="Models\ViewItemMaintenance.cs" />
     <Compile Include="Models\ViewOptionalItem.cs" />
     <Compile Include="Models\ViewPbomChangeProduct.cs" />
