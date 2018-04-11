@@ -151,6 +151,24 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 关闭对话框 的本地化字符串。
+        /// </summary>
+        public static string CloseDialog {
+            get {
+                return ResourceManager.GetString("CloseDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 关闭窗口 的本地化字符串。
+        /// </summary>
+        public static string CloseWindow {
+            get {
+                return ResourceManager.GetString("CloseWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 代号 的本地化字符串。
         /// </summary>
         public static string Code {
@@ -412,6 +430,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 启用/停用 的本地化字符串。
+        /// </summary>
+        public static string EnableDisable {
+            get {
+                return ResourceManager.GetString("EnableDisable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 错误 的本地化字符串。
         /// </summary>
         public static string Error {
@@ -444,6 +471,87 @@ namespace Localization {
         public static string FindOthers {
             get {
                 return ResourceManager.GetString("FindOthers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 域 的本地化字符串。
+        /// </summary>
+        public static string Group {
+            get {
+                return ResourceManager.GetString("Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 添加域 的本地化字符串。
+        /// </summary>
+        public static string GroupAdd {
+            get {
+                return ResourceManager.GetString("GroupAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 添加域用户 的本地化字符串。
+        /// </summary>
+        public static string GroupAddUsers {
+            get {
+                return ResourceManager.GetString("GroupAddUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 从域中删除用户 的本地化字符串。
+        /// </summary>
+        public static string GroupDeleteUsers {
+            get {
+                return ResourceManager.GetString("GroupDeleteUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 修改域名称 的本地化字符串。
+        /// </summary>
+        public static string GroupEdit {
+            get {
+                return ResourceManager.GetString("GroupEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 域管理页面 的本地化字符串。
+        /// </summary>
+        public static string GroupIndex {
+            get {
+                return ResourceManager.GetString("GroupIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 刷新域 的本地化字符串。
+        /// </summary>
+        public static string GroupRefresh {
+            get {
+                return ResourceManager.GetString("GroupRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 刷新域成员 的本地化字符串。
+        /// </summary>
+        public static string GroupRefreshUsers {
+            get {
+                return ResourceManager.GetString("GroupRefreshUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 删除域 的本地化字符串。
+        /// </summary>
+        public static string GroupRemove {
+            get {
+                return ResourceManager.GetString("GroupRemove", resourceCulture);
             }
         }
         

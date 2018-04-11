@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BLL;
-using BLL.MBOM;
+using DAL;
 using DAL.Models;
 using Localization;
 using MBOM.Filters;
@@ -53,6 +53,8 @@ namespace MBOM.Controllers
         public ViewNoOptionalItemBLL viewnoibll { get; set; }
         [Dependency]
         public ViewItemByTypeBLL vibytbll { get; set; }
+        [Dependency]
+        public DictShippingAddrBLL dsabll { get; set; }
 
         const string PATH_ATTACHMENTS_FOLDER = "~/Upload/Attachments/";
 
@@ -287,9 +289,8 @@ namespace MBOM.Controllers
         [Description("查看销售件")]
         public JsonResult SaleSetList(string code)
         {
-            var saleModel = procbll.ProcGetItemSaleSetInfo(code);
-            var dtoModel = Mapper.Map<List<ProcItemSetInfoView>>(saleModel);
-            return Json(ResultInfo.Success(dtoModel));
+            var list = procbll.ProcGetItemSaleSetInfo(code);
+            return Json(ResultInfo.Success(list));
         }
 
         [Description("查看产品详情")]
@@ -367,33 +368,26 @@ namespace MBOM.Controllers
         [Description("销售件设置")]
         public JsonResult SaveSaleSetList(
             string code,
-            List<ProcItemSetInfoView> addList,
-            List<ProcItemSetInfoView> editList,
+            List<ProcItemSetInfo> addList,
+            List<ProcItemSetInfo> editList,
             IEnumerable<int> removeList)
         {
-            bool isOped = false;
             if(addList != null)
             {
                 var dest2Add = Mapper.Map<List<AppItemHLink>>(addList);
                 itemhlbll.AddRange(dest2Add);
-                isOped = true;
             }
             if(editList != null)
             {
                 var dest2Edit = Mapper.Map<List<AppItemHLink>>(editList);
-                itemhlbll.Modify(dest2Edit, "CN_F_QUANTITY");
-                isOped = true;
+                itemhlbll.Modify(dest2Edit, "CN_F_QUANTITY", "CN_SHIPPINGADDR");
             }
             if(removeList != null)
             {
                 procbll.SetItemDisabled(removeList);
             }
             procbll.SetProductSaleSet(code);
-            isOped = true;
-            if (isOped)
-            {
-                itemhlbll.SaveChanges();
-            }
+            itemhlbll.SaveChanges();
             return Json(ResultInfo.Success());
         }
 
@@ -521,6 +515,12 @@ namespace MBOM.Controllers
                 rt = ResultInfo.Fail(ex.Message);
             }
             return Json(rt);
+        }
+
+        public JsonResult GetShippingAddr()
+        {
+            var query = dsabll.GetQueryable(where => where.CN_SYS_STATUS == "Y");
+            return Json(ResultInfo.Success(query.ToList()));
         }
 
         [Description("物料维护分页列表")]

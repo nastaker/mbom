@@ -73,6 +73,7 @@
         processFlowList: "工序流程清单"
     },
     saleSet: {
+        shippingAddr: "发运地点",
         saleSet: "销售件设置",
         integrityCheck: "完整性设置",
         productCode: "零件号",

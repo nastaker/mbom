@@ -8,4 +8,7 @@ namespace BLL
     public class DictItemTypeBLL: BaseBLL<DictItemType>
     {
     }
+    public class DictShippingAddrBLL : BaseBLL<DictShippingAddr>
+    {
+    }
 }

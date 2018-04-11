@@ -1,6 +1,7 @@
-﻿using DAL.Models;
+﻿using BLL;
+using DAL.Models;
 
-namespace BLL.MBOM
+namespace MBOM
 {
     public class ViewMaintenanceBLL : BaseBLL<ViewMbomMaintenance>
     {

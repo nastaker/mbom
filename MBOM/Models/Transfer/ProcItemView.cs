@@ -62,25 +62,6 @@ namespace MBOM.Models
         public string PDATE { get; set; }
     }
 
-    public class ProcItemSetInfoView
-    {
-        public int? LEVEL { get; set; }
-        public int? PARENT_ID { get; set; }
-        public int? ITEM_HLINK_ID { get; set; }
-        public int? ITEMID { get; set; }
-        public string PARENT_CODE { get; set; }
-        public string PARENT_NAME { get; set; }
-        public string ITEM_CODE { get; set; }
-        public string CODE { get; set; }
-        public string NAME { get; set; }
-        public double? F_QUANTITY { get; set; }
-        public string UNIT { get; set; }
-        public int? SALESET { get; set; }
-        public bool? ISBORROW { get; set; }
-        public bool? B_IS_ASSEMBLY { get; set; }
-        public int? ORDER { get; set; }
-    }
-
     public class ProcProcessItemView
     {
         public int ITEMID { get; set; }

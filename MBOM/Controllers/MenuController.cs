@@ -45,6 +45,7 @@ namespace MBOM.Controllers
         {
             var menus = bll.GetQueryable(m => m.ParentId == null).OrderBy(m => m.Order).ToList();
             var menuviews = Mapper.Map<List<MenuView>>(menus);
+            menuviews.ForEach(a => { a.children = a.children.OrderBy(m => m.order).ToList(); });
             return Json(ResultInfo.Success(menuviews));
         }
 

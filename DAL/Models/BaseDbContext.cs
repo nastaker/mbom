@@ -44,6 +44,9 @@ namespace DAL
         public virtual DbSet<TN_80_APP_0040_MBOM_TRACKSTEP> TN_80_APP_0040_MBOM_TRACKSTEP { get; set; }
         public virtual DbSet<AppMbomVer> TN_80_APP_0040_MBOM_VER { get; set; }
         public virtual DbSet<DicItemUnit> DicItemUnits { get; set; }
+        public virtual DbSet<DictShippingAddr> DictShippingAddrs { get; set; }
+        public virtual DbSet<AppWorkgroupUser> AppWorkgroupUsers { get; set; }
+        public virtual DbSet<AppWorkgroup> AppWorkgroups { get; set; }
 
         public virtual DbSet<ViewProjectProductPbom> ViewProjectProductPboms { get; set; }
         public virtual DbSet<ViewMbomMaintenance> ViewMbomMaintenances { get; set; }

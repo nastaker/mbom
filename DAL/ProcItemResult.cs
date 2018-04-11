@@ -61,25 +61,6 @@ namespace DAL
         public string PDATE { get; set; }
     }
 
-    public class ProcItemSetInfo
-    {
-        public int? LEVEL { get; set; }
-        public int? PARENT_ID { get; set; }
-        public int? CN_ITEMID { get; set; }
-        public int? CN_ITEM_HLINK_ID { get; set; }
-        public string PARENT_CODE { get; set; }
-        public string PARENT_NAME { get; set; }
-        public string CN_ITEM_CODE { get; set; }
-        public string CN_CODE { get; set; }
-        public string CN_NAME { get; set; }
-        public double? CN_F_QUANTITY { get; set; }
-        public string CN_UNIT { get; set; }
-        public int? SALESET { get; set; }
-        public bool? CN_ISBORROW { get; set; }
-        public bool? CN_B_IS_ASSEMBLY { get; set; }
-        public int? CN_ORDER { get; set; }
-    }
-
     public class ProcBomDiff
     {
         public int CN_HLINK_ID { get; set; }
@@ -100,6 +81,26 @@ namespace DAL
 		public DateTime CN_DT_EX_PBOM { get; set; }
 		public DateTime CN_DT_EF_MBOM { get; set; }
 		public DateTime CN_DT_EX_MBOM { get; set; }
+    }
+
+    public class ProcItemSetInfo
+    {
+        public int? LEVEL { get; set; }
+        public int? PARENT_ID { get; set; }
+        public int? ITEM_HLINK_ID { get; set; }
+        public int? ITEMID { get; set; }
+        public string PARENT_CODE { get; set; }
+        public string PARENT_NAME { get; set; }
+        public string ITEM_CODE { get; set; }
+        public string CODE { get; set; }
+        public string NAME { get; set; }
+        public string SHIPPINGADDR { get; set; }
+        public double? F_QUANTITY { get; set; }
+        public string UNIT { get; set; }
+        public int? SALESET { get; set; }
+        public bool? ISBORROW { get; set; }
+        public bool? B_IS_ASSEMBLY { get; set; }
+        public int? ORDER { get; set; }
     }
 
     public class ProcProcessItem

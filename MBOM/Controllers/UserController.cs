@@ -9,6 +9,7 @@ using BLL;
 using System.Linq;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace MBOM.Controllers
 {
@@ -64,7 +65,9 @@ namespace MBOM.Controllers
                             select roleRight.RightId).Distinct().ToList();
             }
             //登录成功
-            //
+            //验证是否重复登录，清空上次登录信息
+            Hashtable logins = HttpContext.Application["Logins"] as Hashtable;
+            logins[name] = Session.SessionID;
             LoginUserInfo userInfo = new LoginUserInfo
             {
                 UserId = userid,

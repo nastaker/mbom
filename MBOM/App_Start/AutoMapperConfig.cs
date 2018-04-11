@@ -35,16 +35,16 @@ namespace MBOM
                 .ForMember("ITEMID", opts => opts.MapFrom("CN_ID"));
             CreateMap<ProcItemProcess, ProcItemProcessView>();
             CreateMap<ProcCateItem, ProcCateItemView>();
-            CreateMap<ProcItemSetInfo, ProcItemSetInfoView>();
             CreateMap<AppProduct, IntegrityCheckView>();
             CreateMap<AppProcessVer, AppProcessVerView>();
             CreateMap<AppProcessVerHlink, ProcItemProcessView>();
             CreateMap<AppBom, AppBomView>();
             CreateMap<ProcBomDiff, BomDiffView>();
             
-            CreateMap<ProcItemSetInfoView, AppItemHLink>()
+            CreateMap<ProcItemSetInfo, AppItemHLink>()
                 .ForMember("CN_ID", opts => opts.MapFrom("ITEMID"))
                 .ForMember("CN_HLINK_ID", opts => opts.MapFrom("ITEM_HLINK_ID"))
+                .ForMember("CN_SHIPPINGADDR", opts => opts.MapFrom("SHIPPINGADDR"))
                 .AfterMap((src, dest) => {
                     dest.CN_F_QUANTITY = (double)src.F_QUANTITY;
                     //以下全部为默认值

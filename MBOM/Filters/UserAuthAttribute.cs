@@ -8,6 +8,7 @@ using BLL;
 using System.Collections.Generic;
 using MBOM.Unity;
 using Model;
+using System.Collections;
 
 namespace MBOM.Filters
 {
@@ -18,13 +19,22 @@ namespace MBOM.Filters
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             var user = LoginUserInfo.GetLoginUser();
+            // 未登录，返回登录界面
             if (user == null)
             {
                 return false;
             }
-            if (httpContext.IsDebuggingEnabled)
+            Hashtable logins = httpContext.Application["Logins"] as Hashtable;
+            // 使用的缓存Cookie登录，返回登录界面
+            if (logins[user.Name] == null)
             {
-                return true;
+                return false;
+            }
+            // 登录被注销（重复登录），提示重新登录
+            if (logins[user.Name] != null && logins[user.Name].ToString() != httpContext.Session.SessionID)
+            {
+                httpContext.Response.StatusCode = 412;
+                return false;
             }
             if(user.UserId == 0) //超级管理员不设限制
             {
@@ -57,26 +67,39 @@ namespace MBOM.Filters
                 switch (errorCode)
                 {
                     case 403:
-                        filterContext.Result = new JsonResult { Data = ResultInfo.Fail("用户没有操作权限"), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+                        filterContext.Result = new JsonResult { Data = ResultInfo.Fail("没有操作权限，请联系管理员！"), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
                         break;
-                    case 404:
-                        filterContext.Result = new JsonResult { Data = ResultInfo.Fail("404——资源未找到"), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+                    case 412:
+                        filterContext.Result = new JsonResult { Data = ResultInfo.Fail("您的账号已在其他地方登录，请重新登录！"), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
                         break;
                     default:
-                        filterContext.Result = new JsonResult { Data = ResultInfo.Fail("其他错误，错误代码："+ errorCode), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+                        filterContext.Result = new JsonResult { Data = ResultInfo.Fail("登录已失效，请重新登录。"), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
                         break;
                 }
             }
             else
             {
+                var viewData = new ViewDataDictionary();
                 switch (errorCode)
                 {
                     case 403:
-                        filterContext.HttpContext.Response.SuppressFormsAuthenticationRedirect = true;
-                        filterContext.Result = new ContentResult() { Content = "用户没有所需权限，请联系管理员！" };
+                        viewData["Message"] = "没有操作权限，请联系管理员！";
+                        filterContext.Result = new ViewResult
+                        {
+                            ViewName = "~/Views/Shared/Error.cshtml",
+                            ViewData = viewData
+                        };
+                        break;
+                    case 412:
+                        viewData["Message"] = "您的账号已在其他地方登录，请重新登录！";
+                        filterContext.Result = new ViewResult
+                        {
+                            ViewName = "~/Views/Shared/Error.cshtml",
+                            ViewData = viewData
+                        };
                         break;
                     default:
-                        filterContext.Result = new RedirectResult("/User/Login");
+                        base.HandleUnauthorizedRequest(filterContext);
                         break;
                 }
             }

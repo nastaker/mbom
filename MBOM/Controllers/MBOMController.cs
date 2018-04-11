@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using BLL;
-using BLL.MBOM;
 using DAL.Models;
 using Localization;
 using MBOM.Filters;

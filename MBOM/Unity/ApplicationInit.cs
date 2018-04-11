@@ -1,10 +1,12 @@
 ﻿using BLL;
 using Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
 
 namespace MBOM.Unity
@@ -15,6 +17,7 @@ namespace MBOM.Unity
         {
             InitActions();
             InitRightActions();
+            InitLogins();
         }
 
 
@@ -52,6 +55,11 @@ namespace MBOM.Unity
             SysRightActionBLL rightactionbll = new SysRightActionBLL();
             var actions = rightactionbll.GetAll();
             CacheHelper.SetCache("RightActions", actions);
+        }
+
+        internal static void InitLogins()
+        {
+            HttpContext.Current.Application["Logins"] = new Hashtable();
         }
     }
 }

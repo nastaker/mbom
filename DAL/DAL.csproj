@@ -56,7 +56,9 @@
     <Compile Include="BaseDAL.cs" />
     <Compile Include="BaseDbInitializer.cs" />
     <Compile Include="Models\AppOptionalItemHlink.cs" />
+    <Compile Include="Models\AppWorkgroupUser.cs" />
     <Compile Include="Models\BaseDbContext.cs" />
+    <Compile Include="Models\DictShippingAddr.cs" />
     <Compile Include="Models\TN_00_SYS_0500_CLASS_BASE.cs" />
     <Compile Include="Models\TN_00_SYS_0505_CLASS_TYPE_DEF.cs" />
     <Compile Include="Models\TN_00_SYS_0510_CLASS.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="Models\ViewMaterialBillboards.cs" />
     <Compile Include="Models\ViewProductBillboards.cs" />
     <Compile Include="Models\ViewItemWithProcess.cs" />
+    <Compile Include="Models\AppWorkgroup.cs" />
     <Compile Include="MultipleResultSets.cs" />
     <Compile Include="PROCDAL.cs" />
     <Compile Include="ProcItemResult.cs" />

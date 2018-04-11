@@ -14,14 +14,29 @@ var isDeduction = false;
 
 //列表信息获取
 var URL_ENTER = "/MBOM/Maintenance";
-var URL_ITEMTREE = "/MBOM/List";var URL_DISCRETE_LIST = "/MBOM/DiscreteList";//虚件操作var URL_VIRTUAL_ITEM_SET = "/MBOM/VirtualItemSet";var URL_VIRTUAL_ITEM_DROP = "/MBOM/VirtualItemDrop";var URL_VIRTUAL_ITEM_LINK = "/MBOM/VirtualItemLink";var URL_VIRTUAL_ITEM_UNLINK = "/MBOM/VirtualItemUnlink";//合件操作var URL_COMPOSITE_ITEM_SET = "/MBOM/CompositeItemSet";
+var URL_ITEMTREE = "/MBOM/List";
+var URL_DISCRETE_LIST = "/MBOM/DiscreteList";
+//虚件操作
+var URL_VIRTUAL_ITEM_SET = "/MBOM/VirtualItemSet";
+var URL_VIRTUAL_ITEM_DROP = "/MBOM/VirtualItemDrop";
+var URL_VIRTUAL_ITEM_LINK = "/MBOM/VirtualItemLink";
+var URL_VIRTUAL_ITEM_UNLINK = "/MBOM/VirtualItemUnlink";
+//合件操作
+var URL_COMPOSITE_ITEM_SET = "/MBOM/CompositeItemSet";
 var URL_COMPOSITE_ITEM_DROP = "/MBOM/CompositeItemDrop";
 var URL_COMPOSITE_ITEM_LINK = "/MBOM/CompositeItemLink";
 var URL_COMPOSITE_ITEM_UNLINK = "/MBOM/CompositeItemUnlink";
 var URL_EDITCOMBINENAME = "/MBOM/EditCombineName";
 //
-var URL_ITEMPROCESSINFO = "/Item/ProductProcessInfo";var URL_ITEMDEDUCTIONSET = "/MBOM/ItemDeductionSet";//物料var URL_ITEMDETAIL = "/Item/ItemDetailIndex"
-var URL_ITEMPAGELIST = "/Item/MaintenancePageList"var URL_ITEM_LINK = "/MBOM/ItemLink"var URL_ITEM_UNLINK = "/MBOM/ItemUnlink"var URL_ITEM_EDITQUANTITY = "/MBOM/ItemEditQuantity"
+var URL_ITEMPROCESSINFO = "/Item/ProductProcessInfo";
+var URL_ITEMDEDUCTIONSET = "/MBOM/ItemDeductionSet";
+//物料
+var URL_ITEMDETAIL = "/Item/ItemDetailIndex"
+var URL_ITEMPAGELIST = "/Item/MaintenancePageList"
+var URL_ITEM_LINK = "/MBOM/ItemLink"
+var URL_ITEM_UNLINK = "/MBOM/ItemUnlink"
+var URL_ITEM_EDITQUANTITY = "/MBOM/ItemEditQuantity"
+
 
 var tg = $("#treegrid");
 var tgvi = $("#tgvi");

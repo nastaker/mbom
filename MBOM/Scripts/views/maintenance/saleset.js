@@ -1,15 +1,32 @@
-﻿$(function () {
-    var dgItems = $("#dgItems");
-    var dgSaleItems = $("#dgSaleItems");
+﻿var URL_SALESETLIST = "/Item/SaleSetList";
+var URL_SAVESALESETLIST = "/Item/SaveSaleSetList";
+var URL_SHIPPINGADDRLIST = "/Item/GetShippingAddr";
+
+var code = $("#code").val();
+var dgItems = $("#dgItems");
+var dgSaleItems = $("#dgSaleItems");
+var shippingAddrData;
+var param = { code: code };
+$(function () {
+
+    postDataSync(URL_SHIPPINGADDRLIST, {}, function (result) {
+        if (result.success) {
+            shippingAddrData = result.data;
+        }
+        if (result.msg) {
+            AlertWin(result.msg);
+        }
+    });
+
     var columns = [[
         { field: 'CODE', title: lang.saleSet.productCode, width:50 },
         { field: 'NAME', title: lang.saleSet.productName, width:50 }
     ]];
     var dgSaleItemsColumns = [[
-        { field: 'CODE', title: lang.saleSet.productCode, width: 40 },
-        { field: 'NAME', title: lang.saleSet.productName, width: 40 },
+        { field: 'CODE', title: lang.saleSet.productCode, width: 150 },
+        { field: 'NAME', title: lang.saleSet.productName, width: 150 },
         {
-            field: 'F_QUANTITY', title: lang.saleSet.saleWeight, width: 12,
+            field: 'F_QUANTITY', title: lang.saleSet.saleWeight, width: 80,
             styler: function (value, row, index) {
                 if (!value) {
                     return 'background-color:#ffee00;color:red;';
@@ -20,7 +37,26 @@
                 options: { precision: 4, required: true }
             }
         },
-        { field: 'UNIT', title: lang.saleSet.productUnit, width: 8, align:"center" }
+        {
+            field: 'SHIPPINGADDR', title: lang.saleSet.shippingAddr, width: 150,
+            styler: function (value, row, index) {
+                if (!value) {
+                    return 'background-color:#ffee00;color:red;';
+                }
+            },
+            editor: {
+                type: 'combobox',
+                options: {
+                    panelHeight: 'auto',
+                    editable: false,
+                    valueField: 'CN_NAME',
+                    textField: 'CN_NAME',
+                    data: shippingAddrData,
+                    required: true
+                }
+            }
+        },
+        { field: 'UNIT', title: lang.saleSet.productUnit, width: 50, align:"center" }
     ]];
     //本页面基础datagrid属性
     var commonOptions = {

@@ -22,6 +22,10 @@ var URL_MENULIST = "/Menu/UserMenuList";
 var URL_LOGIN = "/User/Login";
 
 $(function () {
+    if (window.parent != window && window.parent.openTab != null) {
+        window.parent.location.href = "";
+        return;
+    }
     postData(URL_MENULIST, {}, function (result) {
         if (!result.success) {
             AlertWin(result.msg, function () {

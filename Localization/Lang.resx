@@ -567,4 +567,40 @@
   <data name="ItemHlinkSetIndex" xml:space="preserve">
     <value>物料分类标识设置</value>
   </data>
+  <data name="GroupIndex" xml:space="preserve">
+    <value>域管理页面</value>
+  </data>
+  <data name="EnableDisable" xml:space="preserve">
+    <value>启用/停用</value>
+  </data>
+  <data name="GroupAdd" xml:space="preserve">
+    <value>添加域</value>
+  </data>
+  <data name="GroupEdit" xml:space="preserve">
+    <value>修改域名称</value>
+  </data>
+  <data name="GroupRemove" xml:space="preserve">
+    <value>删除域</value>
+  </data>
+  <data name="CloseDialog" xml:space="preserve">
+    <value>关闭对话框</value>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>关闭窗口</value>
+  </data>
+  <data name="GroupAddUsers" xml:space="preserve">
+    <value>添加域用户</value>
+  </data>
+  <data name="GroupDeleteUsers" xml:space="preserve">
+    <value>从域中删除用户</value>
+  </data>
+  <data name="GroupRefreshUsers" xml:space="preserve">
+    <value>刷新域成员</value>
+  </data>
+  <data name="GroupRefresh" xml:space="preserve">
+    <value>刷新域</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>域</value>
+  </data>
 </root>

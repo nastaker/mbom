@@ -21,7 +21,7 @@ namespace MBOM.Filters
             string errMsg = filterContext.Exception.Message;
             string innerErrMsg = filterContext.Exception.InnerException == null ? "没有详细错误信息" : filterContext.Exception.InnerException.Message;
             //
-            log.ErrorFormat("位置：{0}.{1}，错误：{2}，详细：{3}", controllerName, actionName, errMsg, innerErrMsg);
+            log.ErrorFormat("{0}.{1}；{2}{3}。", controllerName, actionName, errMsg, innerErrMsg);
             //
             if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
