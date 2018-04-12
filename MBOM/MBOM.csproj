@@ -857,6 +857,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Filters\CustomErrorFilter.cs" />
     <Compile Include="Filters\MaintenanceActionFilter.cs" />
@@ -896,15 +897,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BLL\BLL.csproj">
-      <Project>{45E67373-FC01-48B0-A27C-C9A0F474E217}</Project>
-      <Name>BLL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DAL\DAL.csproj">
+    <ProjectReference Include="..\DAL\Repository.csproj">
       <Project>{339AF863-7090-4D58-A009-7312CC5E8118}</Project>
-      <Name>DAL</Name>
+      <Name>Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\Localization\Localization.csproj">
       <Project>{cfb93a91-b8c6-4434-a775-fa7315dd9ccb}</Project>

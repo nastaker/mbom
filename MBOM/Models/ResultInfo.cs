@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DAL;
+using Repository;
 using Localization;
 using System;
 using System.Collections;

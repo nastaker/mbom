@@ -1,5 +1,5 @@
 ﻿using BLL;
-using DAL.Models;
+using Repository;
 using Localization;
 using MBOM.Filters;
 using MBOM.Models;

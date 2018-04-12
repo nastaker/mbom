@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using BLL;
-using DAL;
-using DAL.Models;
+using Repository;
 using Localization;
 using MBOM.Filters;
 using MBOM.Models;
-using Microsoft.Practices.Unity;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -19,44 +16,12 @@ using System.Web.Mvc;
 namespace MBOM.Controllers
 {
     [UserAuth]
-    public class ItemController : Controller
+    public class ItemController : BaseController<AppItem>
     {
-        [Dependency]
-        public AppItemBLL itembll { get; set; }
-        [Dependency]
-        public AppBomBLL bombll { get; set; }
-        [Dependency]
-        public AppItemHLinkBLL itemhlbll { get; set; }
-        [Dependency]
-        public AppProcessVerBLL processverbll { get; set; }
-        [Dependency]
-        public AppProcessVerHlinkBLL processbll { get; set; }
-        [Dependency]
-        public AppProductBLL prodbll { get; set; }
-        [Dependency]
-        public SysAttachmentBLL attachbll { get; set; }
-        [Dependency]
-        public PROCBLL procbll { get; set; }
-        [Dependency]
-        public ViewItemMaintenanceBLL viewbll { get; set; }
-        [Dependency]
-        public DictItemUnitBLL unitbll { get; set; }
-        [Dependency]
-        public DictItemTypeBLL typebll { get; set; }
-        [Dependency]
-        public AppBomHlinkBLL bomhlinkbll { get; set; }
-        [Dependency]
-        public ViewOptionalItemBLL viewoibll { get; set; }
-        [Dependency]
-        public AppOptionalItemHlinkBLL aoihbll { get; set; }
-        [Dependency]
-        public ViewNoOptionalItemBLL viewnoibll { get; set; }
-        [Dependency]
-        public ViewItemByTypeBLL vibytbll { get; set; }
-        [Dependency]
-        public DictShippingAddrBLL dsabll { get; set; }
-
         const string PATH_ATTACHMENTS_FOLDER = "~/Upload/Attachments/";
+
+        private BaseDbContext db;
+        
 
         [Description("添加或修改自定义物料")]
         public ActionResult Edit(ViewItemMaintenance view, int[] CN_TYPE)
@@ -64,6 +29,7 @@ namespace MBOM.Controllers
             var msg = string.Empty;
             var user = LoginUserInfo.GetLoginUser();
             var now = DateTime.Now;
+            
             AppItem item = null;
             if (view.CN_ID == 0)
             {
@@ -95,22 +61,22 @@ namespace MBOM.Controllers
                     CN_SYS_STATUS = "Y"
                 };
 
-                itembll.Add(item);
-                bombll.Add(bom);
+                db.AppItems.Add(item);
+                db.AppBoms.Add(bom);
 
-                bombll.SaveChanges();
+                db.SaveChanges();
                 msg = "添加成功";
             }
             else
             {
                 //修改
-                item = itembll.Get(where => where.CN_ID == view.CN_ID);
+                item = db.AppItems.SingleOrDefault(where => where.CN_ID == view.CN_ID);
                 if (item == null)
                 {
                     return Json(ResultInfo.Fail("物料信息不存在，请联系管理员。"));
                 }
 
-                var bomh = bomhlinkbll.GetList(where => where.CN_COMPONENT_OBJECT_ID == view.CN_ID);
+                var bomh = db.AppBomHlinks.Where(w => w.CN_COMPONENT_OBJECT_ID == view.CN_ID).ToList();
                 if (bomh != null && bomh.Count > 0)
                 {
                     return Json(ResultInfo.Fail("物料已经被引用，无法进行修改。"));
@@ -123,8 +89,7 @@ namespace MBOM.Controllers
                 item.CN_NAME = view.CN_NAME;
                 item.CN_UNIT = view.CN_UNIT;
                 item.CN_WEIGHT = view.CN_WEIGHT;
-                itembll.Modify(item, "CN_NAME","CN_UNIT", "CN_WEIGHT");
-                itemhlbll.Delete(where => where.CN_ID == item.CN_ID && where.CN_DISPLAYNAME == "自定义物料");
+                db.AppItemHLinks.RemoveRange(db.AppItemHLinks.Where(w => w.CN_ID == item.CN_ID && w.CN_DISPLAYNAME == "自定义物料"));
                 msg = "修改成功";
             }
             List<AppItemHLink> typelist = new List<AppItemHLink>();
@@ -145,22 +110,21 @@ namespace MBOM.Controllers
                     CN_CREATE_NAME = user.Name
                 });
             }
-            itemhlbll.AddRange(typelist);
-            itembll.SaveChanges();
-            itemhlbll.SaveChanges();
+            db.AppItemHLinks.AddRange(typelist);
+            db.SaveChanges();
             return Json(ResultInfo.Success(msg));
         }
 
         [Description("删除手工添加的自定义物料")]
         public ActionResult Delete(int id)
         {
-            var item = itembll.Get(where => where.CN_ID == id);
+            var item = db.AppItems.SingleOrDefault(where => where.CN_ID == id);
             if (item == null)
             {
                 return Json(ResultInfo.Fail("物料不存在，或已经被删除，请刷新后重试。"));
             }
 
-            var bomh = bomhlinkbll.GetList(where => where.CN_COMPONENT_OBJECT_ID == id);
+            var bomh = db.AppBomHlinks.Where(where => where.CN_COMPONENT_OBJECT_ID == id).ToList();
             if (bomh != null && bomh.Count > 0)
             {
                 return Json(ResultInfo.Fail("物料已经被引用，无法进行删除。"));
@@ -174,12 +138,10 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail("物料已发布到ERP系统，无法删除！"));
             }
-            itemhlbll.Delete(where => where.CN_ID == item.CN_ID);
-            bombll.Delete(where => where.CN_CODE == item.CN_CODE);
-            itembll.Delete(item);
-            bombll.SaveChanges();
-            itembll.SaveChanges();
-            itemhlbll.SaveChanges();
+            db.AppItemHLinks.RemoveRange(db.AppItemHLinks.Where(where => where.CN_ID == item.CN_ID));
+            db.AppBoms.RemoveRange(db.AppBoms.Where(where => where.CN_CODE == item.CN_CODE));
+            db.AppItems.Remove(item);
+            db.SaveChanges();
             return Json(ResultInfo.Success("已成功删除自定义物料"));
         }
 
@@ -187,7 +149,8 @@ namespace MBOM.Controllers
         [Description("查看[ITEM基本信息页面]")]
         public ActionResult BaseInfoIndex(string code)
         {
-            var item = itembll.Get(where => where.CN_CODE == code);
+            
+            var item = db.AppItems.SingleOrDefault(where => where.CN_CODE == code);
             return View(item);
         }
 
@@ -201,7 +164,8 @@ namespace MBOM.Controllers
         public ActionResult AttachmentsViewIndex(string code, int filetype)
         {
             //是展示
-            var attachs = attachbll.GetList(a => a.FileType == filetype && a.Code == code);
+            
+            var attachs = db.SysAttachments.Where(w => w.FileType == filetype && w.Code == code);
             var rt = Mapper.Map<List<FileResponse>>(attachs);
             return View(rt);
         }
@@ -223,6 +187,7 @@ namespace MBOM.Controllers
         public JsonResult UploadAttachment(string code, int filetype,HttpPostedFileBase file)
         {
             //如果file不为空，则是保存文件
+            
             if (file != null)
             {
                 string dir = Path.Combine(PATH_ATTACHMENTS_FOLDER,
@@ -230,9 +195,9 @@ namespace MBOM.Controllers
                                                 filetype.ToString());
                 string filepath = Path.Combine(dir, file.FileName);
                 //获取item数据
-                var item = itembll.Get(i => i.CN_CODE == code);
+                var item = db.AppItems.SingleOrDefault(i => i.CN_CODE == code);
                 //写数据库
-                var newAttach = attachbll.Add(new SysAttachment
+                var newAttach = db.SysAttachments.Add(new SysAttachment
                 {
                     Code = item.CN_CODE,
                     ItemId = item.CN_ID,
@@ -242,7 +207,7 @@ namespace MBOM.Controllers
                     FilePath = filepath.Substring(1),
                     FileSize = file.ContentLength
                 });
-                attachbll.SaveChanges();
+                db.SaveChanges();
                 FileResponse rt = Mapper.Map<FileResponse>(newAttach);
                 //上传至/upload/attachments
                 if (!Directory.Exists(dir))
@@ -255,7 +220,7 @@ namespace MBOM.Controllers
             else
             {
                 //是展示
-                var attachs = attachbll.GetList(a => a.FileType == filetype && a.Code == code);
+                var attachs = db.SysAttachments.Where(a => a.FileType == filetype && a.Code == code);
                 var rt = Mapper.Map<List<FileResponse>>(attachs);
                 return Json(ResultInfo.Success(rt));
             }
@@ -264,22 +229,22 @@ namespace MBOM.Controllers
         [Description("删除附件")]
         public JsonResult DeleteAttachment(int id)
         {
-            attachbll.Delete(id);
-            attachbll.SaveChanges();
+            db.SysAttachments.Remove(db.SysAttachments.Find(id));
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
 
         [Description("获取物料计量单位列表")]
         public JsonResult UnitList()
         {
-            var list = unitbll.GetAll();
+            var list = db.DicItemUnits.ToList();
             return Json(ResultInfo.Success(list));
         }
 
         [Description("获取物料类型列表表")]
         public JsonResult TypeList()
         {
-            var list = typebll.GetList(where => 
+            var list = db.DictItemTypes.Where(where =>
             where.CN_NAME.Contains("自制") ||
             where.CN_NAME.Contains("MBOM合件") ||
             where.CN_NAME.Contains("采购"));
@@ -289,14 +254,14 @@ namespace MBOM.Controllers
         [Description("查看销售件")]
         public JsonResult SaleSetList(string code)
         {
-            var list = procbll.ProcGetItemSaleSetInfo(code);
+            var list = Proc.ProcGetItemSaleSetInfo(code);
             return Json(ResultInfo.Success(list));
         }
 
         [Description("查看产品详情")]
         public JsonResult ProductTree(string code)
         {
-            var prodTree = procbll.ProcGetItemTree(code);
+            var prodTree = Proc.ProcGetItemTree(code);
             var dtoModel = Mapper.Map<List<ProcItemTreeView>>(prodTree);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -308,7 +273,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = procbll.ProcGetItemList(code);
+            var itemlist = Proc.ProcProductList(code);
             var dtoModel = Mapper.Map<List<ProcItemView>>(itemlist);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -320,7 +285,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = procbll.ProcGetProcessItemList(code);
+            var itemlist = Proc.ProcGetProcessItemList(code);
             var dtoModel = Mapper.Map<List<ProcProcessItemView>>(itemlist);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -332,7 +297,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = procbll.ProcGetItemProcess(code);
+            var itemlist = Proc.ProcGetItemProcess(code);
             var dtoModel = Mapper.Map<List<ProcItemProcessView>>(itemlist);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -344,7 +309,8 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var prod = prodbll.Get(p => p.CN_CODE == code);
+            
+            var prod = db.AppProducts.Single(p => p.CN_CODE == code);
             var dtoModel = Mapper.Map<IntegrityCheckView>(prod);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -360,7 +326,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = procbll.ProcGetItemCateList(code, catename);
+            var itemlist = Proc.ProcGetItemCateList(code, catename);
             var dtoModel = Mapper.Map<List<ProcCateItemView>>(itemlist);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -372,21 +338,23 @@ namespace MBOM.Controllers
             List<ProcItemSetInfo> editList,
             IEnumerable<int> removeList)
         {
+            
             if(addList != null)
             {
                 var dest2Add = Mapper.Map<List<AppItemHLink>>(addList);
-                itemhlbll.AddRange(dest2Add);
+                db.AppItemHLinks.AddRange(dest2Add);
             }
             if(editList != null)
             {
                 var dest2Edit = Mapper.Map<List<AppItemHLink>>(editList);
-                itemhlbll.Modify(dest2Edit, "CN_F_QUANTITY", "CN_SHIPPINGADDR");
+                Modify(dest2Edit, "CN_F_QUANTITY", "CN_SHIPPINGADDR");
             }
             if(removeList != null)
             {
-                procbll.SetItemDisabled(removeList);
+                var removestr = string.Join(",", removeList);
+                Proc.SetItemDisabled(removeList);
             }
-            procbll.SetProductSaleSet(code);
+            Proc.SetProductSaleSet(code);
             itemhlbll.SaveChanges();
             return Json(ResultInfo.Success());
         }
@@ -401,7 +369,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcSetOptionalItems(itemids, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcSetOptionalItems(itemids, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -432,7 +400,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.OptionalItemMapAdd(itemid, itemids, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.OptionalItemMapAdd(itemid, itemids, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -451,7 +419,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.OptionalItemMapRemove(hlinkids));
+                rt = ResultInfo.Parse(Proc.OptionalItemMapRemove(hlinkids));
             }
             catch (SqlException ex)
             {
@@ -493,7 +461,14 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = itembll.GetParentList(itemid);
+            
+            var itemlist = db.Database.SqlQuery<AppItem>(@"
+                SELECT PITEM.*
+                FROM TN_80_APP_0025_BOM_HLINK AS BOMH
+                INNER JOIN TN_80_APP_0000_ITEM AS ITEM ON ITEM.CN_ID = BOMH.CN_COMPONENT_OBJECT_ID AND ITEM.CN_ID = @p0
+                INNER JOIN TN_80_APP_0025_BOM AS BOM ON BOM.CN_ID = BOMH.CN_BOM_ID
+                INNER JOIN TN_80_APP_0000_ITEM AS PITEM ON PITEM.CN_CODE = BOM.CN_CODE
+                WHERE (BOMH.CN_STATUS_MBOM = 'Y' OR CN_STATUS_MBOM = '')", itemid);
             var dtoModel = Mapper.Map<List<ProcProcessItemView>>(itemlist);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -508,7 +483,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcItemTypeTrans(itemid, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemTypeTrans(itemid, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {

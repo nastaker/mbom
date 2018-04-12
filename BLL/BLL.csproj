@@ -61,8 +61,6 @@
   <ItemGroup>
     <Compile Include="CommonBLL.cs" />
     <Compile Include="BaseBLL.cs" />
-    <Compile Include="DictBLL.cs" />
-    <Compile Include="ViewBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SysUserRoleBLL.cs" />
     <Compile Include="SysRoleBLL.cs" />

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BLL;
-using DAL;
+using Repository;
 using MBOM.Filters;
 using MBOM.Models;
 using Microsoft.Practices.Unity;

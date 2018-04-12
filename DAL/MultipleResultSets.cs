@@ -7,7 +7,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace DAL
+namespace Repository
 {
     public static class MultipleResultSets
     {

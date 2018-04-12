@@ -1,9 +1,9 @@
-﻿using DAL.Models;
+﻿using Repository;
 using System.Collections.Generic;
 
 namespace BLL
 {
-    public class AppItemBLL : BaseBLL<AppItem>
+    public class AppItemBLL 
     {
         public List<AppItem> GetParentList(int itemid)
         {
@@ -16,8 +16,5 @@ INNER JOIN TN_80_APP_0000_ITEM AS PITEM ON PITEM.CN_CODE = BOM.CN_CODE
 WHERE (BOMH.CN_STATUS_MBOM = 'Y' OR CN_STATUS_MBOM = '')
             ", itemid);
         }
-    }
-    public class AppItemHLinkBLL : BaseBLL<AppItemHLink>
-    {
     }
 }

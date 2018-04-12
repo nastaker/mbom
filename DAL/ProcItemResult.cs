@@ -1,6 +1,6 @@
 using System;
 
-namespace DAL
+namespace Repository
 {
     public class ProcItemTree
     {

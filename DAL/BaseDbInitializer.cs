@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace DAL
+namespace Repository
 {
     class BaseDbInitializer : CreateDatabaseIfNotExists<BaseDbContext>
     {

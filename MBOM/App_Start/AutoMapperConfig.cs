@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using DAL;
-using DAL.Models;
+using Repository;
 using MBOM.Models;
 using Model;
 using System;
