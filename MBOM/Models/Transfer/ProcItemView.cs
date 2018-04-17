@@ -28,7 +28,6 @@ namespace MBOM.Models
         public bool? ISROOT { get; set; }
         public bool? ISLINKED { get; set; }
         public string MBOMTYPE { get; set; }
-        public string KL { get; set; }
     }
     public class ProcItemView
     {

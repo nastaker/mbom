@@ -13,10 +13,8 @@ namespace DAL
 
     public partial class PROCDAL : BaseDAL<object>
     {
-        const string PROC_SET_ITEMHL_DISABLED = "PROC_SETITEMDISABLED @ids";
         const string PROC_GET_ITEM_TREE = "PROC_GET_ITEM_TREE @code";
         const string PROC_GET_ITEM_SALESETINFO = "PROC_GET_ITEM_SETINFO @code";
-        const string PROC_SET_PRODUCT_SALESET = "PROC_SET_PRODUCT_SALESET @code";
         const string PROC_GET_ITEM_LIST = "PROC_GET_ITEM_LIST @code";
         const string PROC_GET_PROCESS_ITEM_LIST = "PROC_GET_PROCESS_ITEM @code";
         const string PROC_GET_ITEM_PROCESS = "PROC_GET_ITEM_PROCESS @code";
@@ -26,7 +24,7 @@ namespace DAL
         const string PROC_GET_MBOM_LIST = "PROC_GET_MBOM_MAINTENANCETREE @code";
         const string PROC_DISCRETE_LIST_GET = "PROC_GET_ITEM_VIRTUAL @code";
 
-        const string PROC_VIRTUAL_ITEM_SET = "PROC_SET_ITEM_VIRTUAL @bomid,@itemid,@userid,@name,@login";
+        const string PROC_VIRTUAL_ITEM_SET = "PROC_SET_ITEM_VIRTUAL @bomid,@itemid,@show,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_DROP = "PROC_DROP_ITEM_VIRTUAL @itemid";
         const string PROC_VIRTUAL_ITEM_LINK = "PROC_LINK_VIRTUAL_ITEM @parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @itemid,@link";
@@ -53,6 +51,8 @@ namespace DAL
         const string PROC_DISABLE_BOMHLINK = "PROC_DISABLE_BOMHLINK @hlinkid,@userid,@name,@login";
         const string PROC_APPLY_BOM_CHANGE = "PROC_APPLY_BOMHLINK @hlinkid,@bywhat,@userid,@name,@login";
         const string PROC_ITEM_TYPE_TRANS = "PROC_ITEM_TYPE_TRANS @itemid,@userid,@name,@login";
+        const string PROC_ITEM_SET_TYPE = "PROC_ITEM_SET_TYPE @itemid,@typeid,@userid,@name,@login";
+        const string PROC_SET_SALELIST = "PROC_SET_SALELIST @code,@str,@userid,@name,@login";
 
         public List<ProcItemTree> ProcGetItemTree(string code)
         {
@@ -160,7 +160,35 @@ namespace DAL
             return result;
         }
 
-        public ProcReturnMsg ProcItemTypeTrans(int itemid, UserInfo userinfo)
+        public ProcReturnMsg ProcSetSaleList(string code, string str, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@code", code),
+                new SqlParameter("@str", str),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = _context.Database.SqlQuery<ProcReturnMsg>(PROC_SET_SALELIST, param).SingleOrDefault();
+            return result;
+        }
+
+        public ProcReturnMsg ProcItemSetType(int itemid, int typeid, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@itemid", itemid),
+                new SqlParameter("@typeid", typeid),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = _context.Database.SqlQuery<ProcReturnMsg>(PROC_ITEM_SET_TYPE, param).SingleOrDefault();
+            return result;
+        }
+
+        public ProcReturnMsg ProcItemTypeSwtich(int itemid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
@@ -338,24 +366,6 @@ namespace DAL
             return result;
         }
 
-        public int ProcSetItemHLDisabled(string removeStr)
-        {
-            SqlParameter[] param =
-            {
-                new SqlParameter("@ids", removeStr)
-            };
-            return ExecuteSqlCommand(PROC_SET_ITEMHL_DISABLED, param);
-        }
-
-        public int ProcProductSaleSet(string code)
-        {
-            SqlParameter[] param =
-            {
-                new SqlParameter("@code", code)
-            };
-            return ExecuteSqlCommand(PROC_SET_PRODUCT_SALESET, param);
-        }
-
         //MBOM
         //MBOM维护功能进入检查
         public ProcReturnMsg ProcMbomMaintenance(string code, UserInfo userinfo)
@@ -417,12 +427,13 @@ namespace DAL
         }
 
         #region 虚件操作
-        public ProcReturnMsg ProcVirtualItemSet(int bomid, int itemid, UserInfo userinfo)
+        public ProcReturnMsg ProcVirtualItemSet(int bomid, int itemid, int show, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@bomid", bomid),
                 new SqlParameter("@itemid", itemid),
+                new SqlParameter("@show", show),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)

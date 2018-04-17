@@ -54,4 +54,8 @@ namespace MBOM
     public class ViewItemByTypeBLL : BaseBLL<ViewItemByType>
     {
     }
+
+    public class ViewItemWithTypeBLL : BaseBLL<ViewItemWithType>
+    {
+    }
 }

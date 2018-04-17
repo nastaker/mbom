@@ -47,19 +47,17 @@ var treegridOption = {
     height: "100%",
     border: false,
     rownumbers: true,
-    cascadeCheck: false,
     lines: true,
+    checkbox: true,
+    onlyLeafCheck: true,
     idField: "ID",
     treeField: "ITEM_CODE",
     toolbar: '#toolbar',
-    checkbox: function (row) {
-        if (row["IS_ASSEMBLY"]) {
-            return false;
-        }
-        return true;
-    },
     rowStyler: function (row) {
         switch (row["MBOMTYPE"]) {
+            case "VP":
+                return { class: "parent-virtual" };
+                break;
             case "V":
                 return { class: "main-virtual" };
                 break;
@@ -81,8 +79,7 @@ var treegridOption = {
                     return  "借用";
                 }
             }
-        },
-        { field: 'KL', title: lang.mbom.kl, width: "60" }
+        }
     ]],
     onSelect: function (row) {
         if (row == null) { return; }
@@ -597,7 +594,47 @@ function virtualItemSet() {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_SET, {
                 bomid: item["BOM_ID"],
-                itemid: item["ITEMID"]
+                itemid: item["ITEMID"],
+                show: 0
+            }, function (result) {
+                if (result.msg) {
+                    InfoWin(result.msg);
+                }
+                if (result.success) {
+                    reloadAllTables(true);
+                }
+            });
+        }
+    });
+}
+//设为虚件，且引用时显示在列表中
+function virtualItemSetShow() {
+    //将当前选中项视为选中的
+    var item = tg.treegrid("getSelected");
+    if (!item) {
+        AlertWin(lang.mbom.notSelect);
+        return false;
+    }
+    if (item["MBOMTYPE"]) {
+        AlertWin(lang.mbom.notSelectHaveType);
+        return false;
+    }
+    if (!item["ITEMID"] || !item["BOM_ID"]) {
+        AlertWin(lang.mbom.noSelectRoot);
+        return false;
+    }
+    if (item.children.length == 0) {
+        AlertWin(lang.mbom.haveToSelectParent);
+        return false;
+    }
+    var itemcode = $.trim(item["ITEM_CODE"]);
+    $.messager.confirm("提示", "您将设置“&lt;" + itemcode + "&gt;”为虚件，请您确认！", function (r) {
+        if (r) {
+            //选中有效，传入bomid和itemid
+            postData(URL_VIRTUAL_ITEM_SET, {
+                bomid: item["BOM_ID"],
+                itemid: item["ITEMID"],
+                show: 1
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -746,6 +783,10 @@ function compositeItemSet() {
         AlertWin(lang.mbom.notSelect);
         return;
     }
+    if (!item["BOM_ID"]) {
+        //选择的是根节点，使用普通合件策略，获取所有一级件
+        items = item.children;
+    }
     if (items.length > 0) {
         itemcode = "";
         for (var i in items) {
@@ -770,10 +811,6 @@ function compositeItemSet() {
         bomid = item["BOM_ID"];
         itemids = item["ITEMID"];
         link = item["PARENT_LINK"];
-        if (!item["BOM_ID"]) {
-            AlertWin(lang.mbom.noSelectRoot);
-            return;
-        }
         if (item["MBOMTYPE"]) {
             AlertWin(lang.mbom.notSelectHaveType);
             return false;
@@ -1181,6 +1218,7 @@ function buildTree(options) {
             //}
             switch (item["MBOMTYPE"]) {
                 case "V":
+                case "VP":
                 case "VC":
                     item.iconCls = "icon-virtual";
                     break;

@@ -1,10 +1,33 @@
 ﻿var URL_PAGELIST = "/Item/SearchByTypePageList"
-var URL_CONFIRM = "/Item/ItemTypeTrans"
+var URL_PAGELISTALL = "/Item/WithTypePageList"
+var URL_CONFIRM = "/Item/TypeSwitch"
+var URL_ITEMSETTYPE = "/Item/SetType"
 var dg = $("#dg");
 var dlg = $("#dlg");
+var cboType = $("#cboType");
 var queryParams = {
     typenames: ["采购件", "自制件"]
 };
+var defaultColumns = [[
+    { field: 'code', title: lang.item.code, width: 120 },
+    { field: 'itemcode', title: lang.item.itemcode, width: 120 },
+    { field: 'name', title: lang.item.name, width: 150 },
+    { field: 'xh', title: lang.item.xh, align: "center", width: 120 },
+    { field: 'gg', title: lang.item.gg, align: "center", width: 120 },
+    { field: 'weight', title: lang.item.weight, align: "center", width: 60 },
+    { field: 'unit', title: lang.item.unit, align: "center", width: 40 },
+    { field: 'typename', title: lang.item.type, align: "center", width: 80 }
+]];
+var allColumns = [[
+    { field: 'code', title: lang.item.code, width: 120 },
+    { field: 'itemcode', title: lang.item.itemcode, width: 120 },
+    { field: 'name', title: lang.item.name, width: 150 },
+    { field: 'xh', title: lang.item.xh, align: "center", width: 120 },
+    { field: 'gg', title: lang.item.gg, align: "center", width: 120 },
+    { field: 'weight', title: lang.item.weight, align: "center", width: 60 },
+    { field: 'unit', title: lang.item.unit, align: "center", width: 40 },
+    { field: 'typenames', title: lang.item.type, align: "center", width: 130 }
+]];
 $(function () {
     dg.datagrid({
         url: URL_PAGELIST,
@@ -17,32 +40,43 @@ $(function () {
         idField: "id",
         toolbar: '#toolbar',
         queryParams: queryParams,
-        columns: [[
-            { field: 'code', title: lang.item.code, width: 120 },
-            { field: 'itemcode', title: lang.item.itemcode, width: 120 },
-            { field: 'name', title: lang.item.name, width: 150 },
-            { field: 'xh', title: lang.item.xh, align: "center", width: 80 },
-            { field: 'gg', title: lang.item.gg, align: "center", width: 80 },
-            { field: 'weight', title: lang.item.weight, align: "center", width: 60 },
-            { field: 'unit', title: lang.item.unit, align: "center", width: 40 },
-            { field: 'typename', title: lang.item.type, align: "center", width: 80 }
-        ]],
+        columns: defaultColumns,
         loadFilter: loadFilter
     });
 
     dlg.dialog({
         title: '物料分类标识设置',
         closed: true,
-        width: 800,
-        height: 500,
+        width: 300,
+        height: 200,
         modal: true,
         footer: '#dlgFooter'
+    })
+
+    cboType.combobox({
+        editable: false,
+        panelHeight: "auto"
     })
 });
 
 function query() {
     var data = $("#queryFrm").serializeJSON();
-    dg.datagrid("load", $.extend({}, queryParams, data));
+    dg.datagrid("clearSelections");
+    dg.datagrid({
+        url: URL_PAGELIST,
+        columns: defaultColumns,
+        queryParams: $.extend({}, queryParams, data)
+    });
+}
+
+function queryAll() {
+    var data = $("#queryFrm").serializeJSON();
+    dg.datagrid("clearSelections");
+    dg.datagrid({
+        url: URL_PAGELISTALL,
+        columns: allColumns,
+        queryParams: $.extend({}, queryParams, data)
+    });
 }
 
 function setItemType() {
@@ -52,37 +86,38 @@ function setItemType() {
         return false;
     }
     var dist = "";
-    if ($.trim(item["typename"]) == "采购件") {
-        dist = "自制件";
-    }
-    if ($.trim(item["typename"]) == "自制件") {
-        dist = "采购件";
-    }
-    $.messager.confirm('提示', '是否将物料【'+item["itemcode"]+'】的类型修改为【'+dist+'】？', function (r) {
-        if (r) {
-            postData(URL_CONFIRM, {
-                itemid: item["id"]
-            }, function (result) {
-                if (result.success) {
-                    dg.datagrid("reload");
-                }
-                if (result.msg) {
-                    InfoWin(result.msg);
-                }
-            })
+    var typename = $.trim(item["typename"]);
+    var typenames = $.trim(item["typenames"]);
+    if (typename) {
+        if (typename == "采购件") {
+            dist = "自制件";
         }
-    });
+        if (typename == "自制件") {
+            dist = "采购件";
+        }
+        $.messager.confirm('提示', '是否将物料【' + item["itemcode"] + '】的类型修改为【' + dist + '】？', function (r) {
+            if (r) {
+                postData(URL_CONFIRM, {
+                    itemid: item["id"]
+                }, function (result) {
+                    if (result.success) {
+                        dg.datagrid("reload");
+                    }
+                    if (result.msg) {
+                        InfoWin(result.msg);
+                    }
+                })
+            }
+        });
+    } else {
+        openDialog();
+    }
 }
-/// ---------------
-/// 下方代码暂时不用
-/// ---------------
 function openDialog() {
     //打开设置选装件的窗口
     dlg.dialog('open');
     dlg.dialog('center');
     $("#dlgQueryFrm").form("clear");
-    dg.datagrid("clearSelections");
-    dg.datagrid("reload");
 }
 
 function confirm() {
@@ -90,18 +125,18 @@ function confirm() {
     //先获取选中的物料
     var item = dg.datagrid("getSelected");
     //判断是否选中了物料
-    if (item.length == 0) {
+    if (!item) {
         //未选中物料时弹出警告，程序停止执行
         AlertWin(lang.mbom.notSelect);
         return false;
     }
     //获取选中物料的ID
-    var ids = [];
-    for (var i in item) {
-        var item = item[i];
-        ids.push(item["id"]);
-    }
-    postData(URL_SETOPTIONALitem, { itemids: ids.toString() }, function (result) {
+    var id = item["id"];
+    var typeid = $("#cboType").combobox("getValue");
+    postData(URL_ITEMSETTYPE, {
+        itemid: id,
+        typeid: typeid
+    }, function (result) {
         if (result.success) {
             //刷新表格 
             dg.datagrid("reload");

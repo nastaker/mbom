@@ -47,7 +47,6 @@ $(function () {
             editor: {
                 type: 'combobox',
                 options: {
-                    panelHeight: 'auto',
                     editable: false,
                     valueField: 'CN_NAME',
                     textField: 'CN_NAME',
@@ -109,9 +108,6 @@ $(function () {
 
 
 var editIndex = undefined;
-var removeList = [];
-var editList = [];
-
 function validateSaleSet(dg) {
     endEditing(dg);
     var items = dg.datagrid('getChanges');
@@ -180,11 +176,7 @@ function moveItemsFromDatagrid2Datagrid(dgFrom, dgTo, callback) {
 function btnDgItemsSetSaleItems() {
     var dgItems = $("#dgItems");
     var dgSaleItems = $("#dgSaleItems");
-    moveItemsFromDatagrid2Datagrid(dgItems, dgSaleItems, function (item) {
-        if (item.ITEM_HLINK_ID) {
-            removeByValue(removeList, item.ITEM_HLINK_ID);
-        }
-    });
+    moveItemsFromDatagrid2Datagrid(dgItems, dgSaleItems);
 }
 
 function btnDgSaleItemsCancelSelections() {
@@ -195,12 +187,7 @@ function btnDgSaleItemsCancelSelections() {
 function btnDgSaleItemsSetItems() {
     var dgItems = $("#dgItems");
     var dgSaleItems = $("#dgSaleItems");
-    moveItemsFromDatagrid2Datagrid(dgSaleItems, dgItems, function (item) {
-        editIndex = undefined;
-        if (item.ITEM_HLINK_ID) {
-            removeList.push(item.ITEM_HLINK_ID);
-        }
-    });
+    moveItemsFromDatagrid2Datagrid(dgSaleItems, dgItems);
 }
 
 function btnDgSaleItemsEndEditing() {
@@ -213,8 +200,6 @@ function btnRejectChanges() {
     var dgSaleItems = $("#dgSaleItems");
     dgSaleItems.datagrid('rejectChanges');
     dgItems.datagrid('rejectChanges');
-    editList = [];
-    removeList = [];
 }
 
 function btnSaveChanges() {
@@ -224,30 +209,20 @@ function btnSaveChanges() {
         AlertWin(lang.saleSet.notValid);
         return false;
     }
-    //可能在变更列表中会存在被删除的，此时不加入到editList中
-    var items = dgSaleItems.datagrid('getChanges');
+    var items = [];
+    var inserted = dgSaleItems.datagrid('getChanges', 'inserted');
+    var updated = dgSaleItems.datagrid('getChanges', 'updated');
+    var deleted = dgSaleItems.datagrid('getChanges', 'deleted');
+    pushInItems(items, inserted, "C");
+    pushInItems(items, updated, "U");
+    pushInItems(items, deleted, "D");
     if (items.length == 0) {
         AlertWin(lang.saleSet.noChanges);
         return false;
     }
-    for (var i = items.length - 1; i >= 0; i--) {
-        var item = items[i];
-        //被变更的有itemhlid且不存在于removeList中才被添加到editList，并且从addList中删除
-        if (item.ITEM_HLINK_ID) {
-            if (!exists(removeList, item.ITEM_HLINK_ID)) {
-                editList.push(item);
-            }
-            remove(items, i);
-        }
-    }
-
     postData(URL_SAVESALESETLIST, $.extend({}, param, {
-        addList: items,
-        editList: editList,
-        removeList: removeList
+        list: items
     }), function (result) {
-        editList = [];
-        removeList = [];
         if (result.success) {
             dgItems.datagrid('acceptChanges');
             dgSaleItems.datagrid('acceptChanges');
@@ -256,4 +231,16 @@ function btnSaveChanges() {
             InfoWin(result.msg != null ? result.msg : lang.saleSet.saleSetFailed);
         }
     });
+}
+
+function pushInItems(list, inlist, type) {
+    for (var i in inlist) {
+        var item = inlist[i];
+        list.push({
+            itemid: item["ITEMID"],
+            f_quantity: item["F_QUANTITY"],
+            shippingaddr: item["SHIPPINGADDR"],
+            type: type
+        });
+    }
 }

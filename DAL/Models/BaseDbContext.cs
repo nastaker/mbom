@@ -61,6 +61,8 @@ namespace DAL
         public virtual DbSet<ViewPbomChangeItemAll> ViewPbomChangeItemsAll { get; set; }
         public virtual DbSet<ViewItemChangeDetail> ViewItemChangeDetails { get; set; }
         public virtual DbSet<ViewCreatePublishDetail> ViewCreatePublishDetails { get; set; }
-        public virtual DbSet<ViewItemByType> ViewItemsByType { get; set; }
+        public virtual DbSet<ViewItemByType> ViewItemsByTypes { get; set; }
+        public virtual DbSet<ViewItemWithType> ViewItemWithTypes { get; set; }
+        
     }
 }

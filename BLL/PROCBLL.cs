@@ -1,6 +1,7 @@
 ﻿using DAL;
 using DAL.Models;
 using Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -60,24 +61,9 @@ namespace BLL
             return dal.ProcProductTransferInitiate(code);
         }
 
-        public int SetItemDisabled(IEnumerable<int> removeList)
-        {
-            string removestr = null;
-            if(removeList != null)
-            {
-                removestr = string.Join(",", removeList);
-            }
-            return dal.ProcSetItemHLDisabled(removestr);
-        }
-
         public List<IEnumerable> ProcMaterialBillboards(string code)
         {
             return dal.ProcMaterialBillboards(code);
-        }
-
-        public int SetProductSaleSet(string code)
-        {
-            return dal.ProcProductSaleSet(code);
         }
         //MBOM维护进入检查
         public ProcReturnMsg ProcMbomMaintenance(string code, UserInfo userinfo)
@@ -102,9 +88,9 @@ namespace BLL
             return dal.ProcDiscreteList(code);
         }
         //MBOM虚件设置
-        public ProcReturnMsg ProcVirtualItemSet(int bomid, int itemid, UserInfo userinfo)
+        public ProcReturnMsg ProcVirtualItemSet(int bomid, int itemid, int show, UserInfo userinfo)
         {
-            return dal.ProcVirtualItemSet(bomid, itemid, userinfo);
+            return dal.ProcVirtualItemSet(bomid, itemid, show, userinfo);
         }
         //MBOM取消虚件
         public ProcReturnMsg ProcVirtualItemDrop(int itemid)
@@ -212,9 +198,19 @@ namespace BLL
             return dal.ProcApplyBomChange(hlinkid, bywhat, userInfo);
         }
 
-        public ProcReturnMsg ProcItemTypeTrans(int itemid, UserInfo userInfo)
+        public ProcReturnMsg ProcItemTypeSwitch(int itemid, UserInfo userInfo)
         {
-            return dal.ProcItemTypeTrans(itemid, userInfo);
+            return dal.ProcItemTypeSwtich(itemid, userInfo);
+        }
+
+        public ProcReturnMsg ProcItemSetType(int itemid, int typeid, UserInfo userInfo)
+        {
+            return dal.ProcItemSetType(itemid, typeid, userInfo);
+        }
+
+        public ProcReturnMsg ProcSetSaleList(string code, string str, UserInfo userInfo)
+        {
+            return dal.ProcSetSaleList(code, str, userInfo);
         }
     }
 }

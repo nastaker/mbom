@@ -21,9 +21,14 @@
 .bgluotianyi{
     background-color: #66ccff;
 }
-.main-virtual{
-    color:#f00;
-    font-weight:bold;
+.parent-virtual {
+    color: #f00;
+    font-weight: bold;
+    background-color: #cfcfcf;
+}
+.main-virtual {
+    color: #f00;
+    font-weight: bold;
 }
 .main-combine{
     color:#6045f4;
