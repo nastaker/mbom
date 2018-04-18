@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using BLL;
 using Repository;
 using Localization;
 using MBOM.Filters;
 using MBOM.Models;
-using Microsoft.Practices.Unity;
 using Model;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,39 +15,12 @@ namespace MBOM.Controllers
     [UserAuth]
     public class MBOMController : Controller
     {
-        [Dependency]
-        public AppBomBLL bombll { get; set; }
-        [Dependency]
-        public ViewMaintenanceBLL viewbll { get; set; }
-        [Dependency]
-        public ViewProjectProductPbomBLL viewppbll { get; set; }
-        [Dependency]
-        public ViewMaterialBillboardsBLL viewmbll { get; set; }
-        [Dependency]
-        public ViewProductBillboardsBLL viewpbll { get; set; }
-        [Dependency]
-        public ViewItemWithProcessBLL viewiwpbll { get; set; }
-        [Dependency]
-        public ViewPbomChangeProductBLL viewpcpbll { get; set; }
-        [Dependency]
-        public ViewPbomChangeItemBLL viewpcibll { get; set; }
-        [Dependency]
-        public ViewPbomChangeItemAllBLL viewpciabll { get; set; }
-        [Dependency]
-        public ViewItemChangeDetailBLL viewicdbll { get; set; }
-        [Dependency]
-        public ViewCreatePublishDetailBLL viewcpdbll { get; set; }
-        [Dependency]
-        public AppPbomVerBLL pbomverbll { get; set; }
-        [Dependency]
-        public AppMbomVerBLL mbomverbll { get; set; }
-        [Dependency]
-        public UserProductLibraryLinkBLL upllbll { get; set; }
-        [Dependency]
-        public UserProductLibraryBLL uplbll { get; set; }
-        [Dependency]
-        public PROCBLL procbll { get; set; }
+        private BaseDbContext db;
 
+        public MBOMController(BaseDbContext db)
+        {
+            this.db = db;
+        }
         // MBOM 维护数据列表页面
         [Description("查看MBOM 维护数据列表页面")]
         public ActionResult Index()
@@ -83,7 +54,7 @@ namespace MBOM.Controllers
         {
             try
             {
-                var prod = procbll.ProcMbomIntegrityCheck(code);
+                var prod = Proc.ProcMbomIntegrityCheck(db, code);
                 var dtoModel = Mapper.Map<IntegrityCheckView>(prod);
                 return View(ResultInfo.Success(dtoModel));
             }
@@ -122,7 +93,7 @@ namespace MBOM.Controllers
         [Description("产品基本详情页面")]
         public ActionResult BaseInfoIndex(string code)
         {
-            var viewModel = viewppbll.Get(m => m.CN_PRODUCT_CODE == code.Trim());
+            var viewModel = db.ViewProjectProductPboms.SingleOrDefault(m => m.CN_PRODUCT_CODE == code.Trim());
             if (viewModel == null)
             {
                 return HttpNotFound();
@@ -194,7 +165,7 @@ namespace MBOM.Controllers
             {
                 return HttpNotFound();
             }
-            var list = procbll.ProcGetBomDiff(bomid);
+            var list = Proc.ProcGetBomDiff(db, bomid);
             var dtoModels = Mapper.Map<List<BomDiffView>>(list);
             return View(dtoModels);
         }
@@ -232,7 +203,7 @@ namespace MBOM.Controllers
         public JsonResult UserProductLibraryList()
         {
             var userinfo = LoginUserInfo.GetLoginUser();
-            List<UserProductLibrary> list = uplbll.GetAll();
+            List<UserProductLibrary> list = db.UserProductLibraries.ToList();
             if(list.Count == 0)
             {
                 list.Add(new UserProductLibrary
@@ -245,8 +216,8 @@ namespace MBOM.Controllers
                     CreateName = userinfo.Name,
                     Desc = "系统创建节点"
                 });
-                list = uplbll.AddRange(list).ToList();
-                uplbll.SaveChanges();
+                list = db.UserProductLibraries.AddRange(list).ToList();
+                db.SaveChanges();
             }
             var dtoList = Mapper.Map<List<UserProductLibraryView>>(list);
             return Json(ResultInfo.Success(dtoList));
@@ -260,7 +231,7 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             //判断是否重名
-            var list = uplbll.GetList(where => where.ParentId == view.parentid && where.Name.Trim() == view.name.Trim());
+            var list = db.UserProductLibraries.Where(where => where.ParentId == view.parentid && where.Name.Trim() == view.name.Trim()).ToList();
             if(list.Count > 0)
             {
                 return Json(ResultInfo.Fail("之前已经创建过新节点，请先编辑新节点名称"));
@@ -269,8 +240,8 @@ namespace MBOM.Controllers
             model.CreateBy = userinfo.UserId;
             model.CreateLogin = userinfo.LoginName;
             model.CreateName = userinfo.Name;
-            model = uplbll.Add(model);
-            uplbll.SaveChanges();
+            model = db.UserProductLibraries.Add(model);
+            db.SaveChanges();
             var rt = Mapper.Map<UserProductLibraryView>(model);
             return Json(ResultInfo.Success(rt));
         }
@@ -282,19 +253,19 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             //判断是否有子分类
-            var list = uplbll.GetList(where => where.ParentId == view.id);
+            var list = db.UserProductLibraries.Where(where => where.ParentId == view.id).ToList();
             if(list.Count > 0)
             {
                 return Json(ResultInfo.Fail("文件夹下还有子分类，无法删除"));
             }
             //判断是否有引用
-            var list2 = upllbll.GetList(where => where.LibraryId == view.id);
+            var list2 = db.UserProductLibraryLink.Where(where => where.LibraryId == view.id).ToList();
             if(list2.Count > 0)
             {
                 return Json(ResultInfo.Fail("文件夹下有产品，无法删除"));
             }
-            uplbll.Delete(view.id);
-            uplbll.SaveChanges();
+            db.UserProductLibraries.Remove(db.UserProductLibraries.Find(view.id));
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
         [Description("重命名用户产品库分类")]
@@ -309,14 +280,15 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             //判断是否重名
-            var list = uplbll.GetList(where => where.ID != view.id && where.ParentId == view.parentid && where.Name.Trim() == view.name.Trim());
+            var list = db.UserProductLibraries.Where(where => where.ID != view.id && where.ParentId == view.parentid && where.Name.Trim() == view.name.Trim()).ToList();
             if (list.Count > 0)
             {
                 return Json(ResultInfo.Fail("同级文件夹下具有相同名称分类"));
             }
             var model = Mapper.Map<UserProductLibrary>(view);
-            uplbll.Modify(model, "Name");
-            uplbll.SaveChanges();
+            db.UserProductLibraries.Attach(model);
+            db.Entry(model).Property("Name").IsModified = true;
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
         [Description("添加用户产品库分类下产品")]
@@ -333,7 +305,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Success(ResultInfo.Parse(procbll.ProcUserProductLibraryLinkAdd(libid, ids, LoginUserInfo.GetUserInfo())));
+                rt = ResultInfo.Success(ResultInfo.Parse(Proc.ProcUserProductLibraryLinkAdd(db, libid, ids, LoginUserInfo.GetUserInfo())));
             }
             catch (SqlException ex)
             {
@@ -348,7 +320,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var query = upllbll.GetQueryable(w => w.LibraryId == id);
+            var query = db.UserProductLibraryLink.Where(w => w.LibraryId == id);
             var data = query.OrderBy(d => d.ID).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = data, total = count }));
@@ -360,8 +332,8 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            upllbll.Delete(where => ids.Contains(where.ID));
-            upllbll.SaveChanges();
+            db.UserProductLibraryLink.RemoveRange(db.UserProductLibraryLink.Where(where => ids.Contains(where.ID)));
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
 
@@ -369,7 +341,7 @@ namespace MBOM.Controllers
         [Description("MBOM 维护进入检查")]
         public JsonResult Maintenance(string code)
         {
-            var procMsg = procbll.ProcMbomMaintenance(code, LoginUserInfo.GetUserInfo());
+            var procMsg = Proc.ProcMbomMaintenance(db, code, LoginUserInfo.GetUserInfo());
             return Json(ResultInfo.Parse(procMsg.success, procMsg.msg));
         }
         //
@@ -377,15 +349,15 @@ namespace MBOM.Controllers
         [Description("产品PBOM版本列表")]
         public JsonResult ProductPbomVerList(string code)
         {
-            var query = pbomverbll.GetQueryable().Where(p => p.CN_CODE == code);
-            return Json(ResultInfo.Success(query.ToList()));
+            var list = db.AppPbomVers.Where(p => p.CN_CODE == code).ToList();
+            return Json(ResultInfo.Success(list));
         }
         [MaintenanceActionFilter]
         [Description("产品MBOM版本列表")]
         public JsonResult ProductMbomVerList(string code)
         {
-            var query = mbomverbll.GetQueryable().Where(p => p.CN_CODE == code);
-            return Json(ResultInfo.Success(query.ToList()));
+            var list = db.AppMbomVers.Where(p => p.CN_CODE == code).ToList();
+            return Json(ResultInfo.Success(list));
         }
 
         // MBOM 数据
@@ -393,7 +365,7 @@ namespace MBOM.Controllers
         [Description("产品MBOM数据")]
         public JsonResult List(string code)
         {
-            var list = procbll.ProcGetMbomList(code);
+            var list = Proc.ProcGetMbomList(db, code);
             var dtoModel = Mapper.Map<List<ProcItemTreeView>>(list);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -406,7 +378,7 @@ namespace MBOM.Controllers
         [Description("获取离散区信息")]
         public JsonResult DiscreteList(string code)
         {
-            var list = procbll.ProcDiscreteList(code);
+            var list = Proc.ProcDiscreteList(db, code);
             var dtolist = Mapper.Map<List<ProcItemTreeView>>(list);
             return Json(ResultInfo.Success(dtolist));
         }
@@ -421,7 +393,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcItemLink(pid, plink, itemid, quantity, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemLink(db, pid, plink, itemid, quantity, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -440,7 +412,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcItemUnLink(hlinkid));
+                rt = ResultInfo.Parse(Proc.ProcItemUnLink(db, hlinkid));
             }
             catch (SqlException ex)
             {
@@ -459,7 +431,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcItemEditQuantity(hlinkid, quantity));
+                rt = ResultInfo.Parse(Proc.ProcItemEditQuantity(db, hlinkid, quantity));
             }
             catch (SqlException ex)
             {
@@ -484,7 +456,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcVirtualItemSet(bomid, itemid, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemSet(db, bomid, itemid, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -509,7 +481,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcVirtualItemDrop(itemid));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemDrop(db, itemid));
             }
             catch (SqlException ex)
             {   
@@ -535,7 +507,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcVirtualItemLink(parentitemid, itemid, parentlink, link, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemLink(db, parentitemid, itemid, parentlink, link, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -559,7 +531,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcVirtualItemUnlink(itemid, link));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, itemid, link));
             }
             catch (SqlException ex)
             {
@@ -580,7 +552,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcCompositeItemSet(bomid, link, itemids, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, bomid, link, itemids, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -598,7 +570,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcCompositeItemDrop(itemid));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemDrop(db, itemid));
             }
             catch (SqlException ex)
             {
@@ -617,7 +589,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcCompositeItemLink(parentitemid, itemid, parentlink, link, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemLink(db, parentitemid, itemid, parentlink, link, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -636,7 +608,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcCompositeItemUnlink(itemid, bomid, link));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemUnlink(db, itemid, bomid, link));
             }
             catch (SqlException ex)
             {
@@ -657,7 +629,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcEditCombineName(itemid, name));
+                rt = ResultInfo.Parse(Proc.ProcEditCombineName(db, itemid, name));
             }
             catch (SqlException ex)
             {
@@ -677,7 +649,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcMbomRelease(code, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcMbomRelease(db, code, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -696,7 +668,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcBomHlinkChildAdd(parentitemcode, itemid, hlinkid, bywhat, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcBomHlinkChildAdd(db, parentitemcode, itemid, hlinkid, bywhat, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -715,7 +687,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcBomHlinkAdd(parentitemcode, itemid, bywhat, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcBomHlinkAdd(db, parentitemcode, itemid, bywhat, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -733,7 +705,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcApplyBomChange(hlinkid, bywhat, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcApplyBomChange(db, hlinkid, bywhat, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -752,7 +724,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcDisableBomHlink(hlinkid, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcDisableBomHlink(db, hlinkid, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -771,7 +743,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(procbll.ProcItemDeductionSet(bomhids, pvhid, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemDeductionSet(db, bomhids, pvhid, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -787,13 +759,13 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var list = procbll.ProcGetBomHlinkChildren(itemcode);
+            var list = Proc.ProcGetBomHlinkChildren(db, itemcode);
             return Json(ResultInfo.Success(list));
         }
         [Description("产品BOM看板（分页）")]
         public JsonResult BomPageList(AppBomView view, int page = 1, int rows = 10)
         {
-            var query = bombll.GetQueryable();
+            var query = db.AppBoms.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.code))
             {
                 query = query.Where(obj => obj.CN_CODE.Contains(view.code));
@@ -815,7 +787,7 @@ namespace MBOM.Controllers
         [Description("MBOM 物料看板（分页）")]
         public JsonResult MaterialBillboardsPageList(MaterialView view, int page = 1, int rows = 10)
         {
-            var query = viewmbll.GetQueryable();
+            var query = db.ViewMaterialBillboardses.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.Code))
             {
                 query = query.Where(obj => obj.CN_CODE.Contains(view.Code));
@@ -857,7 +829,7 @@ namespace MBOM.Controllers
         [Description("MBOM 产品看板（分页）")]
         public JsonResult ProductBillboardsPageList(ProductView view, int page = 1, int rows = 10)
         {
-            var query = viewpbll.GetQueryable();
+            var query = db.ViewProductBillboardses.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.Code))
             {
                 query = query.Where(obj => obj.CN_CODE.Contains(view.Code));
@@ -879,7 +851,7 @@ namespace MBOM.Controllers
         [Description("MBOM 带有工序的物料看板（分页）")]
         public JsonResult ItemWithProcessPageList(ProductView view, int page = 1, int rows = 10)
         {
-            var query = viewiwpbll.GetQueryable();
+            var query = db.ViewItemWithProcesses.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.Code))
             {
                 query = query.Where(obj => obj.CN_CODE.Contains(view.Code));
@@ -900,7 +872,7 @@ namespace MBOM.Controllers
         [Description("MBOM维护数据列表（分页）")]
         public JsonResult MaintenancePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
         {
-            var query = viewbll.GetQueryable();
+            var query = db.ViewMbomMaintenances.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
             {
                 query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.PRODUCT_CODE));
@@ -918,7 +890,7 @@ namespace MBOM.Controllers
         [Description("查看PBOM变更的产品列表（分页）")]
         public JsonResult PBOMChangeProdPageList(ViewPbomChangeProduct view, int page = 1, int rows = 10)
         {
-            var query = viewpcpbll.GetQueryable();
+            var query = db.ViewPbomChangeProducts.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.CN_PRODUCT_CODE))
             {
                 query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.CN_PRODUCT_CODE));
@@ -935,7 +907,7 @@ namespace MBOM.Controllers
         [Description("查看PBOM变更的物料列表（分页）")]
         public JsonResult PBOMChangeItemPageList(ViewPbomChangeItem view, int page = 1, int rows = 10)
         {
-            var query = viewpcibll.GetQueryable();
+            var query = db.ViewPbomChangeItems.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.CN_ITEM_CODE))
             {
                 query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.CN_ITEM_CODE));
@@ -947,7 +919,7 @@ namespace MBOM.Controllers
 
         public JsonResult PBOMChangeItemAllPageList(ViewPbomChangeItemAll view, int page = 1, int rows = 10)
         {
-            var query = viewpciabll.GetQueryable();
+            var query = db.ViewPbomChangeItemsAll.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.CN_ITEM_CODE))
             {
                 query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.CN_ITEM_CODE));
@@ -960,7 +932,7 @@ namespace MBOM.Controllers
         [Description("查看产品的PBOM变更列表")]
         public JsonResult ProductChangeDetailList(string prodcode)
         {
-            var list = procbll.ProcProductChangeDetail(prodcode);
+            var list = Proc.ProcProductChangeDetail(db, prodcode);
             return Json(ResultInfo.Success(list));
         }
 
@@ -971,7 +943,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var list = viewicdbll.GetQueryable(where=> where.itemcode == itemcode);
+            var list = db.ViewItemChangeDetails.Where(where=> where.itemcode == itemcode).ToList();
             return Json(ResultInfo.Success(list));
         }
 
@@ -982,7 +954,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var query = viewcpdbll.GetQueryable(where => where.pitemcode == itemcode);
+            var query = db.ViewCreatePublishDetails.Where(where => where.pitemcode == itemcode);
             if (istoerp > -1)
             {
                 query = query.Where(where => where.istoerp == istoerp);

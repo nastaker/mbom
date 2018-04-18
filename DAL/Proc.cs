@@ -54,9 +54,8 @@ namespace Repository
         const string PROC_APPLY_BOM_CHANGE = "PROC_APPLY_BOMHLINK @hlinkid,@bywhat,@userid,@name,@login";
         const string PROC_ITEM_TYPE_TRANS = "PROC_ITEM_TYPE_TRANS @itemid,@userid,@name,@login";
 
-        public static List<ProcItemTree> ProcGetItemTree(string code)
+        public static List<ProcItemTree> ProcGetItemTree(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -65,9 +64,8 @@ namespace Repository
             return result;
         }
 
-        public static List<ProcItemSetInfo> ProcGetItemSaleSetInfo(string code)
+        public static List<ProcItemSetInfo> ProcGetItemSaleSetInfo(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -76,9 +74,8 @@ namespace Repository
             return result;
         }
 
-        public static List<ProcItem> ProcProductList(string code)
+        public static List<ProcItem> ProcProductList(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -87,9 +84,8 @@ namespace Repository
             return result;
         }
 
-        public static List<ProcProcessItem> ProcGetProcessItemList(string code)
+        public static List<ProcProcessItem> ProcGetProcessItemList(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -98,9 +94,8 @@ namespace Repository
             return result;
         }
 
-        public static List<ProcItemProcess> ProcGetItemProcess(string code)
+        public static List<ProcItemProcess> ProcGetItemProcess(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -109,9 +104,8 @@ namespace Repository
             return result;
         }
 
-        public static List<ProcBomDiff> ProcGetBomDiff(int bomid)
+        public static List<ProcBomDiff> ProcGetBomDiff(BaseDbContext db, int bomid)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@bomid", bomid)
@@ -120,9 +114,8 @@ namespace Repository
             return result;
         }
 
-        public static List<ProcCateItem> ProcGetItemCateList(string code, string catename)
+        public static List<ProcCateItem> ProcGetItemCateList(BaseDbContext db, string code, string catename)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code),
@@ -132,9 +125,8 @@ namespace Repository
             return result;
         }
 
-        public static List<ProcProductChangeDetail> ProcProductChangeDetail(string prodcode)
+        public static List<ProcProductChangeDetail> ProcProductChangeDetail(BaseDbContext db, string prodcode)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@prodcode", prodcode)
@@ -143,9 +135,8 @@ namespace Repository
             return result;
         }
         //BOM子件列表
-        public static List<AppBomHlink> ProcGetBomHlinkChildren(string itemcode)
+        public static List<AppBomHlink> ProcGetBomHlinkChildren(BaseDbContext db, string itemcode)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemcode", itemcode)
@@ -154,9 +145,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcBomHlinkAdd(string parentitemcode, int itemid, string bywhat, UserInfo userinfo)
+        public static ProcReturnMsg ProcBomHlinkAdd(BaseDbContext db, string parentitemcode, int itemid, string bywhat, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@parentitemcode", parentitemcode),
@@ -170,9 +160,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcItemTypeTrans(int itemid, UserInfo userinfo)
+        public static ProcReturnMsg ProcItemTypeTrans(BaseDbContext db, int itemid, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemid", itemid),
@@ -184,9 +173,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcApplyBomChange(int hlinkid, string bywhat, UserInfo userinfo)
+        public static ProcReturnMsg ProcApplyBomChange(BaseDbContext db, int hlinkid, string bywhat, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@hlinkid", hlinkid),
@@ -199,9 +187,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcDisableBomHlink(int hlinkid, UserInfo userinfo)
+        public static ProcReturnMsg ProcDisableBomHlink(BaseDbContext db, int hlinkid, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@hlinkid", hlinkid),
@@ -213,9 +200,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcBomHlinkChildAdd(string parentitemcode, int itemid, int hlinkid, string bywhat, UserInfo userinfo)
+        public static ProcReturnMsg ProcBomHlinkChildAdd(BaseDbContext db, string parentitemcode, int itemid, int hlinkid, string bywhat, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@parentitemcode", parentitemcode),
@@ -230,9 +216,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcMbomRelease(string code, UserInfo userinfo)
+        public static ProcReturnMsg ProcMbomRelease(BaseDbContext db, string code, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code),
@@ -244,9 +229,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg OptionalItemMapRemove(string hlinkids)
+        public static ProcReturnMsg OptionalItemMapRemove(BaseDbContext db, string hlinkids)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@hlinkids", hlinkids)
@@ -255,9 +239,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg OptionalItemMapAdd(int itemid, string itemids, UserInfo userinfo)
+        public static ProcReturnMsg OptionalItemMapAdd(BaseDbContext db, int itemid, string itemids, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemid", itemid),
@@ -270,9 +253,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcSetOptionalItems(string itemids, UserInfo userinfo)
+        public static ProcReturnMsg ProcSetOptionalItems(BaseDbContext db, string itemids, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemids", itemids),
@@ -284,9 +266,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcItemUnLink(int hlinkid, float quantity)
+        public static ProcReturnMsg ProcItemEditQuantity(BaseDbContext db, int hlinkid, float quantity)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@hlinkid", hlinkid),
@@ -296,9 +277,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcItemUnLink(int hlinkid)
+        public static ProcReturnMsg ProcItemUnLink(BaseDbContext db, int hlinkid)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@hlinkid", hlinkid)
@@ -307,9 +287,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcItemLink(int pid, string plink, int itemid, float quantity, UserInfo userinfo)
+        public static ProcReturnMsg ProcItemLink(BaseDbContext db, int pid, string plink, int itemid, float quantity, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@pid", pid),
@@ -324,9 +303,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcUserProductLibraryLinkAdd(int libid, string ids, UserInfo userinfo)
+        public static ProcReturnMsg ProcUserProductLibraryLinkAdd(BaseDbContext db, int libid, string ids, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@libid", libid),
@@ -339,9 +317,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcEditCombineName(int itemid, string name)
+        public static ProcReturnMsg ProcEditCombineName(BaseDbContext db, int itemid, string name)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemid", itemid),
@@ -351,9 +328,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcProductTransferInitiate(string code)
+        public static ProcReturnMsg ProcProductTransferInitiate(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -362,9 +338,8 @@ namespace Repository
             return result;
         }
 
-        public static int ProcSetItemHLDisabled(string removeStr)
+        public static int ProcSetItemHLDisabled(BaseDbContext db, string removeStr)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@ids", removeStr)
@@ -372,9 +347,8 @@ namespace Repository
             return db.Database.ExecuteSqlCommand(PROC_SET_ITEMHL_DISABLED, param);
         }
 
-        public static int ProcProductSaleSet(string code)
+        public static int ProcProductSaleSet(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -384,9 +358,8 @@ namespace Repository
 
         //MBOM
         //MBOM维护功能进入检查
-        public static ProcReturnMsg ProcMbomMaintenance(string code, UserInfo userinfo)
+        public static ProcReturnMsg ProcMbomMaintenance(BaseDbContext db, string code, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code),
@@ -399,9 +372,8 @@ namespace Repository
         }
 
         //MBOM完整性核查
-        public static AppProduct ProcMbomIntegrityCheck(string code)
+        public static AppProduct ProcMbomIntegrityCheck(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -410,9 +382,8 @@ namespace Repository
             return result;
         }
         //MBOM 物料看板
-        public static List<IEnumerable> ProcMaterialBillboards(string code)
+        public static List<IEnumerable> ProcMaterialBillboards(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -425,9 +396,8 @@ namespace Repository
         }
 
         //MBOM主树获取
-        public static List<ProcItemTree> ProcGetMbomList(string code)
+        public static List<ProcItemTree> ProcGetMbomList(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -436,9 +406,8 @@ namespace Repository
             return result;
         }
         //MBOM离散区获取
-        public static List<ProcItemTree> ProcDiscreteList(string code)
+        public static List<ProcItemTree> ProcDiscreteList(BaseDbContext db, string code)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
@@ -448,9 +417,8 @@ namespace Repository
         }
 
         #region 虚件操作
-        public static ProcReturnMsg ProcVirtualItemSet(int bomid, int itemid, UserInfo userinfo)
+        public static ProcReturnMsg ProcVirtualItemSet(BaseDbContext db, int bomid, int itemid, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@bomid", bomid),
@@ -463,9 +431,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcVirtualItemDrop(int itemid)
+        public static ProcReturnMsg ProcVirtualItemDrop(BaseDbContext db, int itemid)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemid", itemid)
@@ -474,9 +441,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcVirtualItemLink(int parentitemid, int itemid, string parentlink, string link, UserInfo userinfo)
+        public static ProcReturnMsg ProcVirtualItemLink(BaseDbContext db, int parentitemid, int itemid, string parentlink, string link, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@parentitemid", parentitemid),
@@ -491,9 +457,8 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcVirtualItemUnlink(int itemid, string link)
+        public static ProcReturnMsg ProcVirtualItemUnlink(BaseDbContext db, int itemid, string link)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemid", itemid),
@@ -505,9 +470,8 @@ namespace Repository
         #endregion
         #region 合件
         //设置合件
-        public static ProcReturnMsg ProcCompositeItemSet(int bomid, string link, string itemids, UserInfo userinfo)
+        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db, int bomid, string link, string itemids, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@bomid", bomid),
@@ -521,9 +485,8 @@ namespace Repository
             return result;
         }
         //删除合件
-        public static ProcReturnMsg ProcCompositeItemDrop(int itemid)
+        public static ProcReturnMsg ProcCompositeItemDrop(BaseDbContext db, int itemid)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemid", itemid)
@@ -532,9 +495,8 @@ namespace Repository
             return result;
         }
         //引用合件
-        public static ProcReturnMsg ProcCompositeItemLink(int parentitemid, int itemid, string parentlink, string link, UserInfo userinfo)
+        public static ProcReturnMsg ProcCompositeItemLink(BaseDbContext db, int parentitemid, int itemid, string parentlink, string link, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@parentitemid", parentitemid),
@@ -549,9 +511,8 @@ namespace Repository
             return result;
         }
         //删除合件引用
-        public static ProcReturnMsg ProcCompositeItemUnlink(int itemid, int bomid, string link)
+        public static ProcReturnMsg ProcCompositeItemUnlink(BaseDbContext db, int itemid, int bomid, string link)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@itemid", itemid),
@@ -562,9 +523,8 @@ namespace Repository
             return result;
         }
         #endregion
-        public static ProcReturnMsg ProcItemDeductionSet(string bomhids, int pvhid, UserInfo userinfo)
+        public static ProcReturnMsg ProcItemDeductionSet(BaseDbContext db, string bomhids, int pvhid, UserInfo userinfo)
         {
-            BaseDbContext db = new BaseDbContext();
             SqlParameter[] param =
             {
                 new SqlParameter("@bomhlinkids", bomhids),

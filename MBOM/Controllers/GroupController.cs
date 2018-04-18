@@ -1,9 +1,7 @@
-﻿using BLL;
-using Repository;
+﻿using Repository;
 using Localization;
 using MBOM.Filters;
 using MBOM.Models;
-using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,11 +13,12 @@ namespace MBOM.Controllers
     [UserAuth]
     public class GroupController : Controller
     {
-        [Dependency]
-        public AppWorkgroupBLL awgbll { get; set; }
-        [Dependency]
-        public AppWorkgroupUserBLL awgubll { get; set; }
-
+        private BaseDbContext db;
+        
+        public GroupController(BaseDbContext db)
+        {
+            this.db = db;
+        }
         //首页
         [Description("域管理页面")]
         public ActionResult Index()
@@ -30,7 +29,7 @@ namespace MBOM.Controllers
         [Description("查看域列表")]
         public JsonResult List()
         {
-            var list = awgbll.GetAll();
+            var list = db.AppWorkgroups.ToList();
             return Json(ResultInfo.Success(list));
         }
 
@@ -41,7 +40,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var list = awgubll.GetList(where=> where.CN_GROUPID == groupid);
+            var list = db.AppWorkgroupUsers.Where(where=> where.CN_GROUPID == groupid);
             return Json(ResultInfo.Success(list));
         }
 
@@ -68,16 +67,16 @@ namespace MBOM.Controllers
                     CN_CREATE_NAME = LoginUserInfo.GetUserInfo().Name
                 });
             }
-            awgubll.AddRange(users2add);
-            awgubll.SaveChanges();
+            db.AppWorkgroupUsers.AddRange(users2add);
+            db.SaveChanges();
             return Json(ResultInfo.Success("添加成功。"));
         }
 
         [Description("删除域用户")]
         public JsonResult UserDel(int[] groupuserids)
         {
-            awgubll.Delete(where => groupuserids.Contains(where.CN_ID));
-            awgubll.SaveChanges();
+            db.AppWorkgroupUsers.RemoveRange(db.AppWorkgroupUsers.Where(where => groupuserids.Contains(where.CN_ID)));
+            db.SaveChanges();
             return Json(ResultInfo.Success("删除成功。"));
         }
     }

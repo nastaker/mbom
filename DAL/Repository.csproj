@@ -7,8 +7,8 @@
     <ProjectGuid>{339AF863-7090-4D58-A009-7312CC5E8118}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DAL</RootNamespace>
-    <AssemblyName>DAL</AssemblyName>
+    <RootNamespace>Repository</RootNamespace>
+    <AssemblyName>Repository</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -68,6 +69,7 @@
     <Compile Include="AppWorkgroupUser.cs" />
     <Compile Include="BaseDbContext.cs" />
     <Compile Include="BaseDbInitializer.cs" />
+    <Compile Include="DbHelper.cs" />
     <Compile Include="DicItemUnit.cs" />
     <Compile Include="DictItemType.cs" />
     <Compile Include="DictShippingAddr.cs" />

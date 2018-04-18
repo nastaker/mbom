@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
-using BLL;
 using Repository;
 using MBOM.Filters;
 using MBOM.Models;
-using Microsoft.Practices.Unity;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MBOM.Controllers
@@ -17,18 +12,11 @@ namespace MBOM.Controllers
     [UserAuth]
     public class TransferController : Controller
     {
-        [Dependency]
-        public AppPbomVerBLL pbomverbll { get; set; }
-        [Dependency]
-        public AppProductBLL prodbll { get; set; }
-        [Dependency]
-        public PROCBLL procbll { get; set; }
-        [Dependency]
-        public AppProjectBLL projbll { get; set; }
-        [Dependency]
-        public AppProjectHLinkBLL hlinkbll { get; set; }
-        [Dependency]
-        public ViewProjectProductPbomBLL viewbll { get; set; }
+        private BaseDbContext db;
+        public TransferController(BaseDbContext db)
+        {
+            this.db = db;
+        }
         // GET: Transfer
         [Description("转批发起页面")]
         public ActionResult InitiateIndex()
@@ -51,14 +39,14 @@ namespace MBOM.Controllers
         [Description("转批发起操作")]
         public JsonResult Initiate(string code)
         {
-            var proc = procbll.ProcProductTransferInitiate(code);
+            var proc = Proc.ProcProductTransferInitiate(db, code);
             return Json(ResultInfo.Success(proc));
         }
 
         [Description("转批待发布列表（分页）")]
         public JsonResult WaitPageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
         {
-            var query = viewbll.GetQueryable();
+            var query = db.ViewProjectProductPboms.AsQueryable();
             query = query.Where(obj => obj.CN_PRODUCT_STATUS == "待发布");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
@@ -77,7 +65,7 @@ namespace MBOM.Controllers
         [Description("转批中列表（分页）")]
         public JsonResult WorkingPageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
         {
-            var query = viewbll.GetQueryable();
+            var query = db.ViewProjectProductPboms.AsQueryable();
             query = query.Where(obj => obj.CN_PRODUCT_STATUS == "转批中");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
@@ -96,7 +84,7 @@ namespace MBOM.Controllers
         [Description("已转批列表（分页）")]
         public JsonResult DonePageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
         {
-            var query = viewbll.GetQueryable();
+            var query = db.ViewProjectProductPboms.AsQueryable();
             query = query.Where(obj => obj.CN_PRODUCT_STATUS == "已转批");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {

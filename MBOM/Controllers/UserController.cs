@@ -5,20 +5,22 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using MBOM.Models;
-using BLL;
 using System.Linq;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Collections;
+using Repository;
 
 namespace MBOM.Controllers
 {
     public class UserController : Controller
     {
-        [Dependency]
-        public SysUserRoleBLL userrolebll { get; set; }
-        [Dependency]
-        public SysRoleRightBLL rolerightbll { get; set; }
+        private BaseDbContext db;
+
+        public UserController(BaseDbContext db)
+        {
+            this.db = db;
+        }
 
         public ActionResult Login()
         {
@@ -39,7 +41,7 @@ namespace MBOM.Controllers
                 string passport = ConfigurationManager.AppSettings["admin"];
                 if(model.password != null && model.password == passport)
                 {
-                    rightids = (from roleRight in rolerightbll.GetAll()
+                    rightids = (from roleRight in db.SysRoleRights.ToList()
                                 select roleRight.RightId).Distinct().ToList();
                 }
                 else
@@ -59,9 +61,9 @@ namespace MBOM.Controllers
                 userid = int.Parse(rt[1]);
                 login = model.loginname;
                 name = rt[2];
-                roleids = (from role in userrolebll.GetQueryable(ur => ur.UserId == userid)
+                roleids = (from role in db.SysUserRoles.Where(ur => ur.UserId == userid)
                            select role.RoleId).Distinct().ToList();
-                rightids = (from roleRight in rolerightbll.GetQueryable(rr => roleids.Contains(rr.RoleId))
+                rightids = (from roleRight in db.SysRoleRights.Where(rr => roleids.Contains(rr.RoleId))
                             select roleRight.RightId).Distinct().ToList();
             }
             //登录成功

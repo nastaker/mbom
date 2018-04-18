@@ -14,6 +14,12 @@ namespace MBOM.Controllers
     [UserAuth]
     public class RoleRightController : Controller
     {
+        private BaseDbContext db;
+
+        public RoleRightController(BaseDbContext db)
+        {
+            this.db = db;
+        }
         // GET: RoleRight
         [Description("角色权限页面")]
         public ActionResult Index()
@@ -40,9 +46,10 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.RoleNotExist));
             }
-            db.SysRoleRights.Remove()
+            db.SysRoleRights.RemoveRange(db.SysRoleRights.Where(w => w.RoleId == roleId));
             if (menuIds == null)
             {
+                db.SaveChanges();
                 return Json(ResultInfo.Success(Lang.EditRoleRightSuccess));
             }
             List<SysRoleRight> list = new List<SysRoleRight>();

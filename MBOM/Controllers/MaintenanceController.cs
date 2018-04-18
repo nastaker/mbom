@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using BLL;
 using MBOM.Filters;
 using MBOM.Models;
-using Microsoft.Practices.Unity;
+using Repository;
 using System.ComponentModel;
 using System.Web.Mvc;
+using System.Linq;
 
 namespace MBOM.Controllers
 {
@@ -12,14 +12,14 @@ namespace MBOM.Controllers
     [MaintenanceActionFilter]
     public class MaintenanceController : Controller
     {
-        [Dependency]
-        public ViewProjectProductPbomBLL viewbll { get; set; }
-        [Dependency]
-        public AppItemBLL itembll { get; set; }
-        [Dependency]
-        public AppProductBLL prodbll { get; set; }
-        [Dependency]
-        public PROCBLL procbll { get; set; }
+
+        private BaseDbContext db;
+
+        public MaintenanceController(BaseDbContext db)
+        {
+            this.db = db;
+        }
+
         // GET: Maintenance
         [Description("查看产品发布维护页面")]
         public ActionResult Index()
@@ -30,7 +30,7 @@ namespace MBOM.Controllers
         [Description("查看产品基本信息")]
         public ActionResult BaseInfoIndex(string code)
         {
-            var viewModel = viewbll.Get(m => m.CN_PRODUCT_CODE == code.Trim());
+            var viewModel = db.ViewProjectProductPboms.SingleOrDefault(m => m.CN_PRODUCT_CODE == code.Trim());
             if(viewModel == null)
             {
                 return HttpNotFound();
@@ -60,7 +60,7 @@ namespace MBOM.Controllers
         [Description("查看物料父级引用页面")]
         public ActionResult BOMParentIndex(string code)
         {
-            var item = itembll.Get(where => where.CN_CODE == code);
+            var item = db.AppItems.SingleOrDefault(where => where.CN_CODE == code);
             return View(item);
         }
 

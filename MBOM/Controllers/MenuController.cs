@@ -1,26 +1,26 @@
 ﻿using AutoMapper;
-using BLL;
 using MBOM.Models;
 using System.Linq;
-using Microsoft.Practices.Unity;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Localization;
 using Model;
 using System.ComponentModel;
 using MBOM.Filters;
+using Repository;
 
 namespace MBOM.Controllers
 {
     [UserAuth]
     public class MenuController : Controller
     {
-        [Dependency]
-        public SysMenuBLL bll { get; set; }
-        [Dependency]
-        public SysRightActionBLL rabll { get; set; }
-        [Dependency]
-        public SysActionBLL abll { get; set; }
+        private BaseDbContext db;
+
+        public MenuController(BaseDbContext db)
+        {
+            this.db = db;
+        }
+
 
         [Description("查看菜单管理界面")]
         public ActionResult Index()
@@ -36,14 +36,14 @@ namespace MBOM.Controllers
         [Description("获取菜单列表数据")]
         public JsonResult List()
         {
-            var menus = bll.GetQueryable(m => m.ParentId == null).OrderBy(m => m.Order).ToList();
+            var menus = db.SysMenus.Where(m => m.ParentId == null).OrderBy(m => m.Order).ToList();
             var menuviews = Mapper.Map<List<SysMenuView>>(menus);
             return Json(ResultInfo.Success(menuviews));
         }
         [Description("获取菜单树数据")]
         public JsonResult Tree()
         {
-            var menus = bll.GetQueryable(m => m.ParentId == null).OrderBy(m => m.Order).ToList();
+            var menus = db.SysMenus.Where(m => m.ParentId == null).OrderBy(m => m.Order).ToList();
             var menuviews = Mapper.Map<List<MenuView>>(menus);
             menuviews.ForEach(a => { a.children = a.children.OrderBy(m => m.order).ToList(); });
             return Json(ResultInfo.Success(menuviews));
@@ -52,7 +52,7 @@ namespace MBOM.Controllers
         [Description("获取[操作权限]列表数据")]
         public JsonResult ActionList()
         {
-            var list = abll.GetAll();
+            var list = db.SysActions.ToList();
             var dtoList = Mapper.Map<List<SysActionView>>(list);
             return Json(ResultInfo.Success(dtoList));
         }
@@ -60,7 +60,7 @@ namespace MBOM.Controllers
         [Description("获取[菜单->操作权限]列表数据")]
         public JsonResult MenuActionList(int menuid)
         {
-            var list = rabll.GetList(ra => ra.MenuId == menuid).OrderBy(a=>a.ActionId);
+            var list = db.SysRightActions.Where(ra => ra.MenuId == menuid).OrderBy(a=>a.ActionId);
             var dtoList = Mapper.Map<List<SysRightActionView>>(list);
             return Json(ResultInfo.Success(dtoList));
         }
@@ -77,16 +77,16 @@ namespace MBOM.Controllers
                     MenuId = menuid
                 });
             }
-            var result = rabll.AddRange(actions);
-            rabll.SaveChanges();
+            var result = db.SysRightActions.AddRange(actions);
+            db.SaveChanges();
             return Json(ResultInfo.Success(result));
         }
 
         [Description("删除[菜单->操作权限]数据")]
         public JsonResult RemoveAction(int[] ids)
         {
-            rabll.Delete(c=> ids.Contains(c.ID));
-            rabll.SaveChanges();
+            db.SysRightActions.RemoveRange(db.SysRightActions.Where(c => ids.Contains(c.ID)));
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
 
@@ -100,7 +100,7 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.NotLogin));
             }
             IEnumerable<int> rightIds = userInfo.RightIds;
-            var menus = bll.GetQueryable(m => rightIds.Contains(m.ID)).OrderBy(m => m.Order);
+            var menus = db.SysMenus.Where(m => rightIds.Contains(m.ID)).OrderBy(m => m.Order);
             var menuviews = Mapper.Map<List<TreeMenuView>>(menus);
             var newmenuvies = new List<TreeMenuView>();
             ConstructTree(menuviews, newmenuvies, null);
@@ -141,8 +141,8 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            bll.Add(Mapper.Map<SysMenu>(menuView));
-            bll.SaveChanges();
+            db.SysMenus.Add(Mapper.Map<SysMenu>(menuView));
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
 
@@ -157,8 +157,10 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            bll.Edit(Mapper.Map<SysMenu>(menuView));
-            bll.SaveChanges();
+            var entity = Mapper.Map<SysMenu>(menuView);
+            db.SysMenus.Attach(entity);
+            db.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
 
@@ -173,8 +175,8 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            bll.Add(Mapper.Map<SysMenu>(menuView));
-            bll.SaveChanges();
+            db.SysMenus.Add(Mapper.Map<SysMenu>(menuView));
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
 
@@ -185,8 +187,8 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            bll.Delete(id);
-            bll.SaveChanges();
+            db.SysMenus.Remove(db.SysMenus.Find(id));
+            db.SaveChanges();
             return Json(ResultInfo.Success());
         }
     }

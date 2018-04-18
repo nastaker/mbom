@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using BLL;
 using Localization;
 using MBOM.Filters;
 using MBOM.Models;
-using Microsoft.Practices.Unity;
 using Model;
+using Repository;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -15,11 +14,13 @@ namespace MBOM.Controllers
     [UserAuth]
     public class UserRoleController : Controller
     {
-        [Dependency]
-        public SysUserRoleBLL bll { get; set; }
-        [Dependency]
-        public SysMenuBLL menubll { get; set; }
-        // GET: UserRole
+        private BaseDbContext db;
+
+        public UserRoleController(BaseDbContext db)
+        {
+            this.db = db;
+        }
+
         [Description("用户角色页面")]
         public ActionResult Index()
         {
@@ -45,15 +46,18 @@ namespace MBOM.Controllers
         [Description("获取用户拥有角色")]
         public JsonResult GetUserRoles(int userid)
         {
-            var list = bll.GetList(where => where.UserId == userid);
-            var dtoModels = Mapper.Map<List<SysUserRoleView>>(list);
-            return Json(ResultInfo.Success(dtoModels));
+            using (db)
+            {
+                var list = db.SysUserRoles.Where(where => where.UserId == userid);
+                var dtoModels = Mapper.Map<List<SysUserRoleView>>(list);
+                return Json(ResultInfo.Success(dtoModels));
+            }
         }
 
         [Description("获取角色用户列表")]
         public JsonResult GetRoleUsers(int roleid)
         {
-            var list = bll.GetList(where => where.RoleId == roleid);
+            var list = db.SysUserRoles.Where(where => where.RoleId == roleid);
             var dtoModels = Mapper.Map<List<SysUserRoleView>>(list);
             return Json(ResultInfo.Success(dtoModels));
         }
@@ -62,7 +66,23 @@ namespace MBOM.Controllers
         public JsonResult Edit(SysUserRoleView[] users, int[] roleIds)
         {
             var dtoModels = Mapper.Map<SysUserRole[]>(users);
-            bll.EditUserRole(dtoModels, roleIds);
+            var userids = users.Select(us => us.UserId);
+            db.SysUserRoles.RemoveRange(db.SysUserRoles.Where(r => userids.Contains(r.UserId)));
+            List<SysUserRole> list = new List<SysUserRole>();
+            for (int i = 0; i < users.Length; i++)
+            {
+                for (int j = 0; j < roleIds.Length; j++)
+                {
+                    list.Add(new SysUserRole
+                    {
+                        UserId = users[i].UserId,
+                        Name = users[i].Name,
+                        RoleId = roleIds[j]
+                    });
+                }
+            }
+            db.SysUserRoles.AddRange(list);
+            db.SaveChanges();
             return Json(ResultInfo.Success(Lang.EditUserRoleSuccess));
         }
     }
