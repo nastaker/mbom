@@ -39,35 +39,7 @@ namespace MBOM
             CreateMap<AppProcessVerHlink, ProcItemProcessView>();
             CreateMap<AppBom, AppBomView>();
             CreateMap<ProcBomDiff, BomDiffView>();
-            
-            CreateMap<ProcItemSetInfo, AppItemHLink>()
-                .ForMember("CN_ID", opts => opts.MapFrom("ITEMID"))
-                .ForMember("CN_HLINK_ID", opts => opts.MapFrom("ITEM_HLINK_ID"))
-                .ForMember("CN_SHIPPINGADDR", opts => opts.MapFrom("SHIPPINGADDR"))
-                .AfterMap((src, dest) => {
-                    dest.CN_F_QUANTITY = (double)src.F_QUANTITY;
-                    //以下全部为默认值
-                    dest.CN_ISBORROW = false;
-                    dest.CN_NUMBER = 0;
-                    dest.CN_ORDER = 0;
-                    dest.CN_COMPONENT_CLASS_ID = 105;
-                    dest.CN_COMPONENT_OBJECT_ID = 1;
-                    dest.CN_COMPONENT_OBJECT_VER_ID = 0;
-                    dest.CN_COMPONENT_OBJECT_VERSION = "";
-                    dest.CN_S_ATTACH_DATA = "";
-                    dest.CN_ITEMSTATE_TAGGER_DATA = 0;
-                    dest.CN_B_IS_ASSEMBLY = false;
-                    dest.CN_S_FROM = "";
-                    dest.CN_ISFOLDER = false;
-                    dest.CN_CREATE_NAME = null;
-                    dest.CN_ISDELETE = false;
-                    dest.CN_SYS_STATUS = "";
-                    dest.CN_GUID = "";
-                    dest.CN_DISPLAYNAME = "销售件";
-                    dest.CN_DT_CREATE = DateTime.Now;
-                    dest.CN_DT_EFFECTIVE = DateTime.Parse("2100-1-1");
-                    dest.CN_DT_EXPIRY = DateTime.Parse("2100-1-1");
-                });
+
             RecognizePrefixes("CN_");
         }
     }

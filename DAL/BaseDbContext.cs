@@ -82,6 +82,8 @@
         public virtual DbSet<ViewItemChangeDetail> ViewItemChangeDetails { get; set; }
         public virtual DbSet<ViewCreatePublishDetail> ViewCreatePublishDetails { get; set; }
         public virtual DbSet<ViewItemByType> ViewItemsByType { get; set; }
+        public virtual DbSet<ViewItemWithType> ViewItemsWithType { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

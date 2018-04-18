@@ -8,7 +8,8 @@
 }
 @section scripts{
     <script type="text/javascript">
-        var params = { code: "@Request.Params["code"]" };    </script>
+        var params = { code: "@Request.Params["code"]" };
+    </script>
     <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
     <script src="~/Scripts/jquery.scrollTo.min.js"></script>
     <!-- custom js -->
@@ -26,6 +27,7 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li><a href="javascript:;" onclick="virtualItemSet()">@Lang.VirtualPiecesSet</a></li>
+                        <li><a href="javascript:;" onclick="virtualItemSetShow()">@Lang.VirtualPiecesSet（显示虚件父级）</a></li>
                         <li><a href="javascript:;" onclick="virtualItemDrop()">@Lang.VirtualPiecesCancel</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="javascript:;" onclick="virtualItemLink()">@Lang.VirtualPiecesQuoteSet</a></li>
@@ -45,7 +47,6 @@
                         <li><a href="javascript:;" onclick="compositeItemUnlink()">@Lang.CompositePiecesQuoteCancel</a></li>
                     </ul>
                 </div>
-                <button id="btnDeductionDialog" onclick="deductionDialog()" class="btn btn-default btngroup-op" href="javascript:;">@Lang.ItemBuckleSet</button>
                 <div class="btn-group">
                     <button id="btnOPTable" type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span>@Lang.TableOperation</span>

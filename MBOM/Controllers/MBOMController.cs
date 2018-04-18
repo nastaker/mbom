@@ -447,7 +447,7 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("设置为虚件")]
-        public JsonResult VirtualItemSet(int bomid, int itemid)
+        public JsonResult VirtualItemSet(int bomid, int itemid, int show)
         {
             if(bomid == 0 || itemid == 0)
             {
@@ -456,7 +456,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemSet(db, bomid, itemid, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemSet(db, bomid, itemid, show, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {

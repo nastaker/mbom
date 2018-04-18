@@ -69,7 +69,6 @@
     <Compile Include="AppWorkgroupUser.cs" />
     <Compile Include="BaseDbContext.cs" />
     <Compile Include="BaseDbInitializer.cs" />
-    <Compile Include="DbHelper.cs" />
     <Compile Include="DicItemUnit.cs" />
     <Compile Include="DictItemType.cs" />
     <Compile Include="DictShippingAddr.cs" />

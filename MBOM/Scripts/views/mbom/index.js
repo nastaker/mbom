@@ -59,6 +59,7 @@ function publish() {
         } else {
             AlertWin(result.msg != null ? result.msg : lang.initiateFailed);
         }
-        queryDefault();
+        dg.datagrid("clearSelections");
+        dg.datagrid("reload");
     });
 }

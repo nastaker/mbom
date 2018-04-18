@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -340,7 +341,31 @@ namespace MBOM.Controllers
             string code,
             List<ProcItemSetInfo> list)
         {
-            return Json(ResultInfo.Success());
+            if(list == null)
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
+            var str = ConstructSaleSetListString(list);
+            ResultInfo rt = null;
+            try
+            {
+                rt = ResultInfo.Parse(Proc.ProcSetSaleList(db, code, str, LoginUserInfo.GetUserInfo()));
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
+        }
+
+        private string ConstructSaleSetListString(List<ProcItemSetInfo> list)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in list)
+            {
+                sb.Append(String.Format("{3},{2},{1},{0};", item.ITEMID, item.F_QUANTITY, item.SHIPPINGADDR, item.TYPE));
+            }
+            return sb.ToString();
         }
 
         [Description("设置物料为选装件分类")]
@@ -457,8 +482,8 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(dtoModel));
         }
 
-        [Description("物料分类标识设置")]
-        public JsonResult ItemTypeTrans(int itemid)
+        [Description("物料分类标识切换（采购或自制件）")]
+        public JsonResult TypeSwitch(int itemid)
         {
             if (itemid == 0)
             {
@@ -467,7 +492,26 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcItemTypeTrans(db, itemid, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemTypeSwitch(db, itemid, LoginUserInfo.GetUserInfo()));
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
+        }
+
+        [Description("物料分类标识设置")]
+        public JsonResult SetType(int itemid, int typeid)
+        {
+            if (itemid == 0 || typeid == 0)
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
+            ResultInfo rt = null;
+            try
+            {
+                rt = ResultInfo.Parse(Proc.ProcItemSetType(db, itemid, typeid, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -569,15 +613,16 @@ namespace MBOM.Controllers
         [Description("物料分类标识列表（分页）")]
         public JsonResult SearchByTypePageList(ViewItemByType view, string[] typenames, int page = 1, int rows = 10)
         {
-            if(typenames == null || typenames.Length == 0)
+            if (typenames == null || typenames.Length == 0)
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            
-            var query = db.ViewItemsByType.Where(where=> typenames.Contains(where.typename));
+
+            var query = db.ViewItemsByType.Where(where => typenames.Contains(where.typename));
             if (!string.IsNullOrWhiteSpace(view.code))
             {
-                query = query.Where(obj => obj.code.Contains(view.code));
+                var codes = view.code.Split(',');
+                query = query.Where(obj => codes.Contains(obj.code));
             }
             if (!string.IsNullOrWhiteSpace(view.name))
             {
@@ -585,7 +630,31 @@ namespace MBOM.Controllers
             }
             if (!string.IsNullOrWhiteSpace(view.itemcode))
             {
-                query = query.Where(obj => obj.itemcode.Contains(view.itemcode));
+                var itemcodes = view.itemcode.Split(',');
+                query = query.Where(obj => itemcodes.Contains(obj.itemcode));
+            }
+            var list = query.OrderByDescending(obj => obj.code).Skip((page - 1) * rows).Take(rows).ToList();
+            var count = query.Count();
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
+        }
+
+        [Description("物料分类标识列表，全部分类（分页）")]
+        public JsonResult WithTypePageList(ViewItemWithType view, int page = 1, int rows = 10)
+        {
+            var query = db.ViewItemsWithType.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(view.code))
+            {
+                var codes = view.code.Split(',');
+                query = query.Where(obj => codes.Contains(obj.code));
+            }
+            if (!string.IsNullOrWhiteSpace(view.name))
+            {
+                query = query.Where(obj => obj.name.Contains(view.name));
+            }
+            if (!string.IsNullOrWhiteSpace(view.itemcode))
+            {
+                var itemcodes = view.itemcode.Split(',');
+                query = query.Where(obj => itemcodes.Contains(obj.itemcode));
             }
             var list = query.OrderByDescending(obj => obj.code).Skip((page - 1) * rows).Take(rows).ToList();
             var count = query.Count();
