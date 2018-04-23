@@ -30,9 +30,30 @@
         <div id="Mytab" data-options="fit:true,border:false" class="easyui-tabs">
             <div title="@Lang.Header">
                 <img src="~/Content/images/logo.png" />
-                <p>
-                    @User.Identity.Name @Html.ActionLink(Lang.SignOut, "SignOut", "User")
-                </p>
+                <table class="table table-striped">
+                    <tr>
+                        <th style="width:80px">
+                            域
+                        </th>
+                        <td>
+                            @MBOM.Models.LoginUserInfo.GetLoginUser().groupname
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            用户
+                        </th>
+                        <td>
+                            @User.Identity.Name
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @Html.ActionLink(Lang.SignOut, "SignOut", "User")
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

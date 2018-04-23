@@ -24,6 +24,7 @@ namespace MBOM.Controllers
 
         public ActionResult Login()
         {
+            ViewData["Groups"] = db.AppWorkgroups.ToList();
             return View();
         }
 
@@ -33,6 +34,8 @@ namespace MBOM.Controllers
         {
             int userid = 0;
             string name = "超级管理员", login = "Admin";
+            var groups = db.AppWorkgroups.ToList();
+            ViewData["Groups"] = groups;
             List<int> roleids, rightids;
             //登录验证
             //内置管理员账号
@@ -65,6 +68,13 @@ namespace MBOM.Controllers
                            select role.RoleId).Distinct().ToList();
                 rightids = (from roleRight in db.SysRoleRights.Where(rr => roleids.Contains(rr.RoleId))
                             select roleRight.RightId).Distinct().ToList();
+                //验证用户ID是否有这个域
+                var logingroup = db.AppWorkgroupUsers.Where(w => w.CN_USERID == userid && w.CN_GROUPID == model.groupid);
+                if (logingroup == null || logingroup.Count() == 0)
+                {
+                    ModelState.AddModelError("", "用户不属于此域，无法登录");
+                    return View();
+                }
             }
             //登录成功
             //验证是否重复登录，清空上次登录信息
@@ -75,6 +85,8 @@ namespace MBOM.Controllers
                 UserId = userid,
                 LoginName = login,
                 Name = name,
+                groupid = model.groupid,
+                groupname = groups.Find(g => g.CN_ID == model.groupid).CN_NAME,
                 RightIds = rightids
             };
             //写入cookie

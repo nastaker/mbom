@@ -89,13 +89,6 @@ namespace MBOM.Filters
                         };
                         break;
                     case 412:
-                        viewData["Message"] = "您的账号已在其他地方登录，请重新登录！";
-                        filterContext.Result = new ViewResult
-                        {
-                            ViewName = "~/Views/Shared/Error.cshtml",
-                            ViewData = viewData
-                        };
-                        break;
                     default:
                         base.HandleUnauthorizedRequest(filterContext);
                         break;

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Web;
 using System.Collections.Generic;
 using Model;
+using Repository;
 
 namespace MBOM.Models
 {
@@ -16,9 +17,9 @@ namespace MBOM.Models
         public string loginname { get; set; }
         [Display(Name = "Password", ResourceType = typeof(Lang))]
         [DataType(DataType.Password)]
-        //[Required(ErrorMessageResourceName = "Required", ErrorMessageResourceType = typeof(Lang))]
-        //[MinLength(3, ErrorMessageResourceName = "MinLength", ErrorMessageResourceType = typeof(Lang))]
         public string password { get; set; }
+        [Display(Name = "Group", ResourceType = typeof(Lang))]
+        public int groupid { get; set; }
         [Display(Name = "RememberMe", ResourceType = typeof(Lang))]
         public bool rememberme { get; set; }
     }
@@ -28,6 +29,8 @@ namespace MBOM.Models
         public int UserId { get; set; }
         public string LoginName { get; set; }
         public string Name { get; set; }
+        public int groupid { get; set; }
+        public string groupname { get; set; }
         public List<int> RightIds { get; set; }
 
         public static LoginUserInfo GetLoginUser()

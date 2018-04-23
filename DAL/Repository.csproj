@@ -72,6 +72,7 @@
     <Compile Include="DicItemUnit.cs" />
     <Compile Include="DictItemType.cs" />
     <Compile Include="DictShippingAddr.cs" />
+    <Compile Include="GroupEntity.cs" />
     <Compile Include="MultipleResultSets.cs" />
     <Compile Include="Proc.cs" />
     <Compile Include="ProcItemResult.cs" />

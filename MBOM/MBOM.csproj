@@ -60,6 +60,11 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Interop.ASENCRYPTLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\Utils\Interop.ASENCRYPTLib.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -891,6 +896,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unity\ApplicationInit.cs" />
     <Compile Include="Unity\CacheHelper.cs" />
+    <Compile Include="Unity\Common.cs" />
     <Compile Include="Unity\DependencyRegisterType.cs" />
     <Compile Include="Unity\UnityDependencyResolver.cs" />
   </ItemGroup>

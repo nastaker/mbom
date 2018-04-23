@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
+using MBOM.Unity;
 
 namespace MBOM.Controllers
 {
@@ -47,6 +48,7 @@ namespace MBOM.Controllers
         public JsonResult WaitPageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
+            query = Common.GetQueryFilter(query);
             query = query.Where(obj => obj.CN_PRODUCT_STATUS == "待发布");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
@@ -66,6 +68,7 @@ namespace MBOM.Controllers
         public JsonResult WorkingPageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
+            query = Common.GetQueryFilter(query);
             query = query.Where(obj => obj.CN_PRODUCT_STATUS == "转批中");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
@@ -85,6 +88,7 @@ namespace MBOM.Controllers
         public JsonResult DonePageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
+            query = Common.GetQueryFilter(query);
             query = query.Where(obj => obj.CN_PRODUCT_STATUS == "已转批");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {

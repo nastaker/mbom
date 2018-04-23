@@ -7,7 +7,7 @@ namespace Repository
     using System.Data.Entity.Spatial;
 
     [Table("View_Project_Product_Pbom")]
-    public partial class ViewProjectProductPbom
+    public class ViewProjectProductPbom : GroupEntity
     {
         [Key]
         [Column(Order = 0)]
