@@ -1,6 +1,9 @@
-﻿$(function () {
-    var dgItems = $("#dgItems");
-    var dgItemProcess = $("#dgItemProcess");
+﻿var URL_PROCESSINFO = "/Item/ProductProcessList";
+var URL_ITEMPROCESSINFO = "/Item/ProductProcessInfo";
+
+var dgItems = $("#dgItems");
+var dgItemProcess = $("#dgItemProcess");
+$(function () {
     var columns = [[
         { field: 'CODE', title: lang.saleSet.productCode },
         { field: 'NAME', title: lang.saleSet.productName }
@@ -20,29 +23,25 @@
     }
     //私有datagrid属性
     var itemsOptions = {
+        url: URL_PROCESSINFO,
         title: lang.processFlow.itemList,
         columns: columns,
         onSelect: onSelect,
+        queryParams: param,
+        loadFilter: loadFilter,
         onLoadSuccess: onLoadSuccess
     };
     var saleItemsOptions = {
         title: lang.processFlow.processInfo,
-        columns: dgItemProcessColumns
+        columns: dgItemProcessColumns,
+        loadFilter: loadFilter,
+        onLoadSuccess: onProcessInfoLoadSuccess
     }
     //继承基础属性
     //设置datagrid
     dgItems.datagrid($.extend({}, commonOptions, itemsOptions));
     dgItemProcess.datagrid($.extend({}, commonOptions, saleItemsOptions));
-    //
-    //获取SALE_SET
-    postData(URL_PROCESSINFO, param, function (result) {
-        if (!result.success) {
-            AlertWin(result.msg != null ? result.msg : lang.processFlow.loadFailed)
-        }
-        dgItems.datagrid({
-            data: result.data
-        });
-    });
+    dgItemProcess.datagrid("options").url = URL_ITEMPROCESSINFO;
 });
 
 var selectIndex = undefined;
@@ -52,27 +51,24 @@ function onSelect(index, row) {
     selectIndex = index;
     var dgItemProcess = $("#dgItemProcess");
     dgItemProcess.datagrid("loading");
-    if (row.processFlow && typeof (row.processFlow) == "object" & row.processFlow.length > 0) {
-        setTimeout(function () {
-            dgItemProcess.datagrid({
-                data: row.processFlow
-            });
-        }, 100);
+    if (row.processFlow && typeof (row.processFlow) == "object") {
+        dgItemProcess.datagrid("loadData", row.processFlow);
+        dgItemProcess.datagrid("loaded");
     } else {
-        postData(URL_ITEMPROCESSINFO, { code: row.CODE }, function (result) {
-            if (result.success) {
-                row.processFlow = result.data;
-                dgItemProcess.datagrid({
-                    data: row.processFlow
-                });
-            }
-        });
+        dgItemProcess.datagrid("reload", { code: row.CODE });
     }
 }
 
 function onLoadSuccess(data) {
     //加载成功后选中第一行
-    if (data.length == 0) { return false; }
+    if (data.total == 0) { return false; }
     var _this = $(this);
     _this.datagrid("selectRow", 0);
+}
+
+function onProcessInfoLoadSuccess(data) {
+    if (data.total == 0) { return false; }
+    dgItems.datagrid("getSelected").processFlow = {
+        "success": true, "msg": null, "data": data.rows
+    };
 }

@@ -53,6 +53,7 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
+                        <li><a href="javascript:;" onclick="checkAllChildren()">@Lang.CheckAllChildren</a></li>
                         <li><a href="javascript:;" onclick="clearChecked()">@Lang.ClearCheckedAll</a></li>
                         <li><a href="javascript:;" id="btnToggleCheckState" onclick="toggleCheckStateOnSelect()">@Lang.ToggleCheckStateOnSelect</a></li>
                         <li role="separator" class="divider"></li>
@@ -136,5 +137,46 @@
     <div id="dlgItemQuantityFooter" class="text-right">
         <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="itemEditQuantityConfirm()">确认</a>
         <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgItemQuantity').dialog('close')">关闭</a>
+    </div>
+</div>
+
+<div id="dlgCreateCombineItem">
+    <table class="table table-striped">
+        <tr>
+            <th>合件类型：</th>
+            <td colspan="2">
+                <select id="cboCombineItemType">
+                    <option value="K">烤漆件</option>
+                    <option value="H">普通合件</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>名称预览：</th>
+            <td colspan="2">
+                <span id="txtCombineItemName" style="color:blue;font-weight:bold;"></span>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                说明：
+            </th>
+            <td colspan="2">
+                单个子件默认为烤漆件；多个子件默认为普通合件。
+            </td>
+        </tr>
+        <tr>
+            <th>子件列表：</th>
+            <td>
+                <div id="txtCombineItemChildrenItemCode"></div>
+            </td>
+            <td>
+                <div id="txtCombineItemChildrenItemName"></div>
+            </td>
+        </tr>
+    </table>
+    <div id="dlgCreateCombineItemFooter" class="text-right">
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="dlgCreateCombineItemConfirm()">确认</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgCreateCombineItem').dialog('close')">关闭</a>
     </div>
 </div>

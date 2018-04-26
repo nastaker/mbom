@@ -148,7 +148,7 @@
         notSelectVirtual: "选择的项非虚件，请选择虚件项",
         notSelectDiscreteVirtual: "在【离散列表】所选择的项非【虚件】",
         isDeducted: "选择项中有已经设置扣料信息的",
-        notHaveProcessInfo:"选中件父级不包含工序流程信息，请联系管理员",
+        notHaveProcessInfo: "选中件父级不包含工序流程信息，请联系管理员",
         titleDiscreteList: "离散区列表",
         getItemFailed: "获取选择项信息失败",
         haveToSelectParent: "必须选择拥有子级的项",

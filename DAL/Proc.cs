@@ -28,7 +28,7 @@ namespace Repository
         const string PROC_VIRTUAL_ITEM_DROP = "PROC_DROP_ITEM_VIRTUAL @itemid";
         const string PROC_VIRTUAL_ITEM_LINK = "PROC_LINK_VIRTUAL_ITEM @parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @itemid,@link";
-        const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @bomid,@link,@itemids,@userid,@name,@login";
+        const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @bomid,@link,@itemids,@type,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @itemid";
         const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @itemid,@bomid,@link";
@@ -481,13 +481,14 @@ namespace Repository
         #endregion
         #region 合件
         //设置合件
-        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db, int bomid, string link, string itemids, UserInfo userinfo)
+        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db, int bomid, string link, string itemids, string type, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@bomid", bomid),
                 new SqlParameter("@link", link),
                 new SqlParameter("@itemids", itemids),
+                new SqlParameter("@type", type),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)

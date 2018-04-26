@@ -39,15 +39,18 @@ namespace MBOM.Controllers
         {
             return View();
         }
-
-        // MBOM 维护主页面
         [MaintenanceActionFilter]
         [Description("MBOM 维护主页面")]
         public ActionResult MaintenanceIndex(string code)
         {
             return View();
         }
-        // MBOM 完整性核查
+        [MaintenanceActionFilter]
+        [Description("MBOM 变更维护主页面")]
+        public ActionResult ChangeMaintenanceIndex(string code)
+        {
+            return View();
+        }
         [MaintenanceActionFilter]
         [Description("MBOM 完整性核查页面")]
         public ActionResult IntegrityCheckIndex(string code)
@@ -69,7 +72,6 @@ namespace MBOM.Controllers
         {
             return View();
         }
-        //
         [MaintenanceActionFilter]
         [Description("产品PBOM 详情页面")]
         public ActionResult ProductPBomDetailIndex(string code)
@@ -88,7 +90,6 @@ namespace MBOM.Controllers
         {
             return View();
         }
-        //
         [MaintenanceActionFilter]
         [Description("产品基本详情页面")]
         public ActionResult BaseInfoIndex(string code)
@@ -128,25 +129,26 @@ namespace MBOM.Controllers
         {
             return View();
         }
-        //
         [Description("PBOM变更（产品）")]
         public ActionResult PBomChangeProdIndex()
         {
             return View();
         }
-        //
         [Description("PBOM变更（部件）")]
         public ActionResult PBomChangeItemIndex()
         {
             return View();
         }
-        //
-        [Description("MBOM制作及发布")]
+        [Description("MBOM变更维护（产品）")]
+        public ActionResult ChangeIndex()
+        {
+            return View();
+        }
+        [Description("MBOM变更维护（部件）")]
         public ActionResult CreatePublishIndex()
         {
             return View();
         }
-        //
         [Description("MBOM制作及发布物料详情页面")]
         public ActionResult CreatePublishDetailIndex(string itemcode)
         {
@@ -192,7 +194,6 @@ namespace MBOM.Controllers
             return View();
         }
 
-        //
         [Description("物料分类标识设置")]
         public ActionResult ItemHlinkSetIndex()
         {
@@ -543,7 +544,7 @@ namespace MBOM.Controllers
 
         #region 合件操作
         [Description("设置合件")]
-        public JsonResult CompositeItemSet(int bomid, string link, string itemids)
+        public JsonResult CompositeItemSet(int bomid, string link, string itemids, string type)
         {
             if (bomid == 0 || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(itemids))
             {
@@ -552,7 +553,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, bomid, link, itemids, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, bomid, link, itemids, type, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -871,6 +872,23 @@ namespace MBOM.Controllers
         }
         [Description("MBOM维护数据列表（分页）")]
         public JsonResult MaintenancePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
+        {
+            var query = db.ViewMbomMaintenances.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
+            {
+                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.PRODUCT_CODE));
+            }
+            if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
+            {
+                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(view.PROJECT_NAME));
+            }
+            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
+            var list = Mapper.Map<List<ViewMbomMaintenanceView>>(projs);
+            var count = query.Count();
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
+        }
+        [Description("MBOM变更维护数据列表（分页）")]
+        public JsonResult ChangeMaintenancePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
         {
             var query = db.ViewMbomMaintenances.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))

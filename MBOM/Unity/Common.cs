@@ -9,7 +9,7 @@ namespace MBOM.Unity
         internal static IQueryable<T> GetQueryFilter<T>(IQueryable<T> query) where T : GroupEntity
         {
             var user = LoginUserInfo.GetLoginUser();
-            if(user.UserId >= 0)
+            if(user.UserId > 0)
             {
                 return from x
                        in query

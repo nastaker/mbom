@@ -142,6 +142,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 选中所有下级 的本地化字符串。
+        /// </summary>
+        public static string CheckAllChildren {
+            get {
+                return ResourceManager.GetString("CheckAllChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 清空所有选中项 的本地化字符串。
         /// </summary>
         public static string ClearCheckedAll {
@@ -849,6 +858,15 @@ namespace Localization {
         public static string MaintenanceIndex {
             get {
                 return ResourceManager.GetString("MaintenanceIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MBOM变更维护 的本地化字符串。
+        /// </summary>
+        public static string MBOMChangeMaintenance {
+            get {
+                return ResourceManager.GetString("MBOMChangeMaintenance", resourceCulture);
             }
         }
         

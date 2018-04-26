@@ -603,4 +603,10 @@
   <data name="Group" xml:space="preserve">
     <value>域</value>
   </data>
+  <data name="CheckAllChildren" xml:space="preserve">
+    <value>选中所有下级</value>
+  </data>
+  <data name="MBOMChangeMaintenance" xml:space="preserve">
+    <value>MBOM变更维护</value>
+  </data>
 </root>

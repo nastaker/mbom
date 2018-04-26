@@ -18,13 +18,10 @@
     background: none;
 }
 
-.bgluotianyi{
-    background-color: #66ccff;
-}
 .parent-virtual {
-    color: #f00;
-    font-weight: bold;
-    background-color: #cfcfcf;
+    opacity: 0.8;
+    color: rgba(255, 0, 0, 0.8);
+    background-color: rgba(207, 207, 207, 0.8);
 }
 .main-virtual {
     color: #f00;
@@ -66,4 +63,8 @@ a.bg-success{
 .datagrid-row-selected {
     background: #0081c2;
     color: #fff;
+}
+.datagrid-row-checked-custom {
+    background: rgba(102, 204, 255, 0.80);
+    color: rgba(0, 0, 0, 0.90);
 }

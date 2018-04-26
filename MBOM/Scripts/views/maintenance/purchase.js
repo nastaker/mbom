@@ -12,6 +12,7 @@
     var commonOptions = {
         height: "100%",
         rownumbers: true,
+        singleSelect: true,
         border: false,
         fitColumns: true,
         idField: 'ITEMID'

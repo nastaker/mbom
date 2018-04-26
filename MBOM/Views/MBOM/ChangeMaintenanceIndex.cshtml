@@ -1,0 +1,30 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = "MaintenanceIndex";
+}
+@section styles{
+    <!-- custom css -->
+    @Styles.Render("~/bundles/mbomcss")
+}
+@section scripts{
+    <script type="text/javascript">
+        var params = { code: "@Request.Params["code"]" };
+    </script>
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    <script src="~/Scripts/jquery.scrollTo.min.js"></script>
+    <!-- custom js -->
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/mbomchangemaintenance")
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <div id="toolbar" style="width:100%;padding:5px;">
+        </div>
+        <table id="treegrid"></table>
+    </div>
+    <div data-options="region:'east',border:false" style="width:40%;border-left:1px solid #D4D4D4">
+        <div id="dlgDiscreteToolbar">
+        </div>
+        <table id="dgChanges"></table>
+    </div>
+</div>

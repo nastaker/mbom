@@ -16,6 +16,7 @@
     //本页面基础datagrid属性
     var commonOptions = {
         height: "100%",
+        singleSelect: true,
         rownumbers: true,
         border: false,
         fitColumns: true,

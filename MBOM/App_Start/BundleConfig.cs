@@ -26,6 +26,8 @@ namespace MBOM
             bundles.Add(new ScriptBundle("~/bundles/mbommaintenance").Include(
                       "~/Scripts/views/gradientColor.js",
                       "~/Scripts/views/mbom/maintenance.js"));
+            bundles.Add(new ScriptBundle("~/bundles/mbomchangemaintenance").Include(
+                      "~/Scripts/views/mbom/changemaintenance.js"));
             bundles.Add(new ScriptBundle("~/bundles/pbom").Include(
                       "~/Scripts/views/maintenance/pbom.js"));
             bundles.Add(new ScriptBundle("~/bundles/mbom").Include(
@@ -50,6 +52,8 @@ namespace MBOM
                       "~/Scripts/views/maintenance/standard.js"));
             bundles.Add(new ScriptBundle("~/bundles/mbomindex").Include(
                       "~/Scripts/views/mbom/index.js"));
+            bundles.Add(new ScriptBundle("~/bundles/changeindex").Include(
+                      "~/Scripts/views/mbom/changeindex.js"));
             bundles.Add(new ScriptBundle("~/bundles/optionalitemsindex").Include(
                       "~/Scripts/views/mbom/optionalitemsindex.js"));
             bundles.Add(new ScriptBundle("~/bundles/optionalitemsetindex").Include(
@@ -77,8 +81,7 @@ namespace MBOM
             bundles.Add(new ScriptBundle("~/bundles/itemhlinksetindex").Include(
                         "~/Scripts/views/mbom/itemhlinksetindex.js"));
             bundles.Add(new ScriptBundle("~/bundles/groupindex").Include(
-                      "~/Scripts/views/group/index.js"
-                ));
+                      "~/Scripts/views/group/index.js"));
 
 
             bundles.Add(new StyleBundle("~/bundles/ztreecss").Include(

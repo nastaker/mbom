@@ -3,7 +3,7 @@ var discreteList = [];
 var parentId = undefined;
 var gradientStep = 6;
 var gradient = new gradientColor('#11ff55', '#ffff00', gradientStep);
-var selectedCss = "bgluotianyi";
+var checkedCss = "datagrid-row-checked-custom";
 var refreshCooldown = 5;
 var tgTrPreId = "#datagrid-row-r1-2-";
 var tgviTrPreId = "#datagrid-row-r2-2-";
@@ -48,8 +48,13 @@ var treegridOption = {
     border: false,
     rownumbers: true,
     lines: true,
-    checkbox: true,
-    onlyLeafCheck: true,
+    checkbox: function (row) {
+        if (row["MBOMTYPE"] == "产品") {
+            return false;
+        }
+        return true;
+    },
+    cascadeCheck: false,
     idField: "ID",
     treeField: "ITEM_CODE",
     toolbar: '#toolbar',
@@ -144,9 +149,9 @@ var treegridOption = {
             if (!canCheck) { return canCheck; }
             checkedRowIds.count++;
             checkedRowIds[itemid] = rowid;
-            $(checkedRowIds[itemid]).addClass(selectedCss);
+            $(checkedRowIds[itemid]).addClass(checkedCss);
         } else {
-            $(checkedRowIds[itemid]).removeClass(selectedCss);
+            $(checkedRowIds[itemid]).removeClass(checkedCss);
             checkedRowIds.count--;
             if (checkedRowIds.count == 0) {
                 parentId = undefined;
@@ -282,6 +287,7 @@ function InitPage() {
     dgItem.datagrid(dgItemOption);
     dgDeduction.datagrid(dgDeductionOption);
     initDialogs();
+    initEvents();
     reloadAllTables();
 }
 
@@ -330,18 +336,10 @@ function canCheckNode(itemid) {
         InfoWin(lang.mbom.noSelectRoot);
         return false;
     }
-    //判断是否选择的是leaf节点，若是leaf则判断是否和之前选择的属于同一直接父级
+    //判断是否和之前选择的属于同一直接父级
     var children = tg.treegrid("getChildren", itemid);
-    if (children.length == 0) {
-        //是leaf节点
-        if (parentId !== undefined && parent[treegridOption.idField] !== parentId) {
-            return false;
-        }
-    } else {
-        //若不是leaf则之前必须没有选择任何节点
-        if (parentId !== undefined) {
-            return false;
-        }
+    if (parentId !== undefined && parent[treegridOption.idField] !== parentId) {
+        return false;
     }
     parentId = parent[treegridOption.idField];
     return true;
@@ -414,6 +412,28 @@ function initDialogs() {
         closed: true,
         footer: '#dlgItemQuantityFooter'
     });
+
+    $("#dlgCreateCombineItem").dialog({
+        width: 400,
+        height: 300,
+        modal: true,
+        closed: true,
+        footer: "#dlgCreateCombineItemFooter"
+    });
+}
+
+function initEvents() {
+
+    $("#cboCombineItemType").change(function () {
+        var itemcode = $("#dlgCreateCombineItem").dialog("options").itemcode;
+        if (!itemcode) { return; }
+        var type = $(this).val();
+        if (type == "K") {
+            $("#txtCombineItemName").html(itemcode.replace(/(K|K[0-9])?P1\s*$/, "KP1"));
+        } else {
+            $("#txtCombineItemName").html(itemcode.replace(/(K|K[0-9])?P1\s*$/, "K<sub>N</sub>P1"));
+        }
+    })
 }
 //添加物料
 function itemEditQuant() {
@@ -776,24 +796,21 @@ function compositeItemSet() {
     var bomid = undefined;
     var itemcode = undefined;
     var itemids = "";
+    var childrenItemCodeStr = "";
+    var childrenItemNameStr = "";
     var item = tg.treegrid("getSelected")
     var items = tg.treegrid("getCheckedNodes");
     var link;
+    $("#cboCombineItemType").find("option[value=-]").prop("selected", "selected").change();
     if (!item && items.length == 0) {
         AlertWin(lang.mbom.notSelect);
         return;
     }
-    if (!item["BOM_ID"]) {
-        //选择的是根节点，使用普通合件策略，获取所有一级件
-        items = item.children;
-    }
-    if (items.length > 0) {
-        itemcode = "";
+    if (items.length > 1) {
         for (var i in items) {
             var item = items[i];
-            if (item["MBOMTYPE"]) {
-                AlertWin(lang.mbom.notSelectHaveType);
-                return false;
+            if (!itemcode) {
+                itemcode = tg.treegrid("getParent", item["ID"])["ITEM_CODE"];
             }
             if (!bomid) {
                 bomid = item["BOM_ID"]
@@ -802,39 +819,73 @@ function compositeItemSet() {
                 return;
             }
             itemids = item["ITEMID"] + "," + itemids;
-            itemcode = $.trim(item["ITEM_CODE"]) + "," + itemcode;
+            childrenItemCodeStr = childrenItemCodeStr + item["ITEM_CODE"] + "<br/>";
+            childrenItemNameStr = childrenItemNameStr + item["NAME"] + "<br/>";
         }
         itemids = itemids.substring(0, itemids.length - 1);
         link = items[0]["PARENT_LINK"];
-    } else {
-        itemcode = $.trim(item["ITEM_CODE"])
-        bomid = item["BOM_ID"];
-        itemids = item["ITEMID"];
-        link = item["PARENT_LINK"];
-        if (item["MBOMTYPE"]) {
-            AlertWin(lang.mbom.notSelectHaveType);
-            return false;
-        }
-    }
-
-    $.messager.confirm("提示", "您将设置“&lt;" + itemcode + "&gt;”为合件，请您确认！", function (r) {
-        if (r) {
-            //选中有效，传入bomid和itemids
-            postData(URL_COMPOSITE_ITEM_SET, {
+        $("#dlgCreateCombineItem").dialog({
+            title: "新建合件" + itemcode,
+            itemcode: itemcode,
+            data: {
                 bomid: bomid,
                 link: link,
                 itemids: itemids
             },
-            function (result) {
-                if (result.msg) {
-                    InfoWin(result.msg);
-                }
-                if (result.success) {
-                    reloadAllTables(true);
-                }
-            });
+            closed: false
+        });
+        $("#cboCombineItemType").find("option[value=H]").prop("selected", "selected").change();
+        $("#txtCombineItemChildrenItemCode").html(childrenItemCodeStr);
+        $("#txtCombineItemChildrenItemName").html(childrenItemNameStr);
+    } else {
+        if (items.length == 1) {
+            item = items[0];
         }
-    });
+        if (item["MBOMTYPE"] == "产品") {
+            //选择的是根节点，不允许做合件
+            AlertWin(lang.mbom.noSelectRoot);
+            return;
+        }
+        itemcode = $.trim(item["ITEM_CODE"])
+        bomid = item["BOM_ID"];
+        itemids = item["ITEMID"];
+        link = item["PARENT_LINK"];
+        $("#dlgCreateCombineItem").dialog({
+            title: "新建合件" + itemcode,
+            itemcode: itemcode,
+            data: {
+                bomid: bomid,
+                link: link,
+                itemids: itemids
+            },
+            closed: false
+        });
+        $("#cboCombineItemType").find("option[value=K]").prop("selected", "selected").change();
+        $("#txtCombineItemChildrenItemCode").html(itemcode);
+        $("#txtCombineItemChildrenItemName").html(item["NAME"]);
+    }
+
+}
+function dlgCreateCombineItemConfirm() {
+    var data = $("#dlgCreateCombineItem").dialog("options").data;
+    if (!data) {
+        AlertWin("参数获取失败，请联系管理员");
+        return false;
+    }
+    //获取cboCombineItemCode
+    var type = $("#cboCombineItemType").val();
+    data.type = type;
+    //选中有效，传入data参数
+    $("#dlgCreateCombineItem").dialog("close");
+    postData(URL_COMPOSITE_ITEM_SET, data,
+        function (result) {
+            if (result.msg) {
+                InfoWin(result.msg);
+            }
+            if (result.success) {
+                reloadAllTables(true);
+            }
+        });
 }
 //删除合件
 function compositeItemDrop() {
@@ -931,9 +982,17 @@ function compositeItemLink() {
 function compositeItemUnlink() {
     //判断是否选中主表，且选中的主表有效
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    var items = tg.treegrid("getCheckedNodes");
+    if (!item && items.length == 0) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
+    }
+    if (items.length > 1) {
+        AlertWin(lang.mbom.noMultiSelect);
+        return false;
+    }
+    if (items.length == 1) {
+        item = items[0];
     }
     var type = item["MBOMTYPE"];
     var itemid = item["ITEMID"];
@@ -1136,7 +1195,7 @@ function clearMainChecked() {
     tg.treegrid("clearChecked");
     for (var i in checkedRowIds) {
         var rowid = checkedRowIds[i];
-        $(rowid).removeClass("bgluotianyi");
+        $(rowid).removeClass(checkedCss);
     }
     checkedRowIds = { count: 0 };
     parentId = undefined;
@@ -1168,7 +1227,19 @@ function toggleCheckStateOnSelect() {
     checkOnSelect = !checkOnSelect;
     $("#btnToggleCheckState").toggleClass("bg-success");
 }
-
+function checkAllChildren() {
+    var item = tg.treegrid("getSelected");
+    if (!item) {
+        AlertWin(lang.mbom.notSelectMain);
+        return;
+    }
+    clearMainChecked();
+    var children = item.children;
+    for (var i in children) {
+        var id = children[i]["ID"];
+        tg.treegrid("checkNode", id);
+    }
+}
 //通用方法
 
 //构造树
@@ -1209,13 +1280,6 @@ function buildTree(options) {
                     item["MBOMTYPE"] = type;
                 }
             }
-            //if (item["MBOMTYPE"] == null) {
-            //    if (type == "V" || type == "C") {
-            //        item["MBOMTYPE"] = type + "C";
-            //    } else if (type == "VC" || type == "CC") {
-            //        item["MBOMTYPE"] = type;
-            //    }
-            //}
             switch (item["MBOMTYPE"]) {
                 case "V":
                 case "VP":
