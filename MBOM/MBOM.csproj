@@ -908,10 +908,6 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DAL\Repository.csproj">
-      <Project>{339AF863-7090-4D58-A009-7312CC5E8118}</Project>
-      <Name>Repository</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Localization\Localization.csproj">
       <Project>{cfb93a91-b8c6-4434-a775-fa7315dd9ccb}</Project>
       <Name>Localization</Name>
@@ -919,6 +915,10 @@
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{2D2529D8-11A8-4C22-BA65-22D2247D6E38}</Project>
       <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Repository.csproj">
+      <Project>{339AF863-7090-4D58-A009-7312CC5E8118}</Project>
+      <Name>Repository</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
