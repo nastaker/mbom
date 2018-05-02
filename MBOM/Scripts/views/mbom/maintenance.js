@@ -49,7 +49,7 @@ var treegridOption = {
     rownumbers: true,
     lines: true,
     checkbox: function (row) {
-        if (row["MBOMTYPE"] == "产品") {
+        if (row["MBOMTYPE"] == "产品" || row["MBOMTYPE"] == "VP") {
             return false;
         }
         return true;
@@ -423,14 +423,16 @@ function initDialogs() {
 }
 
 function initEvents() {
-
     $("#cboCombineItemType").change(function () {
         var itemcode = $("#dlgCreateCombineItem").dialog("options").itemcode;
+        var parentitemcode = $("#dlgCreateCombineItem").dialog("options").parentitemcode;
         if (!itemcode) { return; }
         var type = $(this).val();
-        if (type == "K") {
+        if (type == "K" || type == "L") {
             $("#txtCombineItemName").html(itemcode.replace(/(K|K[0-9])?P1\s*$/, "KP1"));
-        } else {
+        } else if (type == "B") {
+            $("#txtCombineItemName").html(parentitemcode.replace(/(K|K[0-9])?P1\s*$/, "KP1"));
+        } else if (type == "H") {
             $("#txtCombineItemName").html(itemcode.replace(/(K|K[0-9])?P1\s*$/, "K<sub>N</sub>P1"));
         }
     })
@@ -795,6 +797,7 @@ function compositeItemSet() {
     //获取选中的件的ITEMID、BOMID，若多个用逗号[,]拼接其ITEMID，但BOMID仅能是一个，若多个的情况取消操作
     var bomid = undefined;
     var itemcode = undefined;
+    var parentitemcode = undefined;
     var itemids = "";
     var childrenItemCodeStr = "";
     var childrenItemNameStr = "";
@@ -834,6 +837,10 @@ function compositeItemSet() {
             },
             closed: false
         });
+        $("#cboCombineItemType").find("option[value=B]").hide();
+        $("#cboCombineItemType").find("option[value=K]").hide();
+        $("#cboCombineItemType").find("option[value=H]").show();
+        $("#cboCombineItemType").find("option[value=L]").show();
         $("#cboCombineItemType").find("option[value=H]").prop("selected", "selected").change();
         $("#txtCombineItemChildrenItemCode").html(childrenItemCodeStr);
         $("#txtCombineItemChildrenItemName").html(childrenItemNameStr);
@@ -847,12 +854,14 @@ function compositeItemSet() {
             return;
         }
         itemcode = $.trim(item["ITEM_CODE"])
+        parentitemcode = $.trim(tg.treegrid("getParent", item["ID"])["ITEM_CODE"]);
         bomid = item["BOM_ID"];
         itemids = item["ITEMID"];
         link = item["PARENT_LINK"];
         $("#dlgCreateCombineItem").dialog({
             title: "新建合件" + itemcode,
             itemcode: itemcode,
+            parentitemcode: parentitemcode,
             data: {
                 bomid: bomid,
                 link: link,
@@ -860,6 +869,10 @@ function compositeItemSet() {
             },
             closed: false
         });
+        $("#cboCombineItemType").find("option[value=H]").hide();
+        $("#cboCombineItemType").find("option[value=L]").hide();
+        $("#cboCombineItemType").find("option[value=B]").show();
+        $("#cboCombineItemType").find("option[value=K]").show();
         $("#cboCombineItemType").find("option[value=K]").prop("selected", "selected").change();
         $("#txtCombineItemChildrenItemCode").html(itemcode);
         $("#txtCombineItemChildrenItemName").html(item["NAME"]);

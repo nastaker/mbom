@@ -64,12 +64,12 @@ namespace MBOM.Controllers
                 userid = int.Parse(rt[1]);
                 login = model.loginname;
                 name = rt[2];
-                roleids = (from role in db.SysUserRoles.Where(ur => ur.UserId == userid)
+                roleids = (from role in db.SysUserRoles.Where(ur => ur.UserId == userid).ToList()
                            select role.RoleId).Distinct().ToList();
-                rightids = (from roleRight in db.SysRoleRights.Where(rr => roleids.Contains(rr.RoleId))
+                rightids = (from roleRight in db.SysRoleRights.Where(rr => roleids.Contains(rr.RoleId)).ToList()
                             select roleRight.RightId).Distinct().ToList();
                 //验证用户ID是否有这个域
-                var logingroup = db.AppWorkgroupUsers.Where(w => w.CN_USERID == userid && w.CN_GROUPID == model.groupid);
+                var logingroup = db.AppWorkgroupUsers.Where(w => w.CN_USERID == userid && w.CN_GROUPID == model.groupid).ToList();
                 if (logingroup == null || logingroup.Count() == 0)
                 {
                     ModelState.AddModelError("", "用户不属于此域，无法登录");
@@ -79,6 +79,7 @@ namespace MBOM.Controllers
             //登录成功
             //验证是否重复登录，清空上次登录信息
             Hashtable logins = HttpContext.Application["Logins"] as Hashtable;
+            var groupname = groups.Find(g => g.CN_ID == model.groupid).CN_NAME;
             logins[name] = Session.SessionID;
             LoginUserInfo userInfo = new LoginUserInfo
             {
@@ -86,7 +87,7 @@ namespace MBOM.Controllers
                 LoginName = login,
                 Name = name,
                 groupid = model.groupid,
-                groupname = groups.Find(g => g.CN_ID == model.groupid).CN_NAME,
+                groupname = groupname,
                 RightIds = rightids
             };
             //写入cookie
