@@ -62,7 +62,7 @@ $(function () {
             if (!frmItem.form("validate")) {
                 return false;
             }
-            $.messager.progress();
+            $.messager.progress({ title: lang.infoTitle, msg: lang.loading });
         },
         success: function (data) {
             $.messager.progress('close');

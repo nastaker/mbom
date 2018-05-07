@@ -594,20 +594,27 @@ function showItemDetail() {
 function virtualItemSet() {
     //将当前选中项视为选中的
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    var items = tg.treegrid("getCheckedNodes");
+    if (items.length == 0 && item == null) {
         AlertWin(lang.mbom.notSelect);
         return false;
+    }else if (items.length > 1) {
+        AlertWin(lang.mbom.noMultiSelect);
+        return false;
+    }
+    if (items.length == 1) {
+        item = items[0];
     }
     if (item["MBOMTYPE"]) {
         AlertWin(lang.mbom.notSelectHaveType);
         return false;
     }
-    if (!item["ITEMID"] || !item["BOM_ID"]) {
-        AlertWin(lang.mbom.noSelectRoot);
-        return false;
-    }
     if (item.children.length == 0) {
         AlertWin(lang.mbom.haveToSelectParent);
+        return false;
+    }
+    if (!item["ITEMID"] || !item["BOM_ID"]) {
+        AlertWin(lang.mbom.noSelectRoot);
         return false;
     }
     var itemcode = $.trim(item["ITEM_CODE"]);
@@ -615,6 +622,7 @@ function virtualItemSet() {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_SET, {
+                code: params.code,
                 bomid: item["BOM_ID"],
                 itemid: item["ITEMID"],
                 show: 0
@@ -631,11 +639,17 @@ function virtualItemSet() {
 }
 //设为虚件，且引用时显示在列表中
 function virtualItemSetShow() {
-    //将当前选中项视为选中的
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    var items = tg.treegrid("getCheckedNodes");
+    if (items.length == 0 && item == null) {
         AlertWin(lang.mbom.notSelect);
         return false;
+    } else if (items.length > 1) {
+        AlertWin(lang.mbom.noMultiSelect);
+        return false;
+    }
+    if (items.length == 1) {
+        item = items[0];
     }
     if (item["MBOMTYPE"]) {
         AlertWin(lang.mbom.notSelectHaveType);
@@ -654,6 +668,7 @@ function virtualItemSetShow() {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_SET, {
+                code: params.code,
                 bomid: item["BOM_ID"],
                 itemid: item["ITEMID"],
                 show: 1
@@ -685,6 +700,7 @@ function virtualItemDrop() {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_DROP, {
+                code: params.code,
                 bomid: item["BOM_ID"],
                 itemid: item["ITEMID"]
             }, function (result) {
@@ -736,6 +752,7 @@ function virtualItemLink() {
     $.messager.confirm("提示", "您将在“" + p_itemcode + "”下引用虚件“" + c_itemcode + "”，请您确认！", function (r) {
         if (r) {
             postData(URL_VIRTUAL_ITEM_LINK, {
+                code: params.code,
                 parentitemid: parentitemid,
                 itemid: itemid,
                 parentlink: plink,
@@ -774,6 +791,7 @@ function virtualItemUnlink() {
     $.messager.confirm("提示", "您将取消虚件“&lt;" + itemcode + "&gt;”的引用，请您确认！", function (r) {
         if (r) {
             postData(URL_VIRTUAL_ITEM_UNLINK, {
+                code: params.code,
                 itemid: itemid,
                 link: link
             }, function (result) {
@@ -863,6 +881,7 @@ function compositeItemSet() {
             itemcode: itemcode,
             parentitemcode: parentitemcode,
             data: {
+                code: params.code,
                 bomid: bomid,
                 link: link,
                 itemids: itemids
@@ -921,6 +940,7 @@ function compositeItemDrop() {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_COMPOSITE_ITEM_DROP, {
+                code: params.code,
                 bomid: item["BOM_ID"],
                 itemid: item["ITEMID"]
             }, function (result) {
@@ -976,6 +996,7 @@ function compositeItemLink() {
     $.messager.confirm("提示", "您将在“" + p_itemcode + "”下引用合件“" + c_itemcode + "”，请您确认！", function (r) {
         if (r) {
             postData(URL_COMPOSITE_ITEM_LINK, {
+                code: params.code,
                 parentitemid: parentitemid,
                 itemid: itemid,
                 parentlink: plink,
@@ -1020,6 +1041,7 @@ function compositeItemUnlink() {
     $.messager.confirm("提示", "您将取消合件“" + itemcode + "”的引用，请您确认！", function (r) {
         if (r) {
             postData(URL_COMPOSITE_ITEM_UNLINK, {
+                code: params.code,
                 itemid: itemid,
                 bomid: bomid,
                 link: link
