@@ -363,7 +363,7 @@ namespace MBOM.Controllers
             StringBuilder sb = new StringBuilder();
             foreach (var item in list)
             {
-                sb.Append(String.Format("{3},{2},{1},{0};", item.ITEMID, item.F_QUANTITY, item.SHIPPINGADDR, item.TYPE));
+                sb.Append(String.Format("{5},{4},{3},{2},{1},{0};", item.CUSTOMERITEMNAME, item.CUSTOMERITEMCODE, item.SHIPPINGADDR, item.F_QUANTITY, item.ITEMID, item.TYPE));
             }
             return sb.ToString();
         }

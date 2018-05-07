@@ -55,6 +55,30 @@ $(function () {
                 }
             }
         },
+        {
+            field: 'CUSTOMERITEMCODE', title: lang.saleSet.customerItemCode, width: 150,
+            styler: function (value, row, index) {
+                if (!value) {
+                    return 'background-color:#ffee00;color:red;';
+                }
+            },
+            editor: {
+                type: 'textbox',
+                options: { validType: 'maxlength[18]', tipPosition: "top", required: true }
+            }
+        },
+        {
+            field: 'CUSTOMERITEMNAME', title: lang.saleSet.customerItemName, width: 150,
+            styler: function (value, row, index) {
+                if (!value) {
+                    return 'background-color:#ffee00;color:red;';
+                }
+            },
+            editor: {
+                type: 'textbox',
+                options: { validType: 'maxlength[20]', tipPosition:"top", required: true }
+            }
+        },
         { field: 'UNIT', title: lang.saleSet.productUnit, width: 50, align:"center" }
     ]];
     //本页面基础datagrid属性
@@ -240,6 +264,8 @@ function pushInItems(list, inlist, type) {
             itemid: item["ITEMID"],
             f_quantity: item["F_QUANTITY"],
             shippingaddr: item["SHIPPINGADDR"],
+            customeritemcode: item["CUSTOMERITEMCODE"],
+            customeritemname: item["CUSTOMERITEMNAME"],
             type: type
         });
     }

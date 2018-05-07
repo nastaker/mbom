@@ -91,6 +91,8 @@ namespace Repository
         public string NAME { get; set; }
         public string UNIT { get; set; }
         public string SHIPPINGADDR { get; set; }
+        public string CUSTOMERITEMCODE { get; set; }
+        public string CUSTOMERITEMNAME { get; set; }
         public int ORDER { get; set; }
         public string TYPE { get; set; }
         public bool? B_IS_ASSEMBLY { get; set; }

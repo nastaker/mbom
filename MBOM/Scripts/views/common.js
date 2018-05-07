@@ -94,6 +94,12 @@ $.extend($.fn.validatebox.defaults.rules, {
             return regexNum.test(value);
         },
         message: '请输入数字，且小数点后不超过4位'
+    },
+    maxlength: {
+        validator: function (value, param) {
+            return value.length <= param[0]
+        },
+        message: '最多不可超过 {0} 字'
     }
 });
 

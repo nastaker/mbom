@@ -74,6 +74,8 @@
     },
     saleSet: {
         shippingAddr: "发运地点",
+        customerItemCode: "客户物料号",
+        customerItemName: "客户物料名称",
         saleSet: "销售件设置",
         integrityCheck: "完整性设置",
         productCode: "零件号",
