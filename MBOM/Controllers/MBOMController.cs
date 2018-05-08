@@ -94,7 +94,7 @@ namespace MBOM.Controllers
         [Description("产品基本详情页面")]
         public ActionResult BaseInfoIndex(string code)
         {
-            var viewModel = db.ViewProjectProductPboms.SingleOrDefault(m => m.CN_PRODUCT_CODE == code.Trim());
+            var viewModel = db.ViewProjectProductPboms.Where(m => m.CN_PRODUCT_CODE == code.Trim()).First();
             if (viewModel == null)
             {
                 return HttpNotFound();
