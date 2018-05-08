@@ -2,7 +2,7 @@
 using Repository;
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -54,9 +54,11 @@ namespace MBOM.Unity
 
         public static void InitRightActions()
         {
-            using(BaseDbContext db = new BaseDbContext())
+            using (BaseDbContext db = new BaseDbContext())
             {
-                var actions = db.SysRightActions.ToList();
+                var actions = db.SysRightActions
+                     .Include(s => s.MenuInfo)
+                     .Include(s => s.ActionInfo).ToList();
                 CacheHelper.SetCache("RightActions", actions);
             }
         }
