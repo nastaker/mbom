@@ -165,8 +165,8 @@ var tgviOption = {
     title: lang.mbom.titleDiscreteList,
     height: "100%",
     border: false,
+    rownumbers: true,
     cascadeCheck: false,
-    lines: true,
     idField: "ID",
     treeField: "ITEM_CODE",
     checkbox: function (row) {
@@ -175,18 +175,15 @@ var tgviOption = {
         }
         return false;
     },
-    onBeforeSelect: function(row){
+    onSelect: function(row){
         if (row["ISROOT"]) {
             var id = row["PARENTID"];
             var item = tg.treegrid("find", id);
             if (item != null) {
-                clearTgviClass();
                 tg.treegrid("select", id);
                 $(tgTrPreId + id).parents("div.datagrid-body").scrollTo(tgTrPreId + id);
             }
-            return true;
         }
-        return false;
     },
     onBeforeCheckNode: function (row, checked) {
         var tg = $(this);
@@ -325,7 +322,7 @@ function clearTgviClass() {
     for (var i in croots) {
         var croot = croots[i];
         var crootId = croot[tgviOption.idField];
-        $(tgviTrPreId + crootId).removeClass("datagrid-row-selected discrete-direct-virtual discrete-sub-virtual discrete-combine");
+        $(tgviTrPreId + crootId).removeClass("discrete-direct-virtual discrete-sub-virtual discrete-combine");
     }
 }
 
@@ -362,11 +359,12 @@ function reloadTable(options) {
     clearChecked();
     treegrid.treegrid("loading");
     postData(url, params, function (result) {
-
         if (result.msg && result.msg != "") {
             InfoWin(result.msg);
         }
-
+        if (!result.success) {
+            return false;
+        }
         var list = [];
         buildTree({
             items: result.data,
@@ -783,6 +781,7 @@ function virtualItemUnlink() {
     var item = items[0];
     var itemid = item["ITEMID"];
     var link = item["LINK"];
+    var bomhlinkid = item["BOMHLINKID"];
     var itemcode = $.trim(item["ITEM_CODE"]);
     if (item["MBOMTYPE"] != "V") {
         AlertWin(lang.mbom.notSelectVirtual);
@@ -793,7 +792,8 @@ function virtualItemUnlink() {
             postData(URL_VIRTUAL_ITEM_UNLINK, {
                 code: params.code,
                 itemid: itemid,
-                link: link
+                link: link,
+                bomhlinkid: bomhlinkid
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -849,6 +849,7 @@ function compositeItemSet() {
             title: "新建合件" + itemcode,
             itemcode: itemcode,
             data: {
+                code: params.code,
                 bomid: bomid,
                 link: link,
                 itemids: itemids

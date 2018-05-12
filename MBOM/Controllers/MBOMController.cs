@@ -379,9 +379,18 @@ namespace MBOM.Controllers
         [Description("获取离散区信息")]
         public JsonResult DiscreteList(string code)
         {
-            var list = Proc.ProcDiscreteList(db, code);
-            var dtolist = Mapper.Map<List<ProcItemTreeView>>(list);
-            return Json(ResultInfo.Success(dtolist));
+            ResultInfo rt = null;
+            try
+            {
+                var list = Proc.ProcDiscreteList(db, code);
+                var dtolist = Mapper.Map<List<ProcItemTreeView>>(list);
+                rt = ResultInfo.Success(dtolist);
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
         }
 
         [Description("引用自定义物料")]
@@ -523,16 +532,16 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("取消引用虚件")]
-        public JsonResult VirtualItemUnlink(string code, int itemid, string link)
+        public JsonResult VirtualItemUnlink(string code, int itemid, string link, int bomhlinkid)
         {
-            if (itemid == 0 || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
+            if (itemid == 0 || bomhlinkid == 0 || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, code, itemid, link));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, code, itemid, link, bomhlinkid));
             }
             catch (SqlException ex)
             {

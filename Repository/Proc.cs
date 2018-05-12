@@ -22,12 +22,12 @@ namespace Repository
         const string PROC_PRODUCT_TRANSFER_INITIATTE = "PROC_PRODUCT_TRANSFER_INITIATTE @code";
         const string PROC_MBOM_MAINTENANCE = "PROC_MBOM_MAINTENANCE @code,@userid,@name,@login";
         const string PROC_GET_MBOM_LIST = "PROC_GET_MBOM_MAINTENANCETREE @code";
-        const string PROC_DISCRETE_LIST_GET = "PROC_GET_ITEM_VIRTUAL @code";
+        const string PROC_GET_PRODUCT_DISCRETE_LIST = "PROC_GET_PRODUCT_DISCRETE_LIST @code";
 
         const string PROC_VIRTUAL_ITEM_SET = "PROC_VIRTUAL_ITEM_SET @code,@bomid,@itemid,@show,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_DROP = "PROC_VIRTUAL_ITEM_DROP @code,@itemid";
         const string PROC_VIRTUAL_ITEM_LINK = "PROC_VIRTUAL_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
-        const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @code,@itemid,@link";
+        const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @code,@itemid,@link,@bomhlinkid";
         const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @code,@bomid,@link,@itemids,@type,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @code,@itemid";
         const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
@@ -422,7 +422,7 @@ namespace Repository
             {
                 new SqlParameter("@code", code)
             };
-            var result = db.Database.SqlQuery<ProcItemTree>(PROC_DISCRETE_LIST_GET, param).ToList();
+            var result = db.Database.SqlQuery<ProcItemTree>(PROC_GET_PRODUCT_DISCRETE_LIST, param).ToList();
             return result;
         }
 
@@ -471,13 +471,14 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcVirtualItemUnlink(BaseDbContext db, string code, int itemid, string link)
+        public static ProcReturnMsg ProcVirtualItemUnlink(BaseDbContext db, string code, int itemid, string link, int bomhlinkid)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code),
                 new SqlParameter("@itemid", itemid),
-                new SqlParameter("@link", link)
+                new SqlParameter("@link", link),
+                new SqlParameter("@bomhlinkid", bomhlinkid)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_VIRTUAL_ITEM_UNLINK, param).SingleOrDefault();
             return result;

@@ -272,7 +272,7 @@ namespace MBOM.Controllers
         }
 
         [Description("查看物料详情")]
-        public JsonResult ProductList(string code)
+        public JsonResult ProductList(string code)  
         {
             if (string.IsNullOrEmpty(code))
             {

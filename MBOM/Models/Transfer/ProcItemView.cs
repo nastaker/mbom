@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MBOM.Models
+﻿namespace MBOM.Models
 {
     public class ProcItemTreeView
     {
@@ -22,6 +17,7 @@ namespace MBOM.Models
         public double QUANTITY { get; set; }
         public double QUANTITY_ALL { get; set; }
         public string UNIT { get; set; }
+        public int? BOMHLINKID { get; set; }
         public bool? ISBORROW { get; set; }
         public bool? IS_ASSEMBLY { get; set; }
         public int? ORDER { get; set; }

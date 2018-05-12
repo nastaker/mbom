@@ -19,6 +19,7 @@ namespace Repository
         public double QUANTITY { get; set; }
         public double QUANTITY_ALL { get; set; }
         public string CN_UNIT { get; set; }
+        public int? BOMHLINKID { get; set; }
         public bool? CN_ISBORROW { get; set; }
         public bool? IS_ASSEMBLY { get; set; }
         public int? CN_ORDER { get; set; }
