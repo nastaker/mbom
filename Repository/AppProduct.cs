@@ -28,5 +28,6 @@ namespace Repository
         public DateTime CN_DT_EXPIRY { get; set; }
         public string CN_GUID { get; set; }
         public DateTime CN_DT_TOERP { get; set; }
+        public bool CN_MARK { get; set; }
     }
 }

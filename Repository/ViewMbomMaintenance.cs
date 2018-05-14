@@ -25,5 +25,6 @@ namespace Repository
         public string CN_PBOM_CREATE_NAME { get; set; }
         public int CN_OWNER_ID { get; set; }
         public string CN_OWNER_NAME { get; set; }
+        public bool CN_MARK { get; set; }
     }
 }

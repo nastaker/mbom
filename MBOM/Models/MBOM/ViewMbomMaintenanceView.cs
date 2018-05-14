@@ -22,5 +22,6 @@ namespace MBOM.Models
         public string PBOM_CREATE_NAME { get; set; }
         public int OWNER_ID { get; set; }
         public string OWNER_NAME { get; set; }
+        public bool MARK { get; set; }
     }
 }

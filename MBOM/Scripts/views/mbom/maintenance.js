@@ -973,7 +973,7 @@ function compositeItemLink() {
         return false;
     }
     var citem = citems[0];
-    var plink = item["MBOMTYPE"] == "C" ? item["PARENT_LINK"] : item["LINK"];
+    var plink = item["LINK"];
     var cplink = citem["PARENT_LINK"];
     var link = citem["LINK"];
     var parentitemid = item["ITEMID"];
@@ -990,9 +990,11 @@ function compositeItemLink() {
         AlertWin(lang.mbom.notSelectDiscreteComposite);
         return false;
     }
-    if (plink != cplink) {
-        AlertWin(lang.mbom.notChild);
-        return false;
+    if (item["MBOMTYPE"] == "C") {
+        if (item["PARENT_LINK"] != cplink) {
+            AlertWin(lang.mbom.notChild);
+            return false;
+        }
     }
     $.messager.confirm("提示", "您将在“" + p_itemcode + "”下引用合件“" + c_itemcode + "”，请您确认！", function (r) {
         if (r) {

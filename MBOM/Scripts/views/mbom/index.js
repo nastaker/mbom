@@ -1,12 +1,12 @@
 ﻿var URL_MAINTENANCELIST = "/MBOM/MaintenancePageList"
 var URL_MAINTENANCEPAGE = "/MBOM/MenuIndex"
 var URL_MBOMRELEASE = "/MBOM/Release"
+var URL_MBOMMARK = "/MBOM/Mark"
 var dg = $("#dgProducts");
 $(function () {
     dg.datagrid({
         url: URL_MAINTENANCELIST,
         height: "100%",
-        fitColumns: true,
         striped: true,
         rownumbers: true,
         singleSelect: true,
@@ -14,15 +14,20 @@ $(function () {
         border: false,
         idField: "PROJECT_ID",
         toolbar: '#toolbar',
+        rowStyler: function (index, row) {
+            console.log(row);
+            if(row["MARK"])
+            return { style: "background-color:#66ccff" };
+        },
         columns: [[
-            { field: 'PRODUCT_CODE', title: lang.productCode, width: 15 },
-            { field: 'PRODUCT_NAME', title: lang.productName, width: 15 },
-            { field: 'PROJECT_NAME', title: lang.projectName, width: 20 },
-            { field: 'PBOMVER', title: lang.pbomVer, align: "center", width: 8 },
-            { field: 'MBOMVER', title: lang.mbomVer, align: "center", width: 8 },
-            { field: 'CHECK_STATUS', title: lang.mbom.checkStatus, align: "center", width: 8 },
-            { field: 'TECH_STATUS', title: lang.mbom.techStatus, align: "center", width: 8 },
-            { field: 'DESC', title: lang.remarks, width: 20 }
+            { field: 'PRODUCT_CODE', title: lang.productCode, width: 150 },
+            { field: 'PRODUCT_NAME', title: lang.productName, width: 200 },
+            { field: 'PROJECT_NAME', title: lang.projectName, width: 250 },
+            { field: 'PBOMVER', title: lang.pbomVer, align: "center", width: 70 },
+            { field: 'MBOMVER', title: lang.mbomVer, align: "center", width: 70 },
+            { field: 'CHECK_STATUS', title: lang.mbom.checkStatus, align: "center", width: 60 },
+            { field: 'TECH_STATUS', title: lang.mbom.techStatus, align: "center", width: 60 },
+            { field: 'DESC', title: lang.remarks, width: 200 }
         ]],
         loadFilter: loadFilter
     });
@@ -57,7 +62,24 @@ function publish() {
         if (result.success) {
             InfoWin(result.msg);
         } else {
-            AlertWin(result.msg != null ? result.msg : lang.initiateFailed);
+            AlertWin(result.msg);
+        }
+        dg.datagrid("clearSelections");
+        dg.datagrid("reload");
+    });
+}
+function mark() {
+    var prod = dg.datagrid("getSelected");
+    if (prod == null) {
+        AlertWin(lang.mbom.notSelect);
+        return false;
+    }
+    var param = {
+        code: prod.PRODUCT_CODE
+    };
+    postData(URL_MBOMMARK, param, function (result) {
+        if (!result.success) {
+            AlertWin(result.msg);
         }
         dg.datagrid("clearSelections");
         dg.datagrid("reload");

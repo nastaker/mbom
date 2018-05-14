@@ -337,7 +337,19 @@ namespace MBOM.Controllers
             db.SaveChanges();
             return Json(ResultInfo.Success());
         }
-
+        // MBOM 标记
+        public JsonResult Mark(string code)
+        {
+            var prod = db.AppProducts.Where(w=>w.CN_CODE == code.TrimEnd()).First();
+            if(prod == null)
+            {
+                return Json(ResultInfo.Fail("获取产品信息失败，标记失败"));
+            }
+            prod.CN_MARK = !prod.CN_MARK;
+            db.Entry(prod).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
+            return Json(ResultInfo.Success());
+        }
         // MBOM 维护进入检查
         [Description("MBOM 维护进入检查")]
         public JsonResult Maintenance(string code)
@@ -366,9 +378,18 @@ namespace MBOM.Controllers
         [Description("产品MBOM数据")]
         public JsonResult List(string code)
         {
-            var list = Proc.ProcGetMbomList(db, code);
-            var dtoModel = Mapper.Map<List<ProcItemTreeView>>(list);
-            return Json(ResultInfo.Success(dtoModel));
+            ResultInfo rt = null;
+            try
+            {
+                var list = Proc.ProcGetMbomList(db, code);
+                var dtolist = Mapper.Map<List<ProcItemTreeView>>(list);
+                rt = ResultInfo.Success(dtolist);
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
         }
         /// <summary>
         /// 获取离散区信息
