@@ -821,7 +821,7 @@ function compositeItemSet() {
     var childrenItemNameStr = "";
     var item = tg.treegrid("getSelected")
     var items = tg.treegrid("getCheckedNodes");
-    var link;
+    var parentlink;
     $("#cboCombineItemType").find("option[value=-]").prop("selected", "selected").change();
     if (!item && items.length == 0) {
         AlertWin(lang.mbom.notSelect);
@@ -844,14 +844,14 @@ function compositeItemSet() {
             childrenItemNameStr = childrenItemNameStr + item["NAME"] + "<br/>";
         }
         itemids = itemids.substring(0, itemids.length - 1);
-        link = items[0]["PARENT_LINK"];
+        parentlink = items[0]["PARENT_LINK"];
         $("#dlgCreateCombineItem").dialog({
             title: "新建合件" + itemcode,
             itemcode: itemcode,
             data: {
                 code: params.code,
                 bomid: bomid,
-                link: link,
+                parentlink: parentlink,
                 itemids: itemids
             },
             closed: false
@@ -876,7 +876,7 @@ function compositeItemSet() {
         parentitemcode = $.trim(tg.treegrid("getParent", item["ID"])["ITEM_CODE"]);
         bomid = item["BOM_ID"];
         itemids = item["ITEMID"];
-        link = item["PARENT_LINK"];
+        parentlink = item["PARENT_LINK"];
         $("#dlgCreateCombineItem").dialog({
             title: "新建合件" + itemcode,
             itemcode: itemcode,
@@ -884,7 +884,7 @@ function compositeItemSet() {
             data: {
                 code: params.code,
                 bomid: bomid,
-                link: link,
+                parentlink: parentlink,
                 itemids: itemids
             },
             closed: false
@@ -899,6 +899,7 @@ function compositeItemSet() {
     }
 
 }
+//设置合件
 function dlgCreateCombineItemConfirm() {
     var data = $("#dlgCreateCombineItem").dialog("options").data;
     if (!data) {
@@ -943,7 +944,8 @@ function compositeItemDrop() {
             postData(URL_COMPOSITE_ITEM_DROP, {
                 code: params.code,
                 bomid: item["BOM_ID"],
-                itemid: item["ITEMID"]
+                itemid: item["ITEMID"],
+                parentlink: item["PARENT_LINK"]
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);

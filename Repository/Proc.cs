@@ -28,8 +28,8 @@ namespace Repository
         const string PROC_VIRTUAL_ITEM_DROP = "PROC_VIRTUAL_ITEM_DROP @code,@itemid";
         const string PROC_VIRTUAL_ITEM_LINK = "PROC_VIRTUAL_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @code,@itemid,@link,@bomhlinkid";
-        const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @code,@bomid,@link,@itemids,@type,@userid,@name,@login";
-        const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @code,@itemid";
+        const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @code,@bomid,@parentlink,@itemids,@type,@userid,@name,@login";
+        const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @code,@itemid,@parentlink";
         const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @code,@itemid,@bomid,@link";
         const string PROC_COMPOSITE_EDIT_NAME = "PROC_COMPOSITE_EDIT_NAME @itemid,@name";
@@ -486,13 +486,13 @@ namespace Repository
         #endregion
         #region 合件
         //设置合件
-        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db,string code, int bomid, string link, string itemids, string type, UserInfo userinfo)
+        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db,string code, int bomid, string parentlink, string itemids, string type, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code),
                 new SqlParameter("@bomid", bomid),
-                new SqlParameter("@link", link),
+                new SqlParameter("@parentlink", parentlink),
                 new SqlParameter("@itemids", itemids),
                 new SqlParameter("@type", type),
                 new SqlParameter("@userid", userinfo.UserId),
@@ -503,12 +503,13 @@ namespace Repository
             return result;
         }
         //删除合件
-        public static ProcReturnMsg ProcCompositeItemDrop(BaseDbContext db, string code, int itemid)
+        public static ProcReturnMsg ProcCompositeItemDrop(BaseDbContext db, string code, int itemid, string parentlink)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code),
-                new SqlParameter("@itemid", itemid)
+                new SqlParameter("@itemid", itemid),
+                new SqlParameter("@parentlink", parentlink)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_COMPOSITE_ITEM_DROP, param).SingleOrDefault();
             return result;

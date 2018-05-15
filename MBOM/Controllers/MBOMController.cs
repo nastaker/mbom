@@ -574,16 +574,16 @@ namespace MBOM.Controllers
 
         #region 合件操作
         [Description("设置合件")]
-        public JsonResult CompositeItemSet(string code, int bomid, string link, string itemids, string type)
+        public JsonResult CompositeItemSet(string code, int bomid, string parentlink, string itemids, string type)
         {
-            if (bomid == 0 || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(itemids) || string.IsNullOrWhiteSpace(code))
+            if (bomid == 0 || string.IsNullOrWhiteSpace(parentlink) || string.IsNullOrWhiteSpace(itemids) || string.IsNullOrWhiteSpace(code))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, code, bomid, link, itemids, type, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, code, bomid, parentlink, itemids, type, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -592,16 +592,16 @@ namespace MBOM.Controllers
             return Json(rt);
         }
         [Description("取消设置合件")]
-        public JsonResult CompositeItemDrop(string code, int itemid)
+        public JsonResult CompositeItemDrop(string code, int itemid, string parentlink)
         {
-            if (itemid == 0 || string.IsNullOrWhiteSpace(code))
+            if (itemid == 0 || string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(parentlink))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemDrop(db, code, itemid));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemDrop(db, code, itemid, parentlink));
             }
             catch (SqlException ex)
             {
