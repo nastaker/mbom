@@ -60,7 +60,7 @@ function transferInitiate() {
     };
     postData(URL_PUBLISH, param, function (result) {
         if (result.success) {
-            InfoWin(result.data.MSG);
+            InfoWin(result.data.msg);
         } else {
             AlertWin(result.msg != null ? result.msg : lang.initiateFailed);
         }
