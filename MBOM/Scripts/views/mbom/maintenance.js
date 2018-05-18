@@ -594,47 +594,7 @@ function virtualItemSet() {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_SET, {
                 bomid: item["BOM_ID"],
-                itemid: item["ITEMID"],
-                show: 0
-            }, function (result) {
-                if (result.msg) {
-                    InfoWin(result.msg);
-                }
-                if (result.success) {
-                    reloadAllTables(true);
-                }
-            });
-        }
-    });
-}
-//设为虚件，且引用时显示在列表中
-function virtualItemSetShow() {
-    //将当前选中项视为选中的
-    var item = tg.treegrid("getSelected");
-    if (!item) {
-        AlertWin(lang.mbom.notSelect);
-        return false;
-    }
-    if (item["MBOMTYPE"]) {
-        AlertWin(lang.mbom.notSelectHaveType);
-        return false;
-    }
-    if (!item["ITEMID"] || !item["BOM_ID"]) {
-        AlertWin(lang.mbom.noSelectRoot);
-        return false;
-    }
-    if (item.children.length == 0) {
-        AlertWin(lang.mbom.haveToSelectParent);
-        return false;
-    }
-    var itemcode = $.trim(item["ITEM_CODE"]);
-    $.messager.confirm("提示", "您将设置“&lt;" + itemcode + "&gt;”为虚件，请您确认！", function (r) {
-        if (r) {
-            //选中有效，传入bomid和itemid
-            postData(URL_VIRTUAL_ITEM_SET, {
-                bomid: item["BOM_ID"],
-                itemid: item["ITEMID"],
-                show: 1
+                itemid: item["ITEMID"]
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);

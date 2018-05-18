@@ -24,7 +24,7 @@ namespace Repository
         const string PROC_GET_MBOM_LIST = "PROC_GET_MBOM_MAINTENANCETREE @code";
         const string PROC_DISCRETE_LIST_GET = "PROC_GET_ITEM_VIRTUAL @code";
 
-        const string PROC_VIRTUAL_ITEM_SET = "PROC_SET_ITEM_VIRTUAL @bomid,@itemid,@show,@userid,@name,@login";
+        const string PROC_VIRTUAL_ITEM_SET = "PROC_SET_ITEM_VIRTUAL @bomid,@itemid,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_DROP = "PROC_DROP_ITEM_VIRTUAL @itemid";
         const string PROC_VIRTUAL_ITEM_LINK = "PROC_LINK_VIRTUAL_ITEM @parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @itemid,@link";
@@ -427,13 +427,12 @@ namespace Repository
         }
 
         #region 虚件操作
-        public static ProcReturnMsg ProcVirtualItemSet(BaseDbContext db, int bomid, int itemid, int show, UserInfo userinfo)
+        public static ProcReturnMsg ProcVirtualItemSet(BaseDbContext db, int bomid, int itemid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@bomid", bomid),
                 new SqlParameter("@itemid", itemid),
-                new SqlParameter("@show", show),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)
