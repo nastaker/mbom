@@ -10,24 +10,26 @@ $(function () {
     for (var i in menuData) {
         var menu = menuData[i];
         var li = $("<li>").appendTo(ul);
-        var a = $("<a href=\"javascript:;\">").appendTo(li);
         var icon = $("<i>").addClass("myIcon fa fa-" + menu.iconCls);
-        a.append(icon).append(menu.text).data("m", menu);
-        a.click(function (e) {
+        li.addClass("list-" + i);
+        li.append(icon).append(menu.text).data("m", $.extend(menu, { id: i }));
+        li.click(function (e) {
             var _this = $(this);
             var _m = _this.data("m");
             var title = _m.text;
             var url = _m.url.concatUrlParam(params);
 
-            openTab(title, url);
-            _this.parent().siblings().removeClass("active");
-            _this.parent().addClass("active");
+            openTab(title, url, {
+                id: _m.id
+            });
         });
         if (i == 0) {
             li.addClass("active");
             var url = menu.url.concatUrlParam(params);
             openTab(menu.text, null, {
-                href: url, closable: false,
+                id: i,
+                href: url,
+                closable: false,
                 tools: [{
                     iconCls: 'icon-mini-refresh',
                     handler: function () {
@@ -104,6 +106,16 @@ $(function () {
                     top: e.pageY
                 });
             }
+        },
+        onSelect: function (title, index) {
+            var selectedTab = $(tab).tabs('getSelected');
+            var opts = $(selectedTab).panel("options");
+            if (!opts.id) {
+                $(".menuitem").removeClass("active");
+                return;
+            }
+            $(".list-" + opts.id).siblings().removeClass("active");
+            $(".list-" + opts.id).addClass("active");
         }
     });
 });
@@ -118,14 +130,14 @@ function openTab(title, url, param) {
     } else {
         var div = $("<div>").css({ width: "100%", height: "100%", overflow: "hidden" });
         if (url) {
-            $("<iframe onload=onIframeLoad(this)>")
-                .css({ width: "100%", height: "100%", border: 0 })
-                .attr({ src: url })
-                .appendTo(div);
             $.messager.progress({
                 title: lang.progressTitle,
                 msg: lang.loading
             });
+            $("<iframe onload=onIframeLoad(this)>")
+                .css({ width: "100%", height: "100%", border: 0 })
+                .attr({ src: url })
+                .appendTo(div);
         }
         var options = {
             title: title,

@@ -15,7 +15,6 @@ $(function () {
         idField: "PROJECT_ID",
         toolbar: '#toolbar',
         rowStyler: function (index, row) {
-            console.log(row);
             if(row["MARK"])
             return { style: "background-color:#66ccff" };
         },
