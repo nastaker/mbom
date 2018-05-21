@@ -898,6 +898,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 MBOM产品变更维护 的本地化字符串。
+        /// </summary>
+        public static string MBOMProductChangeIndex {
+            get {
+                return ResourceManager.GetString("MBOMProductChangeIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 MBOM发布 的本地化字符串。
         /// </summary>
         public static string MBOMPublish {

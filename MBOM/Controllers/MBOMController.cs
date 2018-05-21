@@ -22,14 +22,19 @@ namespace MBOM.Controllers
             this.db = db;
         }
         // MBOM 维护数据列表页面
-        [Description("查看MBOM 维护数据列表页面")]
+        [Description("查看MBOM维护数据列表页面")]
         public ActionResult Index()
         {
             return View();
         }
         // MBOM 发布维护菜单列表页面
-        [Description("查看MBOM 发布维护菜单列表页面")]
+        [Description("查看MBOM发布维护菜单列表页面")]
         public ActionResult MenuIndex()
+        {
+            return View();
+        }
+        [Description("查看MBOM产品变更维护页面")]
+        public ActionResult ProductChangeIndex()
         {
             return View();
         }
@@ -40,19 +45,19 @@ namespace MBOM.Controllers
             return View();
         }
         [MaintenanceActionFilter]
-        [Description("MBOM 维护主页面")]
+        [Description("MBOM维护主页面")]
         public ActionResult MaintenanceIndex(string code)
         {
             return View();
         }
         [MaintenanceActionFilter]
-        [Description("MBOM 变更维护主页面")]
+        [Description("MBOM变更维护主页面")]
         public ActionResult ChangeMaintenanceIndex(string code)
         {
             return View();
         }
         [MaintenanceActionFilter]
-        [Description("MBOM 完整性核查页面")]
+        [Description("MBOM完整性核查页面")]
         public ActionResult IntegrityCheckIndex(string code)
         {
             try
@@ -67,19 +72,19 @@ namespace MBOM.Controllers
             }
         }
         // MBOM 产品看板
-        [Description("MBOM 产品看板页面")]
+        [Description("MBOM产品看板页面")]
         public ActionResult ProductBillboardsIndex()
         {
             return View();
         }
         [MaintenanceActionFilter]
-        [Description("产品PBOM 详情页面")]
+        [Description("产品PBOM详情页面")]
         public ActionResult ProductPBomDetailIndex(string code)
         {
             return View();
         }
         [MaintenanceActionFilter]
-        [Description("产品MBOM 详情页面")]
+        [Description("产品MBOM详情页面")]
         public ActionResult ProductMBomDetailIndex(string code)
         {
             return View();
@@ -112,19 +117,19 @@ namespace MBOM.Controllers
             return View(itemid);
         }
         // MBOM 物料看板
-        [Description("MBOM 物料看板页面")]
+        [Description("MBOM物料看板页面")]
         public ActionResult MaterialBillboardsIndex()
         {
             return View();
         }
         // MBOM 带有工序的物料看板
-        [Description("MBOM 带有工序的物料看板页面")]
+        [Description("MBOM带有工序的物料看板页面")]
         public ActionResult ItemWithProcessIndex()
         {
             return View();
         }
         //BOM 信息比较
-        [Description("BOM 信息比较页面")]
+        [Description("BOM信息比较页面")]
         public ActionResult BomDiffIndex()
         {
             return View();
@@ -160,7 +165,7 @@ namespace MBOM.Controllers
             return View();
         }
         //BOM 信息详情
-        [Description("BOM 信息详情页面")]
+        [Description("BOM信息详情页面")]
         public ActionResult BomDiffDetailIndex(int bomid)
         {
             if(bomid == 0)
@@ -351,7 +356,7 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success());
         }
         // MBOM 维护进入检查
-        [Description("MBOM 维护进入检查")]
+        [Description("MBOM维护进入检查")]
         public JsonResult Maintenance(string code)
         {
             var procMsg = Proc.ProcMbomMaintenance(db, code, LoginUserInfo.GetUserInfo());
@@ -670,7 +675,7 @@ namespace MBOM.Controllers
         }
 
         //MBOM 发布
-        [Description("MBOM 发布")]
+        [Description("MBOM发布")]
         public JsonResult Release(string code)
         {
             if (string.IsNullOrWhiteSpace(code))
@@ -689,7 +694,7 @@ namespace MBOM.Controllers
             return Json(rt);
         }
 
-        [Description("MBOM 创建和发布，添加子件（有关联）")]
+        [Description("MBOM创建和发布，添加子件（有关联）")]
         public JsonResult BomHlinkChildAdd(string parentitemcode, int itemid, int hlinkid, string bywhat)
         {
             if (itemid == 0 || hlinkid == 0 || string.IsNullOrWhiteSpace(parentitemcode) || string.IsNullOrWhiteSpace(bywhat))
@@ -708,7 +713,7 @@ namespace MBOM.Controllers
             return Json(rt);
         }
 
-        [Description("MBOM 创建和发布，添加子件（独立添加）")]
+        [Description("MBOM创建和发布，添加子件（独立添加）")]
         public JsonResult BomHlinkAdd(string parentitemcode, int itemid, string bywhat)
         {
             if (itemid == 0 || string.IsNullOrWhiteSpace(parentitemcode) || string.IsNullOrWhiteSpace(bywhat))
@@ -745,7 +750,7 @@ namespace MBOM.Controllers
             return Json(rt);
         }
 
-        [Description("MBOM 创建和发布，删除子件（实际是修改状态)")]
+        [Description("MBOM创建和发布，删除子件")]
         public JsonResult DisableBomHlink(int hlinkid)
         {
             if (hlinkid == 0)
@@ -790,10 +795,14 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var list = Proc.ProcGetBomHlinkChildren(db, itemcode);
+            var list = db.AppBomHlinks
+                .Join(db.AppBoms.Where(b=>b.CN_ITEM_CODE == itemcode), a => a.CN_BOM_ID, b => b.CN_ID, (a,b) => a)
+                .Where(a => a.CN_SYS_STATUS == "" || a.CN_SYS_STATUS == "Y"
+                        && (a.CN_ISDELETE == null || a.CN_ISDELETE != true))
+                .ToList();
             return Json(ResultInfo.Success(list));
         }
-        [Description("产品BOM看板（分页）")]
+        [Description("产品BOM看板列表（分页）")]
         public JsonResult BomPageList(AppBomView view, int page = 1, int rows = 10)
         {
             var query = db.AppBoms.AsQueryable();
@@ -815,7 +824,7 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(new { rows = dtoModels, total = count }));
         }
         // MBOM 物料看板
-        [Description("MBOM 物料看板（分页）")]
+        [Description("MBOM物料看板列表（分页）")]
         public JsonResult MaterialBillboardsPageList(MaterialView view, int page = 1, int rows = 10)
         {
             var query = db.ViewMaterialBillboardses.AsQueryable();
@@ -857,7 +866,7 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
         // MBOM 产品看板
-        [Description("MBOM 产品看板（分页）")]
+        [Description("MBOM产品看板列表（分页）")]
         public JsonResult ProductBillboardsPageList(ProductView view, int page = 1, int rows = 10)
         {
             var query = db.ViewProductBillboardses.AsQueryable();
@@ -879,7 +888,7 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
         // MBOM 带有工序的物料看板
-        [Description("MBOM 带有工序的物料看板（分页）")]
+        [Description("MBOM带有工序的物料列表（分页）")]
         public JsonResult ItemWithProcessPageList(ProductView view, int page = 1, int rows = 10)
         {
             var query = db.ViewItemWithProcesses.AsQueryable();
@@ -900,7 +909,7 @@ namespace MBOM.Controllers
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
-        [Description("MBOM维护数据列表（分页）")]
+        [Description("MBOM产品维护列表（分页）")]
         public JsonResult MaintenancePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
         {
             var query = db.ViewMbomMaintenances.AsQueryable();
@@ -917,7 +926,24 @@ namespace MBOM.Controllers
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
-        [Description("MBOM变更维护数据列表（分页）")]
+        [Description("MBOM产品变更列表（分页）")]
+        public JsonResult ProductChangePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
+        {
+            var query = db.ViewMbomMaintenances.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
+            {
+                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.PRODUCT_CODE));
+            }
+            if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
+            {
+                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(view.PROJECT_NAME));
+            }
+            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
+            var list = Mapper.Map<List<ViewMbomMaintenanceView>>(projs);
+            var count = query.Count();
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
+        }
+        [Description("MBOM物料变更维护列表（分页）")]
         public JsonResult ChangeMaintenancePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
         {
             var query = db.ViewMbomMaintenances.AsQueryable();

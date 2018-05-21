@@ -1,0 +1,24 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.MBOMProductChangeIndex;
+}
+@section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/mbomproductchangeindex")
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div id="toolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <span>@Lang.ProjectName：</span>
+            <input type="text" name="Project_Name" class="easyui-textbox" />
+            <span>@Lang.ProductCode：</span>
+            <input type="text" name="Product_Code" class="easyui-textbox" />
+            <a href="#" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+            <a href="#" class="easyui-linkbutton" onclick="queryDefault()" data-options="iconCls:'icon-search'">@Lang.Default</a>
+            <a href="#" class="easyui-linkbutton" onclick="publishMaintenance()" data-options="iconCls:'icon-edit'">@Lang.MBOMPublishMaintenance</a>
+            <a href="#" class="easyui-linkbutton" onclick="publish()" data-options="iconCls:'icon-ok'">@Lang.MBOMPublish</a>
+        </form>
+    </div>
+    <table id="dgProducts"></table>
+</div>

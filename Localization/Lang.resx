@@ -609,4 +609,7 @@
   <data name="MBOMChangeMaintenance" xml:space="preserve">
     <value>MBOM变更维护</value>
   </data>
+  <data name="MBOMProductChangeIndex" xml:space="preserve">
+    <value>MBOM产品变更维护</value>
+  </data>
 </root>
