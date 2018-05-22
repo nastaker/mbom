@@ -52,16 +52,8 @@ namespace MBOM.Controllers
         [Description("MBOM 完整性核查页面")]
         public ActionResult IntegrityCheckIndex(string code)
         {
-            try
-            {
-                var prod = Proc.ProcMbomIntegrityCheck(db, code);
-                var dtoModel = Mapper.Map<IntegrityCheckView>(prod);
-                return View(ResultInfo.Success(dtoModel));
-            }
-            catch (SqlException ex)
-            {
-                return View(ResultInfo.Fail(ex.Message));
-            }
+            var prod = Proc.ProcMbomIntegrityCheck(db, code);
+            return View(prod);
         }
         // MBOM 产品看板
         [Description("MBOM 产品看板页面")]
@@ -93,12 +85,12 @@ namespace MBOM.Controllers
         [Description("产品基本详情页面")]
         public ActionResult BaseInfoIndex(string code)
         {
-            var viewModel = db.ViewProjectProductPboms.SingleOrDefault(m => m.CN_PRODUCT_CODE == code.Trim());
-            if (viewModel == null)
+            var viewModel = db.ViewProjectProductPboms.Where(m => m.PRODUCT_CODE == code.Trim());
+            if (viewModel.Count() == 0)
             {
                 return HttpNotFound();
             }
-            return View(Mapper.Map<ViewProjectProductPbomView>(viewModel));
+            return View(viewModel.First());
         }
         [Description("选装件列表页面")]
         public ActionResult OptionalItemsIndex()
@@ -161,13 +153,39 @@ namespace MBOM.Controllers
         [Description("BOM 信息详情页面")]
         public ActionResult BomDiffDetailIndex(int bomid)
         {
-            if(bomid == 0)
+            if (bomid == 0)
             {
                 return HttpNotFound();
             }
-            var list = Proc.ProcGetBomDiff(db, bomid);
-            var dtoModels = Mapper.Map<List<BomDiffView>>(list);
-            return View(dtoModels);
+            var list = (from bomhlink
+                in db.AppBomHlinks
+                join item
+                in db.AppItems
+                on bomhlink.CN_COMPONENT_OBJECT_ID equals item.CN_ID
+                where
+                bomhlink.CN_BOM_ID == bomid
+                select new ProcBomDiff
+                {
+                    code = item.CN_CODE,
+                    item_code = item.CN_ITEM_CODE,
+                    hlink_id = bomhlink.CN_HLINK_ID,
+                    s_bom_type = bomhlink.CN_S_BOM_TYPE,
+                    bom_id = bomhlink.CN_BOM_ID,
+                    bom_id_pre = bomhlink.CN_BOM_ID_PRE,
+                    displayname = bomhlink.CN_STATUS_PBOM == "Y" ? bomhlink.CN_DISPLAYNAME : null,
+                    mbomname = bomhlink.CN_STATUS_MBOM == "Y" ? bomhlink.CN_DISPLAYNAME : null,
+                    order = bomhlink.CN_ORDER,
+                    quantity = bomhlink.CN_F_QUANTITY,
+                    sys_status = bomhlink.CN_SYS_STATUS,
+                    dt_create = bomhlink.CN_DT_CREATE,
+                    status_pbom = bomhlink.CN_STATUS_PBOM,
+                    status_mbom = bomhlink.CN_STATUS_MBOM,
+                    dt_ef_pbom = bomhlink.CN_DT_EF_PBOM,
+                    dt_ex_pbom = bomhlink.CN_DT_EX_PBOM,
+                    dt_ef_mbom = bomhlink.CN_DT_EF_MBOM,
+                    dt_ex_mbom = bomhlink.CN_DT_EX_MBOM
+                }).ToList();
+            return View(list);
         }
 
         [Description("产品变更明细页面")]
@@ -366,8 +384,7 @@ namespace MBOM.Controllers
         public JsonResult List(string code)
         {
             var list = Proc.ProcGetMbomList(db, code);
-            var dtoModel = Mapper.Map<List<ProcItemTreeView>>(list);
-            return Json(ResultInfo.Success(dtoModel));
+            return Json(ResultInfo.Success(list));
         }
         /// <summary>
         /// 获取离散区信息
@@ -379,8 +396,7 @@ namespace MBOM.Controllers
         public JsonResult DiscreteList(string code)
         {
             var list = Proc.ProcDiscreteList(db, code);
-            var dtolist = Mapper.Map<List<ProcItemTreeView>>(list);
-            return Json(ResultInfo.Success(dtolist));
+            return Json(ResultInfo.Success(list));
         }
 
         [Description("引用自定义物料")]
@@ -759,7 +775,14 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var list = Proc.ProcGetBomHlinkChildren(db, itemcode);
+            var list = (from bomhlink
+                       in db.AppBomHlinks
+                       join bom in db.AppBoms on bomhlink.CN_BOM_ID equals bom.CN_ID
+                       where
+                       bom.CN_ITEM_CODE == itemcode
+                       && (string.IsNullOrEmpty(bomhlink.CN_SYS_STATUS) || bomhlink.CN_SYS_STATUS == "Y")
+                       && (bomhlink.CN_ISDELETE == null || bomhlink.CN_ISDELETE != true)
+                       select bomhlink).ToList();
             return Json(ResultInfo.Success(list));
         }
         [Description("产品BOM看板（分页）")]
@@ -870,21 +893,20 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
         [Description("MBOM维护数据列表（分页）")]
-        public JsonResult MaintenancePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
+        public JsonResult MaintenancePageList(ViewMbomMaintenance view, int page = 1, int rows = 10)
         {
             var query = db.ViewMbomMaintenances.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
             {
-                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.PRODUCT_CODE));
+                query = query.Where(obj => obj.PRODUCT_CODE.Contains(view.PRODUCT_CODE));
             }
             if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
             {
-                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(view.PROJECT_NAME));
+                query = query.Where(obj => obj.PROJECT_NAME.Contains(view.PROJECT_NAME));
             }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            var list = Mapper.Map<List<ViewMbomMaintenanceView>>(projs);
+            var projs = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
+            return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
 
         [Description("查看PBOM变更的产品列表（分页）")]

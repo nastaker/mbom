@@ -27,7 +27,8 @@ $(function () {
             li.addClass("active");
             var url = menu.url.concatUrlParam(params);
             openTab(menu.text, null, {
-                href: url, closable: false,
+                href: url,
+                closable: false,
                 tools: [{
                     iconCls: 'icon-mini-refresh',
                     handler: function () {

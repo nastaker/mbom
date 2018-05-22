@@ -1,31 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
 namespace MBOM.Models
 {
-    public class BomDiffView
-    {
-        public string code { get; set; }
-        public string item_code { get; set; }
-        public int hlink_id { get; set; }
-        public string s_bom_type { get; set; }
-        public int bom_id { get; set; }
-        public int bom_id_pre { get; set; }
-        public string displayname { get; set; }
-        public string mbomname { get; set; }
-        public double? quantity { get; set; }
-        public int order { get; set; }
-        public string sys_status { get; set; }
-        public DateTime dt_create { get; set; }
-        public string status_pbom { get; set; }
-        public string status_mbom { get; set; }
-        public DateTime dt_ef_pbom { get; set; }
-        public DateTime dt_ex_pbom { get; set; }
-        public DateTime dt_ef_mbom { get; set; }
-        public DateTime dt_ex_mbom { get; set; }
-    }
     public class AppBomView
     {
         public int id { get; set; }

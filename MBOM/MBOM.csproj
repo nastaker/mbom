@@ -822,7 +822,6 @@
     <Content Include="Views\MBOM\ItemChangeDetailIndex.cshtml" />
     <Content Include="Views\MBOM\CreatePublishDetailIndex.cshtml" />
     <Content Include="Views\MBOM\ItemHlinkSetIndex.cshtml" />
-    <Content Include="Views\Group\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -857,8 +856,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Filters\CustomErrorFilter.cs" />
+    <Compile Include="Filters\DetailLogFilterAttribute.cs" />
     <Compile Include="Filters\MaintenanceActionFilter.cs" />
     <Compile Include="Filters\UserAuthAttribute.cs" />
     <Compile Include="Controllers\EnvironmentController.cs" />
@@ -880,13 +879,10 @@
     <Compile Include="Models\FileResponse.cs" />
     <Compile Include="Models\LoginView.cs" />
     <Compile Include="Models\MBOM\MaterialView.cs" />
-    <Compile Include="Models\MBOM\ViewMbomMaintenanceView.cs" />
     <Compile Include="Models\MenuView.cs" />
     <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Models\SysView.cs" />
     <Compile Include="Models\Transfer\AppBom.cs" />
-    <Compile Include="Models\Transfer\AppProduct.cs" />
-    <Compile Include="Models\Transfer\AppProject.cs" />
     <Compile Include="Models\Transfer\ProcItemView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unity\ApplicationInit.cs" />
@@ -896,13 +892,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DAL\Repository.csproj">
-      <Project>{339AF863-7090-4D58-A009-7312CC5E8118}</Project>
-      <Name>Repository</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Localization\Localization.csproj">
       <Project>{cfb93a91-b8c6-4434-a775-fa7315dd9ccb}</Project>
       <Name>Localization</Name>
@@ -910,6 +901,10 @@
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{2D2529D8-11A8-4C22-BA65-22D2247D6E38}</Project>
       <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Repository.csproj">
+      <Project>{339af863-7090-4d58-a009-7312cc5e8118}</Project>
+      <Name>Repository</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

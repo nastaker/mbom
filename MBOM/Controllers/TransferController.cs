@@ -44,60 +44,57 @@ namespace MBOM.Controllers
         }
 
         [Description("转批待发布列表（分页）")]
-        public JsonResult WaitPageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
+        public JsonResult WaitPageList(ViewProjectProductPbom prod, int page = 1, int rows = 10)
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
-            query = query.Where(obj => obj.CN_PRODUCT_STATUS == "待发布");
+            query = query.Where(obj => obj.PRODUCT_STATUS == "待发布");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
-                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
+                query = query.Where(obj => obj.PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
             }
             if (!string.IsNullOrWhiteSpace(prod.PROJECT_NAME))
             {
-                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(prod.PROJECT_NAME));
+                query = query.Where(obj => obj.PROJECT_NAME.Contains(prod.PROJECT_NAME));
             }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            var list = Mapper.Map<List<ViewProjectProductPbomView>>(projs);
+            var projs = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
+            return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
 
         [Description("转批中列表（分页）")]
-        public JsonResult WorkingPageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
+        public JsonResult WorkingPageList(ViewProjectProductPbom prod, int page = 1, int rows = 10)
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
-            query = query.Where(obj => obj.CN_PRODUCT_STATUS == "转批中");
+            query = query.Where(obj => obj.PRODUCT_STATUS == "转批中");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
-                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
+                query = query.Where(obj => obj.PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
             }
             if (!string.IsNullOrWhiteSpace(prod.PROJECT_NAME))
             {
-                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(prod.PROJECT_NAME));
+                query = query.Where(obj => obj.PROJECT_NAME.Contains(prod.PROJECT_NAME));
             }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            var list = Mapper.Map<List<ViewProjectProductPbomView>>(projs);
+            var projs = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
+            return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
 
         [Description("已转批列表（分页）")]
-        public JsonResult DonePageList(ViewProjectProductPbomView prod, int page = 1, int rows = 10)
+        public JsonResult DonePageList(ViewProjectProductPbom prod, int page = 1, int rows = 10)
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
-            query = query.Where(obj => obj.CN_PRODUCT_STATUS == "已转批");
+            query = query.Where(obj => obj.PRODUCT_STATUS == "已转批");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
-                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
+                query = query.Where(obj => obj.PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
             }
             if (!string.IsNullOrWhiteSpace(prod.PROJECT_NAME))
             {
-                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(prod.PROJECT_NAME));
+                query = query.Where(obj => obj.PROJECT_NAME.Contains(prod.PROJECT_NAME));
             }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            var list = Mapper.Map<List<ViewProjectProductPbomView>>(projs);
+            var projs = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
+            return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
     }
 }

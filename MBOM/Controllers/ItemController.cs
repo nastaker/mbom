@@ -267,8 +267,7 @@ namespace MBOM.Controllers
         public JsonResult ProductTree(string code)
         {
             var prodTree = Proc.ProcGetItemTree(db, code);
-            var dtoModel = Mapper.Map<List<ProcItemTreeView>>(prodTree);
-            return Json(ResultInfo.Success(dtoModel));
+            return Json(ResultInfo.Success(prodTree));
         }
 
         [Description("查看物料详情")]
@@ -279,8 +278,7 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             var itemlist = Proc.ProcProductList(db, code);
-            var dtoModel = Mapper.Map<List<ProcItemView>>(itemlist);
-            return Json(ResultInfo.Success(dtoModel));
+            return Json(ResultInfo.Success(itemlist));
         }
 
         [Description("查看工序")]
@@ -291,8 +289,7 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             var itemlist = Proc.ProcGetProcessItemList(db, code);
-            var dtoModel = Mapper.Map<List<ProcProcessItemView>>(itemlist);
-            return Json(ResultInfo.Success(dtoModel));
+            return Json(ResultInfo.Success(itemlist));
         }
 
         [Description("查看物料工序详情")]
@@ -303,21 +300,7 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             var itemlist = Proc.ProcGetItemProcess(db, code);
-            var dtoModel = Mapper.Map<List<ProcItemProcessView>>(itemlist);
-            return Json(ResultInfo.Success(dtoModel));
-        }
-
-        [Description("查看物料完整性数据")]
-        public JsonResult IntegrityCheck(string code)
-        {
-            if (string.IsNullOrEmpty(code))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            
-            var prod = db.AppProducts.Single(p => p.CN_CODE == code);
-            var dtoModel = Mapper.Map<IntegrityCheckView>(prod);
-            return Json(ResultInfo.Success(dtoModel));
+            return Json(ResultInfo.Success(itemlist));
         }
 
         [Description("查看产品分类")]
@@ -332,8 +315,7 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             var itemlist = Proc.ProcGetItemCateList(db, code, catename);
-            var dtoModel = Mapper.Map<List<ProcCateItemView>>(itemlist);
-            return Json(ResultInfo.Success(dtoModel));
+            return Json(ResultInfo.Success(itemlist));
         }
 
         [Description("销售件设置")]
@@ -459,7 +441,7 @@ namespace MBOM.Controllers
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             var itemlist = db.AppProcesses.Where(process => process.CN_ID == id).ToList();
-            var dtoModel = Mapper.Map<List<ProcItemProcessView>>(itemlist);
+            var dtoModel = Mapper.Map<List<ProcItemProcess>>(itemlist);
             return Json(ResultInfo.Success(dtoModel));
         }
 
@@ -478,7 +460,7 @@ namespace MBOM.Controllers
                 INNER JOIN TN_80_APP_0025_BOM AS BOM ON BOM.CN_ID = BOMH.CN_BOM_ID
                 INNER JOIN TN_80_APP_0000_ITEM AS PITEM ON PITEM.CN_CODE = BOM.CN_CODE
                 WHERE (BOMH.CN_STATUS_MBOM = 'Y' OR CN_STATUS_MBOM = '')", itemid);
-            var dtoModel = Mapper.Map<List<ProcProcessItemView>>(itemlist);
+            var dtoModel = Mapper.Map<List<ProcProcessItem>>(itemlist);
             return Json(ResultInfo.Success(dtoModel));
         }
 

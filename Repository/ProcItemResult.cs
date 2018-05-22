@@ -9,34 +9,33 @@ namespace Repository
         public string LINK { get; set; }
         public string PARENTID { get; set; }
         public string ID { get; set; }
-        public int CN_ITEMID { get; set; }
-        public string CN_ITEM_CODE { get; set; }
-        public string CN_CODE { get; set; }
-        public string CN_NAME { get; set; }
-        public int CN_BOM_ID { get; set; }
-        public int CN_BOM_ID_PRE { get; set; }
-        public int CN_HLINK_ID { get; set; }
+        public int ITEMID { get; set; }
+        public string ITEM_CODE { get; set; }
+        public string CODE { get; set; }
+        public string NAME { get; set; }
+        public int BOM_ID { get; set; }
+        public int BOM_ID_PRE { get; set; }
+        public int HLINK_ID { get; set; }
         public double QUANTITY { get; set; }
         public double QUANTITY_ALL { get; set; }
-        public string CN_UNIT { get; set; }
-        public bool? CN_ISBORROW { get; set; }
+        public string UNIT { get; set; }
+        public bool? ISBORROW { get; set; }
         public bool? IS_ASSEMBLY { get; set; }
-        public int? CN_ORDER { get; set; }
-        public string MBOMTYPE { get; set; }
-        public string KL { get; set; }
+        public int? ORDER { get; set; }
         public bool? ISROOT { get; set; }
         public bool? ISLINKED { get; set; }
+        public string MBOMTYPE { get; set; }
     }
 
     public class ProcItem
     {
-        public int? CN_ITEMID { get; set; }
-        public string CN_ITEM_CODE { get; set; }
-        public string CN_CODE { get; set; }
-        public string CN_NAME { get; set; }
-        public bool? CN_B_IS_ASSEMBLY { get; set; }
-        public int? CN_ORDER { get; set; }
-        public bool? CN_ISBORROW { get; set; }
+        public int? ITEMID { get; set; }
+        public string ITEM_CODE { get; set; }
+        public string CODE { get; set; }
+        public string NAME { get; set; }
+        public bool? B_IS_ASSEMBLY { get; set; }
+        public int? ORDER { get; set; }
+        public bool? ISBORROW { get; set; }
         public string 部件 { get; set; }
         public string 借用 { get; set; }
         public string 销售件 { get; set; }
@@ -50,37 +49,37 @@ namespace Repository
 
     public class ProcCateItem
     {
-        public int? CN_ITEMID { get; set; }
-        public string CN_ITEM_CODE { get; set; }
-        public string CN_CODE { get; set; }
-        public string CN_NAME { get; set; }
-        public bool? CN_B_IS_ASSEMBLY { get; set; }
-        public int? CN_ORDER { get; set; }
-        public bool? CN_ISBORROW { get; set; }
+        public int? ITEMID { get; set; }
+        public string ITEM_CODE { get; set; }
+        public string CODE { get; set; }
+        public string NAME { get; set; }
+        public bool? B_IS_ASSEMBLY { get; set; }
+        public int? ORDER { get; set; }
+        public bool? ISBORROW { get; set; }
         public string ISBORROWSTR { get; set; }
         public string PDATE { get; set; }
     }
 
     public class ProcBomDiff
     {
-        public int CN_HLINK_ID { get; set; }
-        public string CN_CODE { get; set; }
-        public string CN_ITEM_CODE { get; set; }
-		public string CN_S_BOM_TYPE { get; set; }
-		public int CN_BOM_ID { get; set; }
-		public int CN_BOM_ID_PRE { get; set; }
-		public string CN_DISPLAYNAME { get; set; }
-		public string MBOMNAME { get; set; }
-        public double? QUANTITY { get; set; }
-		public int CN_ORDER { get; set; }
-		public string CN_SYS_STATUS { get; set; }
-		public DateTime CN_DT_CREATE { get; set; }
-		public string CN_STATUS_PBOM { get; set; }
-		public string CN_STATUS_MBOM { get; set; }
-	    public DateTime CN_DT_EF_PBOM { get; set; }
-		public DateTime CN_DT_EX_PBOM { get; set; }
-		public DateTime CN_DT_EF_MBOM { get; set; }
-		public DateTime CN_DT_EX_MBOM { get; set; }
+        public string code { get; set; }
+        public string item_code { get; set; }
+        public int hlink_id { get; set; }
+        public string s_bom_type { get; set; }
+        public int bom_id { get; set; }
+        public int bom_id_pre { get; set; }
+        public string displayname { get; set; }
+        public string mbomname { get; set; }
+        public double? quantity { get; set; }
+        public int order { get; set; }
+        public string sys_status { get; set; }
+        public DateTime dt_create { get; set; }
+        public string status_pbom { get; set; }
+        public string status_mbom { get; set; }
+        public DateTime dt_ef_pbom { get; set; }
+        public DateTime dt_ex_pbom { get; set; }
+        public DateTime dt_ef_mbom { get; set; }
+        public DateTime dt_ex_mbom { get; set; }
     }
 
     public class ProcItemSetInfo
@@ -102,9 +101,9 @@ namespace Repository
 
     public class ProcProcessItem
     {
-        public int CN_ITEMID { get; set; }
-        public string CN_CODE { get; set; }
-        public string CN_NAME { get; set; }
+        public int ITEMID { get; set; }
+        public string NAME { get; set; }
+        public string CODE { get; set; }
     }
 
     public class ProcItemProcess
