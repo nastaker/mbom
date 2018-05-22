@@ -17,7 +17,6 @@ namespace MBOM.Controllers
         {
             this.db = db;
         }
-        // GET: Transfer
         [Description("转批发起页面")]
         public ActionResult InitiateIndex()
         {
@@ -39,7 +38,8 @@ namespace MBOM.Controllers
         [Description("转批发起操作")]
         public JsonResult Initiate(string code)
         {
-            var proc = Proc.ProcProductTransferInitiate(db, code);
+            var userinfo = LoginUserInfo.GetUserInfo();
+            var proc = Proc.ProcProductTransferInitiate(db, code, userinfo);
             return Json(ResultInfo.Success(proc));
         }
 
