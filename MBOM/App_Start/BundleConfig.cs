@@ -52,7 +52,7 @@ namespace MBOM
                       "~/Scripts/views/maintenance/standard.js"));
             bundles.Add(new ScriptBundle("~/bundles/mbomindex").Include(
                       "~/Scripts/views/mbom/index.js"));
-            bundles.Add(new ScriptBundle("~/bundles/mbomindex").Include(
+            bundles.Add(new ScriptBundle("~/bundles/mbomproductchangeindex").Include(
                       "~/Scripts/views/mbom/mbomproductchangeindex.js"));
             bundles.Add(new ScriptBundle("~/bundles/changeindex").Include(
                       "~/Scripts/views/mbom/changeindex.js"));

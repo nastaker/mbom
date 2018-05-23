@@ -111,6 +111,7 @@
     <Compile Include="ViewOptionalItem.cs" />
     <Compile Include="ViewPbomChangeProduct.cs" />
     <Compile Include="ViewProductBillboards.cs" />
+    <Compile Include="ViewProductChangeList.cs" />
     <Compile Include="ViewProjectProductPbom.cs" />
   </ItemGroup>
   <ItemGroup>

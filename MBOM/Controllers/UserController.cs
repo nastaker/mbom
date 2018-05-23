@@ -25,7 +25,12 @@ namespace MBOM.Controllers
         public ActionResult Login()
         {
             ViewData["Groups"] = db.AppWorkgroups.ToList();
-            return View();
+            LoginView m = new LoginView
+            {
+                loginname = "admin",
+                password = "passport"
+            };
+            return View(m);
         }
 
         [HttpPost]

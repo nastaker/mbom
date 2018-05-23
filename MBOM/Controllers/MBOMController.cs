@@ -927,19 +927,18 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
         [Description("MBOM产品变更列表（分页）")]
-        public JsonResult ProductChangePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
+        public JsonResult ProductChangePageList(ViewProductChange view, int page = 1, int rows = 10)
         {
-            var query = db.ViewMbomMaintenances.AsQueryable();
+            var query = db.ViewProductChanges.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
             {
-                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.PRODUCT_CODE));
+                query = query.Where(obj => obj.PRODUCT_CODE.Contains(view.PRODUCT_CODE));
             }
             if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
             {
-                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(view.PROJECT_NAME));
+                query = query.Where(obj => obj.PROJECT_NAME.Contains(view.PROJECT_NAME));
             }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            var list = Mapper.Map<List<ViewMbomMaintenanceView>>(projs);
+            var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows).ToList();
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
