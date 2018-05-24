@@ -40,18 +40,17 @@ namespace MBOM.Filters
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             var user = LoginUserInfo.GetLoginUser();
+            // 未登录，返回登录界面
+            if (user == null)
+            {
+                return false;
+            }
+            Hashtable logins = httpContext.Application["Logins"] as Hashtable;
             var controller = httpContext.Request.RequestContext.RouteData.Route.GetRouteData(httpContext).Values["controller"];
             var action = httpContext.Request.RequestContext.RouteData.Route.GetRouteData(httpContext).Values["action"];
             var userip = httpContext.Request.UserHostAddress;
             var requestType = httpContext.Request.RequestType;
             var actionUrl = controller + "/" + action;
-            // 未登录，返回登录界面
-            if (user == null)
-            {
-                LogUserInfo(actionUrl, userip, requestType, false, "用户未登录", user);
-                return false;
-            }
-            Hashtable logins = httpContext.Application["Logins"] as Hashtable;
             // 使用的缓存Cookie登录，返回登录界面
             if (logins[user.Name] == null)
             {

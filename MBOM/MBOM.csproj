@@ -193,6 +193,7 @@
     <Content Include="Content\icons\ulock.png" />
     <Content Include="Content\icons\user.png" />
     <Content Include="Content\icons\virtual.png" />
+    <Content Include="Content\images\loginBackground.jpg" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\ionicons.min.css" />
     <Content Include="Content\jquery.fileupload\css\blueimp-gallery.min.css" />
