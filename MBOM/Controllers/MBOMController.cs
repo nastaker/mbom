@@ -38,6 +38,17 @@ namespace MBOM.Controllers
         {
             return View();
         }
+        [Description("查看MBOM产品变更维护菜单列表页面")]
+        public ActionResult ProductChangeMenuIndex()
+        {
+            return View();
+        }
+        [MaintenanceActionFilter]
+        [Description("MBOM产品变更维护主页面")]
+        public ActionResult ProductChangeMaintenanceIndex(string code)
+        {
+            return View();
+        }
 
         [Description("查看产品库页面")]
         public ActionResult ProductLibraryIndex()

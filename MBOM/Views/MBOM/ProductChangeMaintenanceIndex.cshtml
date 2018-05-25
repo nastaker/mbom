@@ -1,0 +1,181 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = "MaintenanceIndex";
+}
+@section styles{
+    <!-- custom css -->
+    @Styles.Render("~/bundles/mbomcss")
+}
+@section scripts{
+    <script type="text/javascript">
+        var params = { code: "@Request.Params["code"]" };
+    </script>
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    <script src="~/Scripts/jquery.scrollTo.min.js"></script>
+    <!-- custom js -->
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/mbommaintenance")
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <div id="toolbar" style="width:100%;padding:5px;">
+            <div class="btn-group">
+                <div class="btn-group">
+                    <button id="btnOPVirtual" type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span>@Lang.VirtualPiecesOperation</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:;" onclick="virtualItemSet()">@Lang.VirtualPiecesSet</a></li>
+                        <li><a href="javascript:;" onclick="virtualItemSetShow()">@Lang.VirtualPiecesSet（显示虚件父级）</a></li>
+                        <li><a href="javascript:;" onclick="virtualItemDrop()">@Lang.VirtualPiecesCancel</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="javascript:;" onclick="virtualItemLink()">@Lang.VirtualPiecesQuoteSet</a></li>
+                        <li><a href="javascript:;" onclick="virtualItemUnlink()">@Lang.VirtualPiecesQuoteCancel</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button id="btnOPComposite" type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span>@Lang.CompositePiecesOperation</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:;" onclick="compositeItemSet()">@Lang.CompositePiecesSet</a></li>
+                        <li><a href="javascript:;" onclick="compositeItemDrop()">@Lang.CompositePiecesCancel</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="javascript:;" onclick="compositeItemLink()">@Lang.CompositePiecesQuoteSet</a></li>
+                        <li><a href="javascript:;" onclick="compositeItemUnlink()">@Lang.CompositePiecesQuoteCancel</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button id="btnOPTable" type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span>@Lang.TableOperation</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:;" onclick="checkAllChildren()">@Lang.CheckAllChildren</a></li>
+                        <li><a href="javascript:;" onclick="clearChecked()">@Lang.ClearCheckedAll</a></li>
+                        <li><a href="javascript:;" id="btnToggleCheckState" onclick="toggleCheckStateOnSelect()">@Lang.ToggleCheckStateOnSelect</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="javascript:;" onclick="reloadAllTables()">@Lang.ReloadTable</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span>@Lang.ItemOperation</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:;" onclick="itemLink()">@Lang.ItemLink</a></li>
+                        <li><a href="javascript:;" onclick="itemEditQuant()">@Lang.ItemEditQuantity</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="javascript:;" onclick="itemUnlink()">@Lang.ItemUnlink</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <table id="treegrid"></table>
+    </div>
+    <div data-options="region:'east',border:false" style="width:35%;border-left:1px solid #D4D4D4">
+        <div id="dlgDiscreteToolbar">
+            <select id="cboDiscreteFilter" class="easyui-combobox" data-options="editable:false,onChange:filterDiscrete">
+                <option value="" selected="selected">显示全部</option>
+                <option value="V">仅虚件</option>
+                <option value="C">仅合件</option>
+            </select>
+            <a href="javascript:editCombineName();" class="easyui-linkbutton">修改合件名称</a>
+        </div>
+        <table id="tgvi"></table>
+    </div>
+</div>
+
+<div id="dlgDeduction">
+    <div id="dlgDeductionToolbar" style="word-break:break-all"></div>
+    <table id="dgDeduction"></table>
+    <div id="dlgDeductionFooter" class="dlgFooter">
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="deductionSet()">确认</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgDeduction').dialog('close')">关闭</a>
+    </div>
+</div>
+
+<div id="dlgItem">
+    <div id="dlgItemToolbar">
+        <form id="queryFrm">
+            <div>
+                <span>@Lang.ItemCode：</span>
+                <input type="text" name="CN_ITEM_CODE" class="easyui-textbox" style="width:120px;" />
+                <span>@Lang.ItemName：</span>
+                <input type="text" name="CN_NAME" class="easyui-textbox" style="width:120px;" />
+                <a href="javascript:;" class="easyui-linkbutton" onclick="queryItem()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+                <a href="javascript:;" class="easyui-linkbutton" onclick="showItemDetail()" data-options="iconCls:'icon-search'">@Lang.ItemBomDetail</a>
+            </div>
+        </form>
+    </div>
+    <table id="dgItem"></table>
+    <div id="dlgItemFooter" class="text-right">
+        <span>
+            引用数量：
+        </span>
+        <input type="text" id="txtItemLinkQuantity" name="quantity" class="easyui-textbox" data-options="validType:'number',tipPosition:'top'" required style="width:120px;" />
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="itemLinkConfirm()">确认</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgItem').dialog('close')">关闭</a>
+    </div>
+</div>
+
+<div id="dlgItemQuantity">
+    <table class="table table-striped">
+        <tr>
+            <th>修改物料数量：</th>
+            <td>
+                <input type="text" id="txtEditLinkQuantity" class="easyui-textbox" data-options="validType:'number',tipPosition:'top'" required style="width:150px" />
+            </td>
+        </tr>
+    </table>
+    <div id="dlgItemQuantityFooter" class="text-right">
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="itemEditQuantityConfirm()">确认</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgItemQuantity').dialog('close')">关闭</a>
+    </div>
+</div>
+
+<div id="dlgCreateCombineItem">
+    <table class="table table-striped">
+        <tr>
+            <th>合件类型：</th>
+            <td colspan="2">
+                <select id="cboCombineItemType">
+                    <option value="K">烤漆件</option>
+                    <option value="H">普通合件</option>
+                    <option value="L">离散包</option>
+                    <option value="B">包塑返厂</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>名称预览：</th>
+            <td colspan="2">
+                <span id="txtCombineItemName" style="color:blue;font-weight:bold;"></span>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                说明：
+            </th>
+            <td colspan="2">
+                单个子件默认为烤漆件；多个子件默认为普通合件。
+            </td>
+        </tr>
+        <tr>
+            <th>子件列表：</th>
+            <td>
+                <div id="txtCombineItemChildrenItemCode"></div>
+            </td>
+            <td>
+                <div id="txtCombineItemChildrenItemName"></div>
+            </td>
+        </tr>
+    </table>
+    <div id="dlgCreateCombineItemFooter" class="text-right">
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="dlgCreateCombineItemConfirm()">确认</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgCreateCombineItem').dialog('close')">关闭</a>
+    </div>
+</div>

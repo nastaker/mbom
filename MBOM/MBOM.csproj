@@ -730,6 +730,7 @@
     <Content Include="Scripts\views\mbom\mbomproductchangeindex.js" />
     <Content Include="Scripts\views\mbom\mbomcreatepublish.js" />
     <Content Include="Scripts\views\mbom\mbomcreatepublishdetail.js" />
+    <Content Include="Scripts\views\mbom\changeMenuData.js" />
     <Content Include="Scripts\views\mbom\optionalitemsetindex.js" />
     <Content Include="Scripts\views\mbom\optionalitemsindex.js" />
     <Content Include="Scripts\views\mbom\pbomchangeitem.js" />
@@ -834,6 +835,8 @@
     <Content Include="Views\MBOM\ChangeIndex.cshtml" />
     <Content Include="Views\MBOM\ChangeMaintenanceIndex.cshtml" />
     <Content Include="Views\MBOM\ProductChangeIndex.cshtml" />
+    <Content Include="Views\MBOM\ProductChangeMenuIndex.cshtml" />
+    <Content Include="Views\MBOM\ProductChangeMaintenanceIndex.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

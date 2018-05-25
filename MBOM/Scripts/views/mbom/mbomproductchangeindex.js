@@ -1,5 +1,5 @@
 ﻿var URL_MAINTENANCELIST = "/MBOM/ProductChangePageList"
-var URL_MAINTENANCEPAGE = "/MBOM/MenuIndex"
+var URL_MAINTENANCEPAGE = "/MBOM/ProductChangeMenuIndex"
 var URL_MBOMRELEASE = "/MBOM/Release"
 var dg = $("#dgProducts");
 $(function () {

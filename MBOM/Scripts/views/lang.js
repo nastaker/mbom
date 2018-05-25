@@ -157,6 +157,7 @@
         beginDeduction: "启动扣料",
         endDeduction: "关闭扣料",
         maintenance:"MBOM维护",
+        changemaintenance: "MBOM变更维护",
         maintenanceStatus: "维护状态",
         checkStatus: "核查状态",
         techStatus: "技术状态",

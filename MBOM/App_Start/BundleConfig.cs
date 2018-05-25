@@ -80,6 +80,8 @@ namespace MBOM
                       "~/Scripts/views/mbom/menuData.js"));
             bundles.Add(new ScriptBundle("~/bundles/menuData3").Include(
                       "~/Scripts/views/mbom/productmenuData.js"));
+            bundles.Add(new ScriptBundle("~/bundles/menuData4").Include(
+                      "~/Scripts/views/mbom/changeMenuData.js"));
             bundles.Add(new ScriptBundle("~/bundles/itemhlinksetindex").Include(
                         "~/Scripts/views/mbom/itemhlinksetindex.js"));
             bundles.Add(new ScriptBundle("~/bundles/groupindex").Include(
