@@ -8,89 +8,126 @@ namespace MBOM
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+            bundles.Add(new ScriptBundle("~/bundles/jquery")
+				.Include(
                         "~/Scripts/jquery-{version}.js"));
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+            bundles.Add(new ScriptBundle("~/bundles/jqueryval")
+				.Include(
                         "~/Scripts/jquery.validate*"));
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+            bundles.Add(new ScriptBundle("~/bundles/modernizr")
+				.Include(
                         "~/Scripts/modernizr-*"));
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap")
+				.Include(
                       "~/Scripts/bootstrap.js"));
-            bundles.Add(new ScriptBundle("~/bundles/ztree").Include(
+            bundles.Add(new ScriptBundle("~/bundles/ztree")
+				.Include(
                       "~/Scripts/ztree/jquery.ztree.core.js"));
-            bundles.Add(new ScriptBundle("~/bundles/common").Include(
+            bundles.Add(new ScriptBundle("~/bundles/common")
+				.Include(
                       "~/Scripts/views/lang.js",
                       "~/Scripts/views/common.js"));
-            bundles.Add(new ScriptBundle("~/bundles/mbommaintenance").Include(
-                      "~/Scripts/views/gradientColor.js",
+            bundles.Add(new ScriptBundle("~/bundles/mbommaintenance")
+				.Include(
                       "~/Scripts/views/mbom/maintenance.js"));
-            bundles.Add(new ScriptBundle("~/bundles/mbomchangemaintenance").Include(
-                      "~/Scripts/views/mbom/changemaintenance.js"));
-            bundles.Add(new ScriptBundle("~/bundles/pbom").Include(
+            bundles.Add(new ScriptBundle("~/bundles/productchange/maintenance")
+                .Include(
+                      "~/Scripts/views/mbom/maintenance.js",
+                      "~/Scripts/views/productchange/maintenance.js"));
+            bundles.Add(new ScriptBundle("~/bundles/pbom")
+				.Include(
                       "~/Scripts/views/maintenance/pbom.js"));
-            bundles.Add(new ScriptBundle("~/bundles/mbom").Include(
+            bundles.Add(new ScriptBundle("~/bundles/mbom")
+				.Include(
                       "~/Scripts/views/maintenance/mbom.js"));
-            bundles.Add(new ScriptBundle("~/bundles/bomlist").Include(
+            bundles.Add(new ScriptBundle("~/bundles/bomlist")
+				.Include(
                       "~/Scripts/views/maintenance/bomlist.js"));
-            bundles.Add(new ScriptBundle("~/bundles/productpbom").Include(
+            bundles.Add(new ScriptBundle("~/bundles/productpbom")
+				.Include(
                       "~/Scripts/views/mbom/productpbom.js"));
-            bundles.Add(new ScriptBundle("~/bundles/productmbom").Include(
+            bundles.Add(new ScriptBundle("~/bundles/productmbom")
+				.Include(
                       "~/Scripts/views/mbom/productmbom.js"));
-            bundles.Add(new ScriptBundle("~/bundles/processflow").Include(
+            bundles.Add(new ScriptBundle("~/bundles/processflow")
+				.Include(
                       "~/Scripts/views/maintenance/processflow.js"));
-            bundles.Add(new ScriptBundle("~/bundles/purchase").Include(
+            bundles.Add(new ScriptBundle("~/bundles/purchase")
+				.Include(
                       "~/Scripts/views/maintenance/purchase.js"));
-            bundles.Add(new ScriptBundle("~/bundles/saleset").Include(
+            bundles.Add(new ScriptBundle("~/bundles/saleset")
+				.Include(
                       "~/Scripts/views/maintenance/saleset.js"));
-            bundles.Add(new ScriptBundle("~/bundles/selfmade").Include(
+            bundles.Add(new ScriptBundle("~/bundles/selfmade")
+				.Include(
                       "~/Scripts/views/maintenance/selfmade.js"));
-            bundles.Add(new ScriptBundle("~/bundles/sell").Include(
+            bundles.Add(new ScriptBundle("~/bundles/sell")
+				.Include(
                       "~/Scripts/views/maintenance/sell.js"));
-            bundles.Add(new ScriptBundle("~/bundles/standard").Include(
+            bundles.Add(new ScriptBundle("~/bundles/standard")
+				.Include(
                       "~/Scripts/views/maintenance/standard.js"));
-            bundles.Add(new ScriptBundle("~/bundles/mbomindex").Include(
+            bundles.Add(new ScriptBundle("~/bundles/mbomindex")
+				.Include(
                       "~/Scripts/views/mbom/index.js"));
-            bundles.Add(new ScriptBundle("~/bundles/mbomproductchangeindex").Include(
-                      "~/Scripts/views/mbom/mbomproductchangeindex.js"));
-            bundles.Add(new ScriptBundle("~/bundles/changeindex").Include(
-                      "~/Scripts/views/mbom/changeindex.js"));
-            bundles.Add(new ScriptBundle("~/bundles/optionalitemsindex").Include(
+            bundles.Add(new ScriptBundle("~/bundles/productchange/index")
+				.Include(
+                      "~/Scripts/views/productchange/index.js"));
+            bundles.Add(new ScriptBundle("~/bundles/optionalitemsindex")
+				.Include(
                       "~/Scripts/views/mbom/optionalitemsindex.js"));
-            bundles.Add(new ScriptBundle("~/bundles/optionalitemsetindex").Include(
+            bundles.Add(new ScriptBundle("~/bundles/optionalitemsetindex")
+				.Include(
                       "~/Scripts/views/mbom/optionalitemsetindex.js"));
-            bundles.Add(new ScriptBundle("~/bundles/pbomchangeprod").Include(
+            bundles.Add(new ScriptBundle("~/bundles/productlibrary")
+                .Include(
+                      "~/Scripts/views/mbom/productlibrary.js"));
+            bundles.Add(new ScriptBundle("~/bundles/pbomchangeprod")
+				.Include(
                       "~/Scripts/views/mbom/pbomchangeprod.js"));
-            bundles.Add(new ScriptBundle("~/bundles/pbomchangeitem").Include(
+            bundles.Add(new ScriptBundle("~/bundles/pbomchangeitem")
+				.Include(
                       "~/Scripts/views/mbom/pbomchangeitem.js"));
-            bundles.Add(new ScriptBundle("~/bundles/prodchangedetail").Include(
-                "~/Scripts/views/mbom/prodchangedetail.js"));
-            bundles.Add(new ScriptBundle("~/bundles/mbomcreatepublish").Include(
-                "~/Scripts/views/mbom/mbomcreatepublish.js"));
-            bundles.Add(new ScriptBundle("~/bundles/mbomcreatepublishdetail").Include(
-                "~/Scripts/views/mbom/mbomcreatepublishdetail.js"));
-            bundles.Add(new ScriptBundle("~/bundles/itemchangedetail").Include(
-                "~/Scripts/views/mbom/itemchangedetail.js"));
-            bundles.Add(new ScriptBundle("~/bundles/menu").Include(
+            bundles.Add(new ScriptBundle("~/bundles/prodchangedetail")
+				.Include(
+                      "~/Scripts/views/mbom/prodchangedetail.js"));
+            bundles.Add(new ScriptBundle("~/bundles/mbomcreatepublish")
+				.Include(
+                      "~/Scripts/views/mbom/mbomcreatepublish.js"));
+            bundles.Add(new ScriptBundle("~/bundles/mbomcreatepublishdetail")
+				.Include(
+                      "~/Scripts/views/mbom/mbomcreatepublishdetail.js"));
+            bundles.Add(new ScriptBundle("~/bundles/itemchangedetail")
+				.Include(
+                      "~/Scripts/views/mbom/itemchangedetail.js"));
+            bundles.Add(new ScriptBundle("~/bundles/menu")
+				.Include(
                       "~/Scripts/views/menu.js"));
-            bundles.Add(new ScriptBundle("~/bundles/menudata1").Include(
+            bundles.Add(new ScriptBundle("~/bundles/menudata1")
+				.Include(
                       "~/Scripts/views/maintenance/menuData.js"));
-            bundles.Add(new ScriptBundle("~/bundles/menuData2").Include(
+            bundles.Add(new ScriptBundle("~/bundles/menuData2")
+				.Include(
                       "~/Scripts/views/mbom/menuData.js"));
-            bundles.Add(new ScriptBundle("~/bundles/menuData3").Include(
+            bundles.Add(new ScriptBundle("~/bundles/menuData3")
+				.Include(
                       "~/Scripts/views/mbom/productmenuData.js"));
-            bundles.Add(new ScriptBundle("~/bundles/menuData4").Include(
-                      "~/Scripts/views/mbom/changeMenuData.js"));
-            bundles.Add(new ScriptBundle("~/bundles/itemhlinksetindex").Include(
-                        "~/Scripts/views/mbom/itemhlinksetindex.js"));
-            bundles.Add(new ScriptBundle("~/bundles/groupindex").Include(
+            bundles.Add(new ScriptBundle("~/bundles/productchange/menudata")
+				.Include(
+                      "~/Scripts/views/productchange/menuData.js"));
+            bundles.Add(new ScriptBundle("~/bundles/itemhlinksetindex")
+				.Include(
+                      "~/Scripts/views/mbom/itemhlinksetindex.js"));
+            bundles.Add(new ScriptBundle("~/bundles/groupindex")
+				.Include(
                       "~/Scripts/views/group/index.js"));
-
-
-            bundles.Add(new StyleBundle("~/bundles/ztreecss").Include(
+            bundles.Add(new StyleBundle("~/bundles/ztreecss")
+				.Include(
                       "~/Content/ztree/zTreeStyle/zTreeStyle.css", new CssRewriteUrlTransform()));
-            bundles.Add(new StyleBundle("~/bundles/css").Include(
+            bundles.Add(new StyleBundle("~/bundles/css")
+				.Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
             bundles.Add(new StyleBundle("~/bundles/fonts")

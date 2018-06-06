@@ -267,8 +267,7 @@ namespace MBOM.Controllers
         public JsonResult ProductTree(string code)
         {
             var prodTree = Proc.ProcGetItemTree(db, code);
-            var dtoModel = Mapper.Map<List<ProcItemTreeView>>(prodTree);
-            return Json(ResultInfo.Success(dtoModel));
+            return Json(ResultInfo.Success(prodTree));
         }
 
         [Description("查看物料详情")]

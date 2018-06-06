@@ -1,5 +1,5 @@
 ﻿var URL_PAGELIST = "/MBOM/PBOMChangeItemPageList";
-var URL_EXTRALIST = "/MBOM//PBOMChangeItemAllPageList";
+var URL_EXTRALIST = "/MBOM/PBOMChangeItemAllPageList";
 var URL_DETAILINDEX = "/MBOM/CreatePublishDetailIndex";
 var dg = $("#dg");
 $(function () {

@@ -1,30 +1,5 @@
 ﻿namespace MBOM.Models
 {
-    public class ProcItemTreeView
-    {
-        public int LEVEL { get; set; }
-        public string PARENT_LINK { get; set; }
-        public string LINK { get; set; }
-        public string PARENTID { get; set; }
-        public string ID { get; set; }
-        public int ITEMID { get; set; }
-        public string ITEM_CODE { get; set; }
-        public string CODE { get; set; }
-        public string NAME { get; set; }
-        public int BOM_ID { get; set; }
-        public int BOM_ID_PRE { get; set; }
-        public int HLINK_ID { get; set; }
-        public double QUANTITY { get; set; }
-        public double QUANTITY_ALL { get; set; }
-        public string UNIT { get; set; }
-        public int? BOMHLINKID { get; set; }
-        public bool? ISBORROW { get; set; }
-        public bool? IS_ASSEMBLY { get; set; }
-        public int? ORDER { get; set; }
-        public bool? ISROOT { get; set; }
-        public bool? ISLINKED { get; set; }
-        public string MBOMTYPE { get; set; }
-    }
     public class ProcItemView
     {
         public int? ITEMID { get; set; }

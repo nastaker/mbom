@@ -30,12 +30,12 @@ namespace MBOM.Controllers
         [Description("查看产品基本信息")]
         public ActionResult BaseInfoIndex(string code)
         {
-            var viewModel = db.ViewProjectProductPboms.SingleOrDefault(m => m.CN_PRODUCT_CODE == code.Trim());
+            var viewModel = db.ViewProjectProductPboms.SingleOrDefault(m => m.PRODUCT_CODE == code.Trim());
             if(viewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(Mapper.Map<ViewProjectProductPbomView>(viewModel));
+            return View(viewModel);
         }
         //销售件设置
         [Description("查看销售件设置页面")]

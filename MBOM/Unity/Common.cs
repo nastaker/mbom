@@ -13,7 +13,7 @@ namespace MBOM.Unity
             {
                 return from x
                        in query
-                       where x.CN_GROUPCODE == user.groupname
+                       where x.GROUPCODE == user.groupname
                        select x;
             }
             return query;
@@ -25,7 +25,7 @@ namespace MBOM.Unity
             {
                 return from x
                        in query
-                       where x.CN_OWNER_ID == user.UserId
+                       where x.OWNER_ID == user.UserId
                        select x;
             }
             return query;

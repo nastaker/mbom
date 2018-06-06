@@ -8,6 +8,6 @@ namespace Repository
 {
     public abstract class GroupEntity
     {
-        public string CN_GROUPCODE { get; set; }
+        public string GROUPCODE { get; set; }
     }
 }

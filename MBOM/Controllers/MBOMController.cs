@@ -3,7 +3,6 @@ using Repository;
 using Localization;
 using MBOM.Filters;
 using MBOM.Models;
-using Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
@@ -33,37 +32,9 @@ namespace MBOM.Controllers
         {
             return View();
         }
-        [Description("查看MBOM产品变更维护页面")]
-        public ActionResult ProductChangeIndex()
-        {
-            return View();
-        }
-        [Description("查看MBOM产品变更维护菜单列表页面")]
-        public ActionResult ProductChangeMenuIndex()
-        {
-            return View();
-        }
-        [MaintenanceActionFilter]
-        [Description("MBOM产品变更维护主页面")]
-        public ActionResult ProductChangeMaintenanceIndex(string code)
-        {
-            return View();
-        }
-
-        [Description("查看产品库页面")]
-        public ActionResult ProductLibraryIndex()
-        {
-            return View();
-        }
         [MaintenanceActionFilter]
         [Description("MBOM维护主页面")]
         public ActionResult MaintenanceIndex(string code)
-        {
-            return View();
-        }
-        [MaintenanceActionFilter]
-        [Description("MBOM变更维护主页面")]
-        public ActionResult ChangeMaintenanceIndex(string code)
         {
             return View();
         }
@@ -110,12 +81,12 @@ namespace MBOM.Controllers
         [Description("产品基本详情页面")]
         public ActionResult BaseInfoIndex(string code)
         {
-            var viewModel = db.ViewProjectProductPboms.Where(m => m.CN_PRODUCT_CODE == code.Trim()).First();
+            var viewModel = db.ViewProjectProductPboms.Where(m => m.PRODUCT_CODE == code.Trim()).First();
             if (viewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(Mapper.Map<ViewProjectProductPbomView>(viewModel));
+            return View(viewModel);
         }
         [Description("选装件列表页面")]
         public ActionResult OptionalItemsIndex()
@@ -152,11 +123,6 @@ namespace MBOM.Controllers
         }
         [Description("PBOM变更（部件）")]
         public ActionResult PBomChangeItemIndex()
-        {
-            return View();
-        }
-        [Description("MBOM变更维护（产品）")]
-        public ActionResult ChangeIndex()
         {
             return View();
         }
@@ -215,144 +181,6 @@ namespace MBOM.Controllers
         {
             return View();
         }
-
-        [Description("用户产品库列表")]
-        public JsonResult UserProductLibraryList()
-        {
-            var userinfo = LoginUserInfo.GetLoginUser();
-            List<UserProductLibrary> list = db.UserProductLibraries.ToList();
-            if(list.Count == 0)
-            {
-                list.Add(new UserProductLibrary
-                {
-                    ParentId = null,
-                    Name = "我的文件夹",
-                    Order = 0,
-                    CreateBy = userinfo.UserId,
-                    CreateLogin = userinfo.LoginName,
-                    CreateName = userinfo.Name,
-                    Desc = "系统创建节点"
-                });
-                list = db.UserProductLibraries.AddRange(list).ToList();
-                db.SaveChanges();
-            }
-            var dtoList = Mapper.Map<List<UserProductLibraryView>>(list);
-            return Json(ResultInfo.Success(dtoList));
-        }
-        [Description("添加用户产品库分类")]
-        public JsonResult UserProductLibraryAdd(UserProductLibraryView view)
-        {
-            var userinfo = LoginUserInfo.GetLoginUser();
-            if (string.IsNullOrWhiteSpace(view.name))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            //判断是否重名
-            var list = db.UserProductLibraries.Where(where => where.ParentId == view.parentid && where.Name.Trim() == view.name.Trim()).ToList();
-            if(list.Count > 0)
-            {
-                return Json(ResultInfo.Fail("之前已经创建过新节点，请先编辑新节点名称"));
-            }
-            var model = Mapper.Map<UserProductLibrary>(view);
-            model.CreateBy = userinfo.UserId;
-            model.CreateLogin = userinfo.LoginName;
-            model.CreateName = userinfo.Name;
-            model = db.UserProductLibraries.Add(model);
-            db.SaveChanges();
-            var rt = Mapper.Map<UserProductLibraryView>(model);
-            return Json(ResultInfo.Success(rt));
-        }
-        [Description("删除用户产品库分类")]
-        public JsonResult UserProductLibraryDelete(UserProductLibraryView view)
-        {
-            if (view.id == 0)
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            //判断是否有子分类
-            var list = db.UserProductLibraries.Where(where => where.ParentId == view.id).ToList();
-            if(list.Count > 0)
-            {
-                return Json(ResultInfo.Fail("文件夹下还有子分类，无法删除"));
-            }
-            //判断是否有引用
-            var list2 = db.UserProductLibraryLink.Where(where => where.LibraryId == view.id).ToList();
-            if(list2.Count > 0)
-            {
-                return Json(ResultInfo.Fail("文件夹下有产品，无法删除"));
-            }
-            db.UserProductLibraries.Remove(db.UserProductLibraries.Find(view.id));
-            db.SaveChanges();
-            return Json(ResultInfo.Success());
-        }
-        [Description("重命名用户产品库分类")]
-        public JsonResult UserProductLibraryRename(UserProductLibraryView view)
-        {
-            if (view.id == 0)
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            else if (string.IsNullOrWhiteSpace(view.name))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            //判断是否重名
-            var list = db.UserProductLibraries.Where(where => where.ID != view.id && where.ParentId == view.parentid && where.Name.Trim() == view.name.Trim()).ToList();
-            if (list.Count > 0)
-            {
-                return Json(ResultInfo.Fail("同级文件夹下具有相同名称分类"));
-            }
-            var model = Mapper.Map<UserProductLibrary>(view);
-            db.UserProductLibraries.Attach(model);
-            db.Entry(model).Property("Name").IsModified = true;
-            db.SaveChanges();
-            return Json(ResultInfo.Success());
-        }
-        [Description("添加用户产品库分类下产品")]
-        public JsonResult UserProductLibraryLinkAdd(int libid, string ids)
-        {
-            if(libid == 0)
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            if (string.IsNullOrWhiteSpace(ids))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            ResultInfo rt = null;
-            try
-            {
-                rt = ResultInfo.Success(ResultInfo.Parse(Proc.ProcUserProductLibraryLinkAdd(db, libid, ids, LoginUserInfo.GetUserInfo())));
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-        [Description("查询用户产品库分类下产品列表（分页）")]
-        public JsonResult UserProductLibraryLinkList(int id, int page = 1, int rows = 10)
-        {
-            if (id == 0)
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            var query = db.UserProductLibraryLink.Where(w => w.LibraryId == id);
-            var data = query.OrderBy(d => d.ID).Skip((page - 1) * rows).Take(rows);
-            var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = data, total = count }));
-        }
-        [Description("删除用户产品库分类下产品列表")]
-        public JsonResult UserProductLibraryLinkDelete(int[] ids)
-        {
-            if (ids.Length == 0)
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            db.UserProductLibraryLink.RemoveRange(db.UserProductLibraryLink.Where(where => ids.Contains(where.ID)));
-            db.SaveChanges();
-            return Json(ResultInfo.Success());
-        }
         // MBOM 标记
         public JsonResult Mark(string code)
         {
@@ -398,8 +226,7 @@ namespace MBOM.Controllers
             try
             {
                 var list = Proc.ProcGetMbomList(db, code);
-                var dtolist = Mapper.Map<List<ProcItemTreeView>>(list);
-                rt = ResultInfo.Success(dtolist);
+                rt = ResultInfo.Success(list);
             }
             catch (SqlException ex)
             {
@@ -420,8 +247,7 @@ namespace MBOM.Controllers
             try
             {
                 var list = Proc.ProcDiscreteList(db, code);
-                var dtolist = Mapper.Map<List<ProcItemTreeView>>(list);
-                rt = ResultInfo.Success(dtolist);
+                rt = ResultInfo.Success(list);
             }
             catch (SqlException ex)
             {
@@ -569,16 +395,16 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("取消引用虚件")]
-        public JsonResult VirtualItemUnlink(string code, int itemid, string link, int bomhlinkid)
+        public JsonResult VirtualItemUnlink(string code, int itemid, string link)
         {
-            if (itemid == 0 || bomhlinkid == 0 || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
+            if (itemid == 0 || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, code, itemid, link, bomhlinkid));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, code, itemid, link));
             }
             catch (SqlException ex)
             {
@@ -921,26 +747,9 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
         [Description("MBOM产品维护列表（分页）")]
-        public JsonResult MaintenancePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
+        public JsonResult MaintenancePageList(ViewMbomMaintenance view, int page = 1, int rows = 10)
         {
             var query = db.ViewMbomMaintenances.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
-            {
-                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.PRODUCT_CODE));
-            }
-            if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
-            {
-                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(view.PROJECT_NAME));
-            }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            var list = Mapper.Map<List<ViewMbomMaintenanceView>>(projs);
-            var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
-        }
-        [Description("MBOM产品变更列表（分页）")]
-        public JsonResult ProductChangePageList(ViewProductChange view, int page = 1, int rows = 10)
-        {
-            var query = db.ViewProductChanges.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
             {
                 query = query.Where(obj => obj.PRODUCT_CODE.Contains(view.PRODUCT_CODE));
@@ -949,28 +758,10 @@ namespace MBOM.Controllers
             {
                 query = query.Where(obj => obj.PROJECT_NAME.Contains(view.PROJECT_NAME));
             }
-            var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows).ToList();
+            var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
-        [Description("MBOM物料变更维护列表（分页）")]
-        public JsonResult ChangeMaintenancePageList(ViewMbomMaintenanceView view, int page = 1, int rows = 10)
-        {
-            var query = db.ViewMbomMaintenances.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
-            {
-                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.PRODUCT_CODE));
-            }
-            if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
-            {
-                query = query.Where(obj => obj.CN_PROJECT_NAME.Contains(view.PROJECT_NAME));
-            }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            var list = Mapper.Map<List<ViewMbomMaintenanceView>>(projs);
-            var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
-        }
-
         [Description("查看PBOM变更的产品列表（分页）")]
         public JsonResult PBOMChangeProdPageList(ViewPbomChangeProduct view, int page = 1, int rows = 10)
         {
@@ -1011,13 +802,6 @@ namespace MBOM.Controllers
             var projs = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
-        }
-
-        [Description("查看产品的PBOM变更列表")]
-        public JsonResult ProductChangeDetailList(string prodcode)
-        {
-            var list = Proc.ProcProductChangeDetail(db, prodcode);
-            return Json(ResultInfo.Success(list));
         }
 
         [Description("查看物料的PBOM变更列表")]

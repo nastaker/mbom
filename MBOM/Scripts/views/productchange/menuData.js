@@ -6,7 +6,7 @@
     },
     {
         "text": lang.mbom.changemaintenance,
-        "url": "/MBOM/ProductChangeMaintenanceIndex",
+        "url": "/ProductChange/MaintenanceIndex",
         "iconCls": "cubes"
     },
     {

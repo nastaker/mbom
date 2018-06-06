@@ -25,9 +25,6 @@ namespace MBOM
         public TransferProfile()
         {
             CreateMap<AppProject, AppProjectView>();
-            CreateMap<ViewProjectProductPbom, ViewProjectProductPbomView>();
-            CreateMap<ViewMbomMaintenance, ViewMbomMaintenanceView>();
-            CreateMap<ProcItemTree, ProcItemTreeView>();
             CreateMap<ProcItem, ProcItemView>();
             CreateMap<ProcProcessItem, ProcProcessItemView>();
             CreateMap<AppItem, ProcProcessItemView>()

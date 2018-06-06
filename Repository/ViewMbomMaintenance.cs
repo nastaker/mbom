@@ -7,24 +7,24 @@ namespace Repository
     [Table("VIEW_MBOM_MAINTENANCE")]
     public partial class ViewMbomMaintenance
     {
-        public int CN_PROJECT_ID { get; set; }
-        public string CN_CODE { get; set; }
-        public string CN_PROJECT_NAME { get; set; }
+        public int PROJECT_ID { get; set; }
+        public string CODE { get; set; }
+        public string PROJECT_NAME { get; set; }
         [Key]
         [ColumnAttribute(Order = 1)]
-        public string CN_PRODUCT_CODE { get; set; }
-        public string CN_PRODUCT_NAME { get; set; }
-        public string CN_PRODUCT_STATUS { get; set; }
-        public string CN_TECH_STATUS { get; set; }
-        public string CN_CHECK_STATUS { get; set; }
-        public string CN_SALE_SET { get; set; }
+        public string PRODUCT_CODE { get; set; }
+        public string PRODUCT_NAME { get; set; }
+        public string PRODUCT_STATUS { get; set; }
+        public string TECH_STATUS { get; set; }
+        public string CHECK_STATUS { get; set; }
+        public string SALE_SET { get; set; }
         [Key]
         [ColumnAttribute(Order = 2)]
-        public string CN_PBOMVER { get; set; }
-        public DateTime CN_DT_PBOMVER { get; set; }
-        public string CN_PBOM_CREATE_NAME { get; set; }
-        public int CN_OWNER_ID { get; set; }
-        public string CN_OWNER_NAME { get; set; }
-        public bool CN_MARK { get; set; }
+        public string PBOMVER { get; set; }
+        public DateTime DT_PBOMVER { get; set; }
+        public string PBOM_CREATE_NAME { get; set; }
+        public int OWNER_ID { get; set; }
+        public string OWNER_NAME { get; set; }
+        public bool MARK { get; set; }
     }
 }

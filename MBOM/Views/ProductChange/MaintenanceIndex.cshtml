@@ -14,7 +14,7 @@
     <script src="~/Scripts/jquery.scrollTo.min.js"></script>
     <!-- custom js -->
     @Scripts.Render("~/bundles/common")
-    @Scripts.Render("~/bundles/mbommaintenance")
+    @Scripts.Render("~/bundles/productchange/maintenance")
 }
 <div class="easyui-layout" data-options="fit:true">
     <div data-options="region:'center',border:false">
@@ -72,6 +72,17 @@
                         <li><a href="javascript:;" onclick="itemUnlink()">@Lang.ItemUnlink</a></li>
                     </ul>
                 </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span>变更操作</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:;" title="只能应用处于主表中的所有变更" onclick="dlgApplyReasonOpen()">应用变更</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="javascript:;" title="只能应用处于离散区中的虚件变更" onclick="applyVirtualChange()">应用虚件变更</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <table id="treegrid"></table>
@@ -82,10 +93,22 @@
                 <option value="" selected="selected">显示全部</option>
                 <option value="V">仅虚件</option>
                 <option value="C">仅合件</option>
+                <option value="V,C">虚件与合件</option>
+                <option value="Y">新增物料</option>
+                <option value="N">取消物料</option>
+                <option value="Y,N">新增与取消</option>
             </select>
             <a href="javascript:editCombineName();" class="easyui-linkbutton">修改合件名称</a>
         </div>
         <table id="tgvi"></table>
+    </div>
+</div>
+
+<div id="dlgApplyReason">
+    <input id="txtApplyReason" type="text" />
+    <div id="dlgApplyReasonFooter" class="dlgFooter">
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="dlgApplyChanges()">确认</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgApplyReason').dialog('close')">关闭</a>
     </div>
 </div>
 

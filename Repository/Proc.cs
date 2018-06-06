@@ -23,17 +23,21 @@ namespace Repository
         const string PROC_MBOM_MAINTENANCE = "PROC_MBOM_MAINTENANCE @code,@userid,@name,@login";
         const string PROC_GET_MBOM_LIST = "PROC_GET_MBOM_MAINTENANCETREE @code";
         const string PROC_GET_PRODUCT_DISCRETE_LIST = "PROC_GET_PRODUCT_DISCRETE_LIST @code";
-
+        //虚件
         const string PROC_VIRTUAL_ITEM_SET = "PROC_VIRTUAL_ITEM_SET @code,@bomid,@itemid,@show,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_DROP = "PROC_VIRTUAL_ITEM_DROP @code,@itemid";
         const string PROC_VIRTUAL_ITEM_LINK = "PROC_VIRTUAL_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
-        const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @code,@itemid,@link,@bomhlinkid";
+        const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @code,@itemid,@link";
+        //合件
         const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @code,@bomid,@parentlink,@itemids,@type,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @code,@itemid,@parentlink";
         const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @code,@itemid,@bomid,@link";
         const string PROC_COMPOSITE_EDIT_NAME = "PROC_COMPOSITE_EDIT_NAME @itemid,@name";
         const string PROC_MBOM_RELEASE = "PROC_MBOM_RELEASE @code,@userid,@name,@login";
+        //产品变更
+        const string PROC_PRODUCT_CHANGE_APPLY_CHANGES = "PROC_PRODUCT_CHANGE_APPLY_CHANGES @code,@reason,@userid,@name,@login";
+        const string PROC_PRODUCT_CHANGE_APPLY_VIRTUAL_CHANGES = "PROC_PRODUCT_CHANGE_APPLY_VIRTUAL_CHANGES @code,@reason,@userid,@name,@login";
         const string PROC_SET_ITEM_KL = "PROC_SET_ITEM_KL @bomhlinkids, @processhlinkid,@userid,@name,@login";
         const string PROC_MBOM_INTEGRITY_CHECK = "PROC_MBOM_INTEGRITY_CHECK @code";
         const string PROC_USER_PROD_LIB_LINK_ADD = "PROC_USER_PROD_LIB_LINK_ADD @libid,@ids,@userid,@name,@login";
@@ -471,14 +475,13 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcVirtualItemUnlink(BaseDbContext db, string code, int itemid, string link, int bomhlinkid)
+        public static ProcReturnMsg ProcVirtualItemUnlink(BaseDbContext db, string code, int itemid, string link)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code),
                 new SqlParameter("@itemid", itemid),
-                new SqlParameter("@link", link),
-                new SqlParameter("@bomhlinkid", bomhlinkid)
+                new SqlParameter("@link", link)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_VIRTUAL_ITEM_UNLINK, param).SingleOrDefault();
             return result;
@@ -545,6 +548,37 @@ namespace Repository
             return result;
         }
         #endregion
+
+        //
+        public static ProcReturnMsg ProcProductChangeApplyChanges(BaseDbContext db, string code, string reason, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@code", code),
+                new SqlParameter("@reason", reason),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_PRODUCT_CHANGE_APPLY_CHANGES, param).SingleOrDefault();
+            return result;
+        }
+        //
+        public static object ProcProductChangeApplyVirtualChanges(BaseDbContext db, string code, string reason, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@code", code),
+                new SqlParameter("@reason", reason),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_PRODUCT_CHANGE_APPLY_VIRTUAL_CHANGES, param).SingleOrDefault();
+            return result;
+        }
+
+
         public static ProcReturnMsg ProcItemDeductionSet(BaseDbContext db, string bomhids, int pvhid, UserInfo userinfo)
         {
             SqlParameter[] param =

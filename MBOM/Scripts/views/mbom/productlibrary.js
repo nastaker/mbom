@@ -37,15 +37,15 @@
 };
 var processing = false;
 
-var URL_LINKLIST = "/MBOM/UserProductLibraryLinkList"
+var URL_LINKLIST = "/UserProductLibrary/LinkList"
 var URL_PAGELIST = "/MBOM/ProductBillboardsPageList"
 var URL_PRODUCTDETAIL = "/MBOM/ProductDetailIndex";
-var URL_ITEMTREE = "/MBOM/UserProductLibraryList";
-var URL_ADDNODE = "/MBOM/UserProductLibraryAdd"
-var URL_RENAMENODE = "/MBOM/UserProductLibraryRename"
-var URL_DELNODE = "/MBOM/UserProductLibraryDelete"
-var URL_ADDPRODS = "/MBOM/UserProductLibraryLinkAdd"
-var URL_PRODUCTDEL = "/MBOM/UserProductLibraryLinkDelete"
+var URL_ITEMTREE = "/UserProductLibrary/List";
+var URL_ADDNODE = "/UserProductLibrary/Add"
+var URL_RENAMENODE = "/UserProductLibrary/Rename"
+var URL_DELNODE = "/UserProductLibrary/Delete"
+var URL_ADDPRODS = "/UserProductLibrary/LinkAdd"
+var URL_PRODUCTDEL = "/UserProductLibrary/LinkDelete"
 
 var dgProd = $("#dgProducts");
 var dg = $("#dgList");

@@ -702,7 +702,6 @@
     <Content Include="Scripts\jquery.serializeJSON.min.js" />
     <Content Include="Scripts\viewerjs\viewer.css" />
     <Content Include="Scripts\viewerjs\viewer.js" />
-    <Content Include="Scripts\views\gradientColor.js" />
     <Content Include="Scripts\views\common.js" />
     <Content Include="Scripts\views\group\index.js" />
     <Content Include="Scripts\views\index.js" />
@@ -723,14 +722,13 @@
     <Content Include="Scripts\views\maintenance\menuData.js" />
     <Content Include="Scripts\views\maintenance\saleset.js" />
     <Content Include="Scripts\views\mbom\bomdiff.js" />
-    <Content Include="Scripts\views\mbom\changeindex.js" />
     <Content Include="Scripts\views\mbom\itemhlinksetindex.js" />
     <Content Include="Scripts\views\mbom\itemwithprocess.js" />
-    <Content Include="Scripts\views\mbom\changemaintenance.js" />
-    <Content Include="Scripts\views\mbom\mbomproductchangeindex.js" />
+    <Content Include="Scripts\views\productchange\maintenance.js" />
+    <Content Include="Scripts\views\productchange\index.js" />
     <Content Include="Scripts\views\mbom\mbomcreatepublish.js" />
     <Content Include="Scripts\views\mbom\mbomcreatepublishdetail.js" />
-    <Content Include="Scripts\views\mbom\changeMenuData.js" />
+    <Content Include="Scripts\views\productchange\menuData.js" />
     <Content Include="Scripts\views\mbom\optionalitemsetindex.js" />
     <Content Include="Scripts\views\mbom\optionalitemsindex.js" />
     <Content Include="Scripts\views\mbom\pbomchangeitem.js" />
@@ -814,7 +812,6 @@
     <Content Include="Views\MBOM\BaseInfoIndex.cshtml" />
     <Content Include="Views\Item\AttachmentsIndex.cshtml" />
     <Content Include="Views\Item\AttachmentsViewIndex.cshtml" />
-    <Content Include="Views\MBOM\ProductLibraryIndex.cshtml" />
     <Content Include="Views\Item\ItemDetailIndex.cshtml" />
     <Content Include="Views\Item\BaseInfoIndex.cshtml" />
     <Content Include="Views\Menu\MenuModuleIndex.cshtml" />
@@ -833,10 +830,11 @@
     <Content Include="Views\MBOM\ItemHlinkSetIndex.cshtml" />
     <Content Include="Views\Group\Index.cshtml" />
     <Content Include="Views\MBOM\ChangeIndex.cshtml" />
-    <Content Include="Views\MBOM\ChangeMaintenanceIndex.cshtml" />
     <Content Include="Views\MBOM\ProductChangeIndex.cshtml" />
-    <Content Include="Views\MBOM\ProductChangeMenuIndex.cshtml" />
-    <Content Include="Views\MBOM\ProductChangeMaintenanceIndex.cshtml" />
+    <Content Include="Views\UserProductLibrary\Index.cshtml" />
+    <Content Include="Views\ProductChange\Index.cshtml" />
+    <Content Include="Views\ProductChange\MenuIndex.cshtml" />
+    <Content Include="Views\ProductChange\MaintenanceIndex.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -872,6 +870,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\GroupController.cs" />
+    <Compile Include="Controllers\ProductChangeController.cs" />
+    <Compile Include="Controllers\UserProductLibraryController.cs" />
     <Compile Include="Filters\CustomErrorFilter.cs" />
     <Compile Include="Filters\MaintenanceActionFilter.cs" />
     <Compile Include="Filters\UserAuthAttribute.cs" />
@@ -894,7 +894,6 @@
     <Compile Include="Models\FileResponse.cs" />
     <Compile Include="Models\LoginView.cs" />
     <Compile Include="Models\MBOM\MaterialView.cs" />
-    <Compile Include="Models\MBOM\ViewMbomMaintenanceView.cs" />
     <Compile Include="Models\MenuView.cs" />
     <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Models\SysView.cs" />

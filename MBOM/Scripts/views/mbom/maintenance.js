@@ -2,7 +2,6 @@
 var discreteList = [];
 var parentId = undefined;
 var gradientStep = 6;
-var gradient = new gradientColor('#11ff55', '#ffff00', gradientStep);
 var checkedCss = "datagrid-row-checked-custom";
 var refreshCooldown = 5;
 var tgTrPreId = "#datagrid-row-r1-2-";
@@ -59,17 +58,28 @@ var treegridOption = {
     treeField: "ITEM_CODE",
     toolbar: '#toolbar',
     rowStyler: function (row) {
+        var cls = "";
         switch (row["MBOMTYPE"]) {
             case "VP":
-                return { class: "parent-virtual" };
+                cls = "parent-virtual";
                 break;
             case "V":
-                return { class: "main-virtual" };
+                cls = "main-virtual";
                 break;
             case "C":
-                return { class: "main-combine" };
+                cls = "main-combine";
                 break;
         }
+        if (row["CHA_DO"] == "Y" && row["CHA_SIGN"] == "Y") {
+            cls = "main-change-add-done";
+        } else if (row["CHA_DO"] == "Y" && row["CHA_SIGN"] == "N") {
+            cls = "main-change-remove-done";
+        } else if (row["CHA_DO"] == null && row["CHA_SIGN"] == "Y") {
+            cls = "main-change-add";
+        } else if (row["CHA_DO"] == null && row["CHA_SIGN"] == "N") {
+            cls = "main-change-remove";
+        }
+        return { class: cls };
     },
     columns: [[
         { field: 'LEVEL', title: lang.mbom.level, width: "35",align:"center" },
@@ -192,16 +202,47 @@ var tgviOption = {
         }
     },
     rowStyler: function (row) {
+        var cls;
         if (row["ISLINKED"]) {
-            return { class: "discreteLinked" };
+            cls =  "discreteLinked";
         }
+        if (row["CHA_DO"] == "Y" && row["CHA_SIGN"] == "Y") {
+            cls = "main-change-add-done";
+        } else if (row["CHA_DO"] == "Y" && row["CHA_SIGN"] == "N") {
+            cls = "main-change-remove-done";
+        } else if (row["CHA_DO"] == null && row["CHA_SIGN"] == "Y") {
+            cls = "main-change-add";
+        } else if (row["CHA_DO"] == null && row["CHA_SIGN"] == "N") {
+            cls = "main-change-remove";
+        }
+        return { class: cls };
     },
     toolbar: '#dlgDiscreteToolbar',
     columns: [[
         { field: 'ITEM_CODE', title: lang.mbom.itemCode, width: "170" },
         { field: 'NAME', title: lang.mbom.itemName, width: "140" },
         { field: 'QUANTITY', title: lang.mbom.quantity, align: "center", width: "35" },
-        { field: 'UNIT', title: lang.mbom.unit, align: "center", width: "35" }
+        { field: 'UNIT', title: lang.mbom.unit, align: "center", width: "35" },
+        {
+            field: 'CHA_SIGN', title: "物料状态", align: "center", width: "70",
+            formatter: function (value, row, index) {
+                if (value == "") {
+                    return "无变更";
+                } else if (value == "Y") {
+                    if (row["CHA_DO"] == "Y") {
+                        return "[已新增]";
+                    } else {
+                        return "新增";
+                    }
+                } else if (value == "N") {
+                    if (row["CHA_DO"] == "Y") {
+                        return "[已取消]";
+                    } else {
+                        return "取消";
+                    }
+                }
+            }
+        }
     ]]
 };
 
@@ -309,8 +350,14 @@ function filterDiscrete(value) {
     var filterList = [];
     for (var i in discreteList) {
         var discrete = discreteList[i];
-        if (discrete["MBOMTYPE"] == value) {
-            filterList.push(discrete);
+        var filters = value.split(",");
+        for (var i in filters) {
+            var filter = filters[i];
+            if (discrete["MBOMTYPE"] == filter) {
+                filterList.push(discrete);
+            } else if (discrete["CHA_SIGN"] == filter) {
+                filterList.push(discrete);
+            }
         }
     }
     tgvi.treegrid("loadData", filterList);
@@ -369,8 +416,8 @@ function reloadTable(options) {
         buildTree({
             items: result.data,
             list: list,
-            pid: "PARENTID",
-            id: "ID"
+            pid: "PARENT_LINK",
+            id: "LINK"
         });
         treegrid.treegrid("loadData", list);
         treegrid.treegrid("loaded");
@@ -522,7 +569,7 @@ function itemLinkConfirm() {
     if (!txtQuant.textbox("isValid")) {
         return;
     }
-    //获取父级ID、父级的链路
+    //获取父级LINK、父级的链路
     var pitem = tg.treegrid("getSelected");
     var item = dgItem.datagrid("getSelected");
     var pid = pitem["ITEMID"];
@@ -603,16 +650,16 @@ function virtualItemSet() {
     if (items.length == 1) {
         item = items[0];
     }
+    if (!item["ITEMID"] || !item["BOM_ID"]) {
+        AlertWin(lang.mbom.noSelectRoot);
+        return false;
+    }
     if (item["MBOMTYPE"]) {
         AlertWin(lang.mbom.notSelectHaveType);
         return false;
     }
     if (item.children.length == 0) {
         AlertWin(lang.mbom.haveToSelectParent);
-        return false;
-    }
-    if (!item["ITEMID"] || !item["BOM_ID"]) {
-        AlertWin(lang.mbom.noSelectRoot);
         return false;
     }
     var itemcode = $.trim(item["ITEM_CODE"]);
@@ -781,7 +828,6 @@ function virtualItemUnlink() {
     var item = items[0];
     var itemid = item["ITEMID"];
     var link = item["LINK"];
-    var bomhlinkid = item["BOMHLINKID"];
     var itemcode = $.trim(item["ITEM_CODE"]);
     if (item["MBOMTYPE"] != "V") {
         AlertWin(lang.mbom.notSelectVirtual);
@@ -792,8 +838,7 @@ function virtualItemUnlink() {
             postData(URL_VIRTUAL_ITEM_UNLINK, {
                 code: params.code,
                 itemid: itemid,
-                link: link,
-                bomhlinkid: bomhlinkid
+                link: link
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -1290,9 +1335,10 @@ function buildTree(options) {
         pval: null,
         pid: "pid",
         id: "id",
+        return_pid: "PARENTID",
+        return_id:"ID",
         isroot: "ISROOT",
-        children: "children",
-        type: null
+        children: "children"
     };
 
     $.extend(settings, options);
@@ -1301,9 +1347,10 @@ function buildTree(options) {
     var list = settings.list;
     var id = settings.id;
     var pid = settings.pid;
+    var return_id = settings.return_id;
+    var return_pid = settings.return_pid;
     var pval = settings.pval;
     var isroot = settings.isroot;
-    var type = settings.type;
     var children = settings.children;
 
     var count = items.length;
@@ -1311,15 +1358,11 @@ function buildTree(options) {
     if (count == 0) {
         return false;
     }
-
     for (var i = 0; i < count; i++) {
         var item = items[i];
-        if (item[pid] == pval || item[isroot]) {
-            if (item["MBOMTYPE"] == null) {
-                if (type == "V" || type == "C") {
-                    item["MBOMTYPE"] = type;
-                }
-            }
+        item[return_id] = item[id].replace(/,/g, "");
+        item[return_pid] = item[pid] == null ? null : item[pid].replace(/,/g, "");
+        if (item[return_pid] == pval || item[isroot]) {
             switch (item["MBOMTYPE"]) {
                 case "V":
                 case "VP":
@@ -1341,6 +1384,6 @@ function buildTree(options) {
     for (var i in list) {
         var item = list[i];
         item[children] = item[children] ? item[children] : [];
-        buildTree($.extend(settings, { items: items, list: item[children], pval: item[id], type: item["MBOMTYPE"]}));
+        buildTree($.extend(settings, { items: items, list: item[children], pval: item[return_id] }));
     }
 }
