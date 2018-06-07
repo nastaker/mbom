@@ -198,6 +198,7 @@
     <Content Include="Content\icons\ulock.png" />
     <Content Include="Content\icons\user.png" />
     <Content Include="Content\icons\virtual.png" />
+    <Content Include="Content\images\loginBackground.jpg" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\ionicons.min.css" />
     <Content Include="Content\jquery.fileupload\css\blueimp-gallery.min.css" />
@@ -873,6 +874,7 @@
     <Compile Include="Controllers\ProductChangeController.cs" />
     <Compile Include="Controllers\UserProductLibraryController.cs" />
     <Compile Include="Filters\CustomErrorFilter.cs" />
+    <Compile Include="Filters\DetailLogFilterAttribute.cs" />
     <Compile Include="Filters\MaintenanceActionFilter.cs" />
     <Compile Include="Filters\UserAuthAttribute.cs" />
     <Compile Include="Controllers\EnvironmentController.cs" />
@@ -898,8 +900,6 @@
     <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Models\SysView.cs" />
     <Compile Include="Models\Transfer\AppBom.cs" />
-    <Compile Include="Models\Transfer\AppProduct.cs" />
-    <Compile Include="Models\Transfer\AppProject.cs" />
     <Compile Include="Models\Transfer\ProcItemView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unity\ApplicationInit.cs" />

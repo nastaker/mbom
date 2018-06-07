@@ -54,7 +54,7 @@ namespace MBOM.Unity
 
         public static void InitRightActions()
         {
-            using(BaseDbContext db = new BaseDbContext())
+            using (BaseDbContext db = new BaseDbContext())
             {
                 var actions = db.SysRightActions
                      .Include(s => s.MenuInfo)

@@ -19,7 +19,7 @@ namespace Repository
         const string PROC_GET_PROCESS_ITEM_LIST = "PROC_GET_PROCESS_ITEM @code";
         const string PROC_GET_ITEM_PROCESS = "PROC_GET_ITEM_PROCESS @code";
         const string PROC_GET_ITEM_CATE_LIST = "PROC_GET_ITEM_CATE_LIST @code,@catename";
-        const string PROC_PRODUCT_TRANSFER_INITIATTE = "PROC_PRODUCT_TRANSFER_INITIATTE @code";
+        const string PROC_PRODUCT_TRANSFER_INITIATTE = "PROC_PRODUCT_TRANSFER_INITIATTE @code,@userid,@name,@login";
         const string PROC_MBOM_MAINTENANCE = "PROC_MBOM_MAINTENANCE @code,@userid,@name,@login";
         const string PROC_GET_MBOM_LIST = "PROC_GET_MBOM_MAINTENANCETREE @code";
         const string PROC_GET_PRODUCT_DISCRETE_LIST = "PROC_GET_PRODUCT_DISCRETE_LIST @code";
@@ -360,11 +360,14 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcProductTransferInitiate(BaseDbContext db, string code)
+        public static ProcReturnMsg ProcProductTransferInitiate(BaseDbContext db, string code, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code)
+                new SqlParameter("@code", code),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_PRODUCT_TRANSFER_INITIATTE, param).First();
             return result;

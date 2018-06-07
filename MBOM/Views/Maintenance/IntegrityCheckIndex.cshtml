@@ -1,5 +1,5 @@
 ﻿@using Localization;
-@model MBOM.Models.IntegrityCheckView
+@model Repository.AppProduct
 @{
     ViewBag.Title = Lang.IntegrityCheck;
 }
@@ -10,15 +10,15 @@
         </caption>
         <tr>
             <th class="col-sm-3">@Lang.ProductCheckStatus：</th>
-            <td>@Model.CHECK_STATUS</td>
+            <td>@Model.CN_CHECK_STATUS</td>
         </tr>
         <tr>
             <th>@Lang.SaleSet：</th>
-            <td>@Model.SALE_SET</td>
+            <td>@Model.CN_SALE_SET</td>
         </tr>
         <tr>
             <th>@Lang.ProductStatus：</th>
-            <td>@Model.STATUS</td>
+            <td>@Model.CN_STATUS</td>
         </tr>
     </table>
 </div>

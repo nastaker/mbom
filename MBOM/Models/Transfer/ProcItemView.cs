@@ -19,31 +19,4 @@
         public string 包装件 { get; set; }
         public string 工艺件 { get; set; }
     }
-    public partial class ProcCateItemView
-    {
-        public int? ITEMID { get; set; }
-        public string ITEM_CODE { get; set; }
-        public string CODE { get; set; }
-        public string NAME { get; set; }
-        public bool? B_IS_ASSEMBLY { get; set; }
-        public int? ORDER { get; set; }
-        public bool? ISBORROW { get; set; }
-        public string ISBORROWSTR { get; set; }
-        public string PDATE { get; set; }
-    }
-
-    public class ProcProcessItemView
-    {
-        public int ITEMID { get; set; }
-        public string NAME { get; set; }
-        public string CODE { get; set; }
-    }
-
-    public partial class ProcItemProcessView
-    {
-        public int HLINK_ID { get; set; }
-        public string GX_CODE { get; set; }
-        public string GX_NAME { get; set; }
-        public string GXNR { get; set; }
-    }
 }

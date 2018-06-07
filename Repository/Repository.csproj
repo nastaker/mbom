@@ -102,6 +102,7 @@
     <Compile Include="TN_80_APP_0040_MBOM_LLINK.cs" />
     <Compile Include="TN_80_APP_0040_MBOM_LOG.cs" />
     <Compile Include="TN_80_APP_0040_MBOM_TRACKSTEP.cs" />
+    <Compile Include="TN_SYS_LOG.cs" />
     <Compile Include="ViewCreatePublishDetail.cs" />
     <Compile Include="ViewItemByType.cs" />
     <Compile Include="ViewItemMaintenance.cs" />

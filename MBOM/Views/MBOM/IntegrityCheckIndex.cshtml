@@ -1,43 +1,28 @@
 ﻿@using Localization;
-@using MBOM.Models;
-@model ResultInfo
+@model Repository.AppProduct
 @{
     ViewBag.Title = Lang.IntegrityCheck;
 }
-@if (Model.success)
-{
-    var m = Model.data as IntegrityCheckView;
-    <div style="padding:10px;">
-        <table class="table table-bordered">
-            <caption>
-                <h3 class="text-left">@Lang.IntegrityCheckStatus</h3>
-            </caption>
-            <tr>
-                <th class="col-sm-3">@Lang.ProductCode：</th>
-                <td>@m.ITEM_CODE</td>
-            </tr>
-            <tr>
-                <th>@Lang.ProductName：</th>
-                <td>@m.NAME</td>
-            </tr>
-            <tr>
-                <th>@Lang.ProductCheckStatus：</th>
-                <td>@m.CHECK_STATUS</td>
-            </tr>
-            <tr>
-                <th>@Lang.ProductStatus：</th>
-                <td>@m.STATUS</td>
-            </tr>
-        </table>
-    </div>
-}
-else
-{
-    <div class="container">
-        <div class="row" style="margin-top:30px;">
-            <div class="alert alert-danger" role="alert">
-                @Html.Raw(Model.msg.Replace("\r\n", "<br/>"))
-            </div>
-        </div>
-    </div>
-}
+<div style="padding:10px;">
+    <table class="table table-bordered">
+        <caption>
+            <h3 class="text-left">@Lang.IntegrityCheckStatus</h3>
+        </caption>
+        <tr>
+            <th class="col-sm-3">@Lang.ProductCode：</th>
+            <td>@Model.CN_ITEM_CODE</td>
+        </tr>
+        <tr>
+            <th>@Lang.ProductName：</th>
+            <td>@Model.CN_NAME</td>
+        </tr>
+        <tr>
+            <th>@Lang.ProductCheckStatus：</th>
+            <td>@Model.CN_CHECK_STATUS</td>
+        </tr>
+        <tr>
+            <th>@Lang.ProductStatus：</th>
+            <td>@Model.CN_STATUS</td>
+        </tr>
+    </table>
+</div>

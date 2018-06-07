@@ -18,7 +18,6 @@ namespace MBOM.Controllers
         {
             this.db = db;
         }
-        // GET: Transfer
         [Description("转批发起页面")]
         public ActionResult InitiateIndex()
         {
@@ -40,7 +39,8 @@ namespace MBOM.Controllers
         [Description("转批发起操作")]
         public JsonResult Initiate(string code)
         {
-            var proc = Proc.ProcProductTransferInitiate(db, code);
+            var userinfo = LoginUserInfo.GetUserInfo();
+            var proc = Proc.ProcProductTransferInitiate(db, code, userinfo);
             return Json(ResultInfo.Success(proc));
         }
 
@@ -61,7 +61,7 @@ namespace MBOM.Controllers
             }
             var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
+            return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
 
         [Description("转批中列表（分页）")]
@@ -81,7 +81,7 @@ namespace MBOM.Controllers
             }
             var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
+            return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
 
         [Description("已转批列表（分页）")]
@@ -101,7 +101,7 @@ namespace MBOM.Controllers
             }
             var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
+            return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
     }
 }

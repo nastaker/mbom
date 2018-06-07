@@ -24,18 +24,10 @@ namespace MBOM
     {
         public TransferProfile()
         {
-            CreateMap<AppProject, AppProjectView>();
-            CreateMap<ProcItem, ProcItemView>();
-            CreateMap<ProcProcessItem, ProcProcessItemView>();
-            CreateMap<AppItem, ProcProcessItemView>()
+            CreateMap<AppItem, ProcProcessItem>()
                 .ForMember("ITEMID", opts => opts.MapFrom("CN_ID"));
-            CreateMap<ProcItemProcess, ProcItemProcessView>();
-            CreateMap<ProcCateItem, ProcCateItemView>();
-            CreateMap<AppProduct, IntegrityCheckView>();
             CreateMap<AppProcessVer, AppProcessVerView>();
-            CreateMap<AppProcessVerHlink, ProcItemProcessView>();
             CreateMap<AppBom, AppBomView>();
-            CreateMap<ProcBomDiff, BomDiffView>();
 
             RecognizePrefixes("CN_");
         }

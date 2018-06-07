@@ -11,13 +11,14 @@ namespace Repository
         public int CN_HLINK_ID { get; set; }
         public string CN_S_BOM_TYPE { get; set; }
         public int CN_BOM_ID { get; set; }
+        public int CN_BOM_ID_PRE { get; set; }
         public int CN_COMPONENT_CLASS_ID { get; set; }
         public int CN_COMPONENT_OBJECT_ID { get; set; }
         public int CN_PDM_CLASS_ID { get; set; }
         public int CN_PDM_OBJECT_ID { get; set; }
         public string CN_S_CODE { get; set; }
         public string CN_DISPLAYNAME { get; set; }
-        public int? CN_ORDER { get; set; }
+        public int CN_ORDER { get; set; }
         public int? CN_NUMBER { get; set; }
         public double CN_F_QUANTITY { get; set; }
         public string CN_UNIT { get; set; }

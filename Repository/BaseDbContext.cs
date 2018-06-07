@@ -85,6 +85,7 @@
         public virtual DbSet<ViewItemWithType> ViewItemsWithType { get; set; }
         public virtual DbSet<ViewProductChange> ViewProductChanges { get; set; }
 
+        public virtual DbSet<TN_SYS_LOG> TN_SYS_LOG { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

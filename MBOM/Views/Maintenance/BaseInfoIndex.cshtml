@@ -1,6 +1,5 @@
 ﻿@using Localization;
-@using Repository;
-@model ViewProjectProductPbom
+@model Repository.ViewProjectProductPbom
 @{
     Layout = null;
 }
@@ -25,8 +24,10 @@
             <td>@Model.VER</td>
         </tr>
         <tr>
+            <th>项目经理：</th>
+            <td>@Model.OWNER_NAME</td>
             <th>@Lang.TableDesigner3：</th>
-            <td colspan="3">@Model.CREATE_NAME</td>
+            <td>@Model.CREATE_NAME</td>
         </tr>
         <tr class="active">
             <td colspan="4"></td>
@@ -35,6 +36,110 @@
             <th>@Lang.IsSaleSet：</th>
             <td colspan="3">@Model.SALE_SET</td>
         </tr>
+        <tr class="active">
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <th colspan="4">
+                节点日志：
+            </th>
+        </tr>
+        <tr
+        @if (string.IsNullOrWhiteSpace(Model.PDM_PUB_NAME))
+        {
+            <text>
+            class="active" 
+            </text>
+        }>
+            <th>
+                PDM发布日期：
+            </th>
+            <td>@Model.PDM_PUB_DATE</td>
+            <th>
+                发布者：
+            </th>
+            <td>@Model.PDM_PUB_NAME</td>
+        </tr>
+        <tr
+        @if (string.IsNullOrWhiteSpace(Model.SALESET_NAME))
+        {
+            <text>
+            class="active" 
+            </text>
+        }>
+            <th>
+                销售件设置日期：
+            </th>
+            <td>@Model.SALESET_DATE</td>
+            <th>
+                设置者：
+            </th>
+            <td>@Model.SALESET_NAME</td>
+        </tr>
+        <tr
+        @if (string.IsNullOrWhiteSpace(Model.TRANSFERING_NAME))
+        {
+            <text>
+            class="active" 
+            </text>
+        }>
+            <th>
+                转批发起日期：
+            </th>
+            <td>@Model.TRANSFERING_DATE</td>
+            <th>
+                发起者：
+            </th>
+            <td>@Model.TRANSFERING_NAME</td>
+        </tr>
+        <tr
+        @if (string.IsNullOrWhiteSpace(Model.MBOM_PUBING_NAME))
+        {
+            <text>
+            class="active" 
+            </text>
+        }>
+            <th>
+                MBOM转批发布日期：
+            </th>
+            <td>@Model.MBOM_PUBING_DATE</td>
+            <th>
+                发布者：
+            </th>
+            <td>@Model.MBOM_PUBING_NAME</td>
+        </tr>
+        <tr
+        @if (string.IsNullOrWhiteSpace(Model.MBOM_PUBED_NAME))
+        {
+            <text>
+            class="active" 
+            </text>
+        }>
+            <th>
+                MBOM转批发布完成日期：
+            </th>
+            <td>@Model.MBOM_PUBED_DATE</td>
+            <th>
+                发布者：
+            </th>
+            <td>@Model.MBOM_PUBED_NAME</td>
+        </tr>
+        <tr
+        @if (string.IsNullOrWhiteSpace(Model.MBOM_TRANED_NAME))
+        {
+            <text>
+            class="active" 
+            </text>
+        }>
+            <th>
+                已转批日期：
+            </th>
+            <td>@Model.MBOM_TRANED_DATE</td>
+        <th>
+            设置者：
+        </th>
+        <td>@Model.MBOM_TRANED_NAME</td>
+    </tr>
     </table>
 </div>
 

@@ -1,8 +1,4 @@
 ﻿using MBOM.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MBOM.Filters
@@ -34,6 +30,17 @@ namespace MBOM.Filters
                         filterContext.Result = new JsonResult { Data = ResultInfo.Fail("404——资源未找到"), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
                         break;
                 }
+            }
+            else
+            {
+                filterContext.ExceptionHandled = true;
+                var viewData = new ViewDataDictionary();
+                viewData["Message"] = errMsg;
+                filterContext.Result = new ViewResult
+                {
+                    ViewName = "~/Views/Shared/Error.cshtml",
+                    ViewData = viewData
+                };
             }
         }
     }
