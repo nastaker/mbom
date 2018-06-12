@@ -711,7 +711,6 @@
     <Content Include="Scripts\views\item\maintenance.js" />
     <Content Include="Scripts\views\item\menuData.js" />
     <Content Include="Scripts\views\lang.js" />
-    <Content Include="Scripts\views\maintenance\mbom.js" />
     <Content Include="Scripts\views\maintenance\bomparent.js" />
     <Content Include="Scripts\views\maintenance\pbom.js" />
     <Content Include="Scripts\views\maintenance\purchase.js" />

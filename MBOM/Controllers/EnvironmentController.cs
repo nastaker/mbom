@@ -8,11 +8,11 @@ namespace MBOM.Controllers
     [UserAuth]
     public class EnvironmentController : Controller
     {
-        [Description("初始化所有操作权限数据")]
+        [Description("更新控制器动作数据")]
         public ActionResult InitActions()
         {
             ApplicationInit.InitActions();
-            return Content("已成功初始化所有操作权限数据", "text/html");
+            return Content("已成功更新控制器动作数据", "text/html");
         }
 
         [Description("更新权限操作数据")]
