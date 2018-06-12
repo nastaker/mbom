@@ -569,6 +569,7 @@ function itemLinkConfirm() {
     if (!txtQuant.textbox("isValid")) {
         return;
     }
+    //获取当前产品代号
     //获取父级LINK、父级的链路
     var pitem = tg.treegrid("getSelected");
     var item = dgItem.datagrid("getSelected");
@@ -581,6 +582,7 @@ function itemLinkConfirm() {
     //提交
     $("#dlgItem").dialog("close");
     postData(URL_ITEM_LINK, {
+        code: params.code,
         pid: pid,
         plink: plink,
         itemid: itemid,
@@ -606,7 +608,10 @@ function itemUnlink() {
     var itemcode = $.trim(item["ITEM_CODE"]);
     $.messager.confirm("提示", "您确认要删除物料"+ itemcode +"的引用吗？此操作仅可用于自定义添加物料", function (r) {
         if (r) {
-            postData(URL_ITEM_UNLINK, { hlinkid: hlinkid }, function (result) {
+            postData(URL_ITEM_UNLINK, {
+                code: params.code,
+                hlinkid: hlinkid
+            }, function (result) {
                 if (result.success) {
                     reloadAllTables();
                 }

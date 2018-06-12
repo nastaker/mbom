@@ -9,6 +9,8 @@ namespace Repository
         public int LEVEL { get; set; }
         public string PARENT_LINK { get; set; }
         public string LINK { get; set; }
+        public string PARENTID { get; set; }
+        public string ID { get; set; }
         public int ITEMID { get; set; }
         public string ITEM_CODE { get; set; }
         public string CODE { get; set; }

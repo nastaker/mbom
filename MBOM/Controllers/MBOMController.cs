@@ -42,8 +42,15 @@ namespace MBOM.Controllers
         [Description("MBOM完整性核查页面")]
         public ActionResult IntegrityCheckIndex(string code)
         {
-            var prod = Proc.ProcMbomIntegrityCheck(db, code);
-            return View(prod);
+            try
+            {
+                var prod = Proc.ProcMbomIntegrityCheck(db, code);
+                return View(ResultInfo.Success(prod));
+            }
+            catch (SqlException ex)
+            {
+                return View(ResultInfo.Fail(ex.Message));
+            }
         }
         // MBOM 产品看板
         [Description("MBOM产品看板页面")]
@@ -275,7 +282,7 @@ namespace MBOM.Controllers
         }
 
         [Description("引用自定义物料")]
-        public JsonResult ItemLink(int pid, string plink, int itemid, float quantity)
+        public JsonResult ItemLink(string code, int pid, string plink, int itemid, float quantity)
         {
             if(pid == 0 || string.IsNullOrWhiteSpace(plink) || itemid == 0 || quantity == 0f)
             {
@@ -284,7 +291,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcItemLink(db, pid, plink, itemid, quantity, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemLink(db, code, pid, plink, itemid, quantity, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -294,16 +301,16 @@ namespace MBOM.Controllers
         }
 
         [Description("删除引用的自定义物料")]
-        public JsonResult ItemUnlink(int hlinkid)
+        public JsonResult ItemUnlink(string code, int hlinkid)
         {
-            if (hlinkid == 0)
+            if (hlinkid == 0 || string.IsNullOrWhiteSpace(code))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcItemUnLink(db, hlinkid));
+                rt = ResultInfo.Parse(Proc.ProcItemUnLink(db, code, hlinkid, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -778,7 +785,7 @@ namespace MBOM.Controllers
             }
             var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = projs, total = count }));
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
         [Description("查看PBOM变更的产品列表（分页）")]
         public JsonResult PBOMChangeProdPageList(ViewPbomChangeProduct view, int page = 1, int rows = 10)

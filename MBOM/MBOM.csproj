@@ -757,6 +757,7 @@
     <Content Include="Scripts\ztree\jquery.ztree.exedit.min.js" />
     <Content Include="Scripts\ztree\jquery.ztree.exhide.js" />
     <Content Include="Scripts\ztree\jquery.ztree.exhide.min.js" />
+    <Content Include="Views\Group\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\web.config" />
@@ -829,7 +830,6 @@
     <Content Include="Views\MBOM\ItemChangeDetailIndex.cshtml" />
     <Content Include="Views\MBOM\CreatePublishDetailIndex.cshtml" />
     <Content Include="Views\MBOM\ItemHlinkSetIndex.cshtml" />
-    <Content Include="Views\Group\Index.cshtml" />
     <Content Include="Views\MBOM\ChangeIndex.cshtml" />
     <Content Include="Views\MBOM\ProductChangeIndex.cshtml" />
     <Content Include="Views\UserProductLibrary\Index.cshtml" />

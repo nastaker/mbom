@@ -263,10 +263,16 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(list));
         }
 
-        [Description("查看产品详情")]
-        public JsonResult ProductTree(string code)
+        [Description("查看物料PBOM")]
+        public JsonResult PbomTree(string code)
         {
-            var prodTree = Proc.ProcGetItemTree(db, code);
+            var prodTree = Proc.ProcGetItemPBomTree(db, code);
+            return Json(ResultInfo.Success(prodTree));
+        }
+        [Description("查看物料MBOM")]
+        public JsonResult MbomTree(string code)
+        {
+            var prodTree = Proc.ProcGetItemMBomTree(db, code);
             return Json(ResultInfo.Success(prodTree));
         }
 

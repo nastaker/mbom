@@ -61,7 +61,7 @@ namespace MBOM.Controllers
             }
             var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = projs, total = count }));
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
 
         [Description("转批中列表（分页）")]
@@ -81,7 +81,7 @@ namespace MBOM.Controllers
             }
             var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = projs, total = count }));
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
 
         [Description("已转批列表（分页）")]
@@ -101,7 +101,7 @@ namespace MBOM.Controllers
             }
             var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = projs, total = count }));
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
     }
 }

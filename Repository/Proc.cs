@@ -11,9 +11,10 @@ using Model;
 namespace Repository
 {
 
-    public static class Proc 
+    public static class Proc
     {
-        const string PROC_GET_ITEM_TREE = "PROC_GET_ITEM_TREE @code";
+        const string PROC_GET_ITEM_PBOM_TREE = "PROC_GET_ITEM_PBOM_TREE @code";
+        const string PROC_GET_ITEM_MBOM_TREE = "PROC_GET_ITEM_MBOM_TREE @code";
         const string PROC_GET_ITEM_SALESETINFO = "PROC_GET_ITEM_SETINFO @code";
         const string PROC_GET_ITEM_LIST = "PROC_GET_ITEM_LIST @code";
         const string PROC_GET_PROCESS_ITEM_LIST = "PROC_GET_PROCESS_ITEM @code";
@@ -42,8 +43,8 @@ namespace Repository
         const string PROC_MBOM_INTEGRITY_CHECK = "PROC_MBOM_INTEGRITY_CHECK @code";
         const string PROC_USER_PROD_LIB_LINK_ADD = "PROC_USER_PROD_LIB_LINK_ADD @libid,@ids,@userid,@name,@login";
         const string PROC_GET_BOM_DIFF = "PROC_GET_BOM_DIFF @bomid";
-        const string PROC_ITEM_LINK = "PROC_ITEM_LINK @pid,@plink,@itemid,@quantity,@userid,@name,@login";
-        const string PROC_ITEM_UNLINK = "PROC_ITEM_UNLINK @hlinkid";
+        const string PROC_ITEM_LINK = "PROC_ITEM_LINK @code,@pid,@plink,@itemid,@quantity,@userid,@name,@login";
+        const string PROC_ITEM_UNLINK = "PROC_ITEM_UNLINK @code,@hlinkid,@userid,@name,@login";
         const string PROC_ITEM_EDITLINKQUANTITY = "PROC_ITEM_EDITLINKQUANTITY @hlinkid,@quantity";
         const string PROC_OPTIONALITEMS_SET = "PROC_OPTIONALITEMS_SET @itemids,@userid,@name,@login";
         const string PROC_OPTIONALITEM_MAP_ADD = "PROC_OPTIONALITEM_MAP_ADD @itemid,@itemids,@userid,@name,@login";
@@ -58,13 +59,23 @@ namespace Repository
         const string PROC_ITEM_SET_TYPE = "PROC_ITEM_SET_TYPE @itemid,@typeid,@userid,@name,@login";
         const string PROC_SET_SALELIST = "PROC_SET_SALELIST @code,@str,@userid,@name,@login";
 
-        public static List<ProcItemTree> ProcGetItemTree(BaseDbContext db, string code)
+        public static List<ProcItemTree> ProcGetItemPBomTree(BaseDbContext db, string code)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code)
             };
-            var result = db.Database.SqlQuery<ProcItemTree>(PROC_GET_ITEM_TREE, param).ToList();
+            var result = db.Database.SqlQuery<ProcItemTree>(PROC_GET_ITEM_PBOM_TREE, param).ToList();
+            return result;
+        }
+
+        public static List<ProcItemTree> ProcGetItemMBomTree(BaseDbContext db, string code)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@code", code)
+            };
+            var result = db.Database.SqlQuery<ProcItemTree>(PROC_GET_ITEM_MBOM_TREE, param).ToList();
             return result;
         }
 
@@ -309,20 +320,25 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcItemUnLink(BaseDbContext db, int hlinkid)
+        public static ProcReturnMsg ProcItemUnLink(BaseDbContext db, string code, int hlinkid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@hlinkid", hlinkid)
+                new SqlParameter("@code", code),
+                new SqlParameter("@hlinkid", hlinkid),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_ITEM_UNLINK, param).SingleOrDefault();
             return result;
         }
 
-        public static ProcReturnMsg ProcItemLink(BaseDbContext db, int pid, string plink, int itemid, float quantity, UserInfo userinfo)
+        public static ProcReturnMsg ProcItemLink(BaseDbContext db, string code, int pid, string plink, int itemid, float quantity, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
+                new SqlParameter("@code", code),
                 new SqlParameter("@pid", pid),
                 new SqlParameter("@plink", plink),
                 new SqlParameter("@itemid", itemid),

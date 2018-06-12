@@ -34,6 +34,11 @@ namespace MBOM.Filters
             else
             {
                 filterContext.ExceptionHandled = true;
+#if DEBUG
+                // 调试用代码
+                filterContext.ExceptionHandled = false;
+
+#endif
                 var viewData = new ViewDataDictionary();
                 viewData["Message"] = errMsg;
                 filterContext.Result = new ViewResult
