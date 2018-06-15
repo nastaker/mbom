@@ -50,7 +50,7 @@ function transferInitiate() {
         return false;
     }
     var prodcodes = "";
-    for (var i in prods) {
+    for (var i = 0, len = prods.length; i < len; i++) {
         var prod = prods[i];
         prodcodes = $.trim(prod["PRODUCT_CODE"]) + "," + prodcodes;
     }

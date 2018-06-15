@@ -1,44 +1,98 @@
 ﻿var URL_SALESETLIST = "/Item/SaleSetList";
 var URL_SAVESALESETLIST = "/Item/SaveSaleSetList";
 var URL_SHIPPINGADDRLIST = "/Item/GetShippingAddr";
+var URL_CUSTOMERCODENAME = "/Item/GetCustomerCodeName";
 
 var code = $("#code").val();
 var dgItems = $("#dgItems");
 var dgSaleItems = $("#dgSaleItems");
 var shippingAddrData;
+var customerCodeNames;
 var param = { code: code };
 $(function () {
-
+    var isError = false;
     postDataSync(URL_SHIPPINGADDRLIST, {}, function (result) {
         if (result.success) {
             shippingAddrData = result.data;
         }
         if (result.msg) {
             AlertWin(result.msg);
+            isError = true;
         }
     });
 
+    postDataSync(URL_CUSTOMERCODENAME, {}, function (result) {
+        if (result.success) {
+            customerCodeNames = result.data;
+        }
+        if (result.msg) {
+            AlertWin(result.msg);
+            isError = true;
+        }
+    });
+
+    if (isError) {
+        return;
+    }
+
     var columns = [[
-        { field: 'CODE', title: lang.saleSet.productCode, width:50 },
-        { field: 'NAME', title: lang.saleSet.productName, width:50 }
+        { field: 'CODE', title: lang.saleSet.productCode, width:"50%" },
+        { field: 'NAME', title: lang.saleSet.productName, width:"50%" }
     ]];
     var dgSaleItemsColumns = [[
-        { field: 'CODE', title: lang.saleSet.productCode, width: 150 },
-        { field: 'NAME', title: lang.saleSet.productName, width: 150 },
+        { field: 'CODE', title: lang.saleSet.productCode, width: 120 },
+        { field: 'NAME', title: lang.saleSet.productName, width: 170 },
         {
-            field: 'F_QUANTITY', title: lang.saleSet.saleWeight, width: 80,
+            field: 'CUSTOMER_ID', title: lang.saleSet.customerName, width: 200,
+            formatter: function (value, row, index) {
+                return row["CUSTOMERNAME"];
+            },
             styler: function (value, row, index) {
                 if (!value) {
                     return 'background-color:#ffee00;color:red;';
                 }
             },
             editor: {
-                type: 'numberbox',
-                options: { precision: 4, required: true }
+                type: 'combobox',
+                options: {
+                    data: customerCodeNames,
+                    valueField: 'CN_ID',
+                    textField: 'CN_NAME',
+                    panelWidth: 200,
+                    formatter: function (data) {
+                        return '<span style="font-weight:bold">' + data["CN_NAME"] + '</span><br/>' +
+                            '<span style="color:#888">' + data["CN_CODE"] + '</span>';
+                    },
+                    required: true
+                }
             }
         },
         {
-            field: 'SHIPPINGADDR', title: lang.saleSet.shippingAddr, width: 150,
+            field: 'CUSTOMERITEMCODE', title: lang.saleSet.customerItemCode, width: 120,
+            styler: function (value, row, index) {
+                if (!value) {
+                    return 'background-color:#ffee00;color:red;';
+                }
+            },
+            editor: {
+                type: 'textbox',
+                options: { validType: 'maxlength[18]', tipPosition: "top", required: true }
+            }
+        },
+        {
+            field: 'CUSTOMERITEMNAME', title: lang.saleSet.customerItemName, width: 170,
+            styler: function (value, row, index) {
+                if (!value) {
+                    return 'background-color:#ffee00;color:red;';
+                }
+            },
+            editor: {
+                type: 'textbox',
+                options: { validType: 'maxlength[20]', tipPosition: "top", required: true }
+            }
+        },
+        {
+            field: 'SHIPPINGADDR', title: lang.saleSet.shippingAddr, width: 70,
             styler: function (value, row, index) {
                 if (!value) {
                     return 'background-color:#ffee00;color:red;';
@@ -56,38 +110,24 @@ $(function () {
             }
         },
         {
-            field: 'CUSTOMERITEMCODE', title: lang.saleSet.customerItemCode, width: 150,
+            field: 'F_QUANTITY', title: lang.saleSet.saleWeight, width: 70,
             styler: function (value, row, index) {
                 if (!value) {
                     return 'background-color:#ffee00;color:red;';
                 }
             },
             editor: {
-                type: 'textbox',
-                options: { validType: 'maxlength[18]', tipPosition: "top", required: true }
+                type: 'numberbox',
+                options: { precision: 4, required: true }
             }
         },
-        {
-            field: 'CUSTOMERITEMNAME', title: lang.saleSet.customerItemName, width: 150,
-            styler: function (value, row, index) {
-                if (!value) {
-                    return 'background-color:#ffee00;color:red;';
-                }
-            },
-            editor: {
-                type: 'textbox',
-                options: { validType: 'maxlength[20]', tipPosition:"top", required: true }
-            }
-        },
-        { field: 'UNIT', title: lang.saleSet.productUnit, width: 50, align:"center" }
+        { field: 'UNIT', title: lang.saleSet.productUnit, width: 40, align:"center" }
     ]];
     //本页面基础datagrid属性
     var commonOptions = {
         height: "100%",
-        singleSelect: true,
         rownumbers: true,
         border: false,
-        fitColumns: true,
         idField: 'ITEMID'
     }
     //私有datagrid属性
@@ -100,7 +140,8 @@ $(function () {
         title: lang.maintenance.sellList,
         toolbar: '#dgSaleItemsToolbar',
         columns: dgSaleItemsColumns,
-        onClickCell: onClickCell
+        onClickCell: onClickCell,
+        onEndEdit: onEndEdit
     }
     //继承基础属性
     //设置datagrid
@@ -137,9 +178,25 @@ function validateSaleSet(dg) {
     endEditing(dg);
     var items = dg.datagrid('getChanges');
     var isValid = true;
-    for(var i in items){
+    for (var i = 0, len = items.length; i < len; i++){
         var item = items[i];
         if(!item.F_QUANTITY){
+            isValid = false;
+            break;
+        }
+        if (!item.CUSTOMERITEMNAME || $.trim(item.CUSTOMERITEMNAME).length == 0) {
+            isValid = false;
+            break;
+        }
+        if (!item.CUSTOMERITEMCODE || $.trim(item.CUSTOMERITEMCODE).length == 0) {
+            isValid = false;
+            break;
+        }
+        if (!item.SHIPPINGADDR || $.trim(item.SHIPPINGADDR).length == 0) {
+            isValid = false;
+            break;
+        }
+        if (!item.CUSTOMER_ID || item.CUSTOMER_ID == 0) {
             isValid = false;
             break;
         }
@@ -174,6 +231,18 @@ function onClickCell(index, field) {
             setTimeout(function () {
                 dg.datagrid('selectRow', editIndex);
             }, 0);
+        }
+    }
+}
+
+function onEndEdit(index, row, changes) {
+    if (changes["CUSTOMER_ID"]) {
+        var item = customerCodeNames.get(changes["CUSTOMER_ID"], "CN_ID");
+        if (item) {
+            row["CUSTOMERNAME"] = item.CN_NAME;
+        } else {
+            row["CUSTOMER_ID"] = null;
+            row["CUSTOMERNAME"] =  null;
         }
     }
 }
@@ -217,7 +286,7 @@ function btnDgSaleItemsSetItems() {
 
 function btnDgSaleItemsEndEditing() {
     var dgSaleItems = $("#dgSaleItems");
-    endEditing(dgSaleItems);
+    return endEditing(dgSaleItems);
 }
 
 function btnRejectChanges() {
@@ -228,6 +297,10 @@ function btnRejectChanges() {
 }
 
 function btnSaveChanges() {
+    if (!btnDgSaleItemsEndEditing()) {
+        AlertWin("请填写完成所有必须的信息");
+        return;
+    }
     var dgItems = $("#dgItems");
     var dgSaleItems = $("#dgSaleItems");
     if (!validateSaleSet(dgSaleItems)) {
@@ -259,11 +332,12 @@ function btnSaveChanges() {
 }
 
 function pushInItems(list, inlist, type) {
-    for (var i in inlist) {
+    for (var i = 0, len = inlist.length; i < len; i++) {
         var item = inlist[i];
         list.push({
             itemid: item["ITEMID"],
             f_quantity: item["F_QUANTITY"],
+            customer_id: item["CUSTOMER_ID"],
             shippingaddr: item["SHIPPINGADDR"],
             customeritemcode: item["CUSTOMERITEMCODE"],
             customeritemname: item["CUSTOMERITEMNAME"],

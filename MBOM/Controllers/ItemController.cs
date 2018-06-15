@@ -351,7 +351,14 @@ namespace MBOM.Controllers
             StringBuilder sb = new StringBuilder();
             foreach (var item in list)
             {
-                sb.Append(String.Format("{5},{4},{3},{2},{1},{0};", item.CUSTOMERITEMNAME, item.CUSTOMERITEMCODE, item.SHIPPINGADDR, item.F_QUANTITY, item.ITEMID, item.TYPE));
+                sb.Append(String.Format("{6},{5},{4},{3},{2},{1},{0};", 
+                    item.CUSTOMER_ID, 
+                    item.CUSTOMERITEMNAME, 
+                    item.CUSTOMERITEMCODE, 
+                    item.SHIPPINGADDR, 
+                    item.F_QUANTITY, 
+                    item.ITEMID, 
+                    item.TYPE));
             }
             return sb.ToString();
         }
@@ -508,10 +515,18 @@ namespace MBOM.Controllers
             return Json(rt);
         }
 
+        [Description("获取发运地点")]
         public JsonResult GetShippingAddr()
         {
-            var query = db.DictShippingAddrs.Where(where => where.CN_SYS_STATUS == "Y").ToList();
-            return Json(ResultInfo.Success(query.ToList()));
+            var list = db.DictShippingAddrs.Where(where => where.CN_SYS_STATUS == "Y").ToList();
+            return Json(ResultInfo.Success(list));
+        }
+
+        [Description("获取客户号及名称")]
+        public JsonResult GetCustomerCodeName()
+        {
+            var list = db.DictCustomers.ToList();
+            return Json(ResultInfo.Success(list));
         }
 
         [Description("物料维护分页列表")]

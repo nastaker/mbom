@@ -108,7 +108,7 @@ var treegridOption = {
         var croots = tgvi.treegrid("getRoots");
         var lastId = undefined;
         var isFirst = true;
-        for (var i in croots) {
+        for (var i = 0, len = croots.length; i < len; i++) {
             var croot = croots[i];
             var crootId = croot[tgviOption.idField];
             var classId = tgviTrPreId + crootId;
@@ -348,10 +348,10 @@ function filterDiscrete(value) {
         return;
     }
     var filterList = [];
-    for (var i in discreteList) {
+    for (var i = 0, len = discreteList.length; i < len; i++) {
         var discrete = discreteList[i];
         var filters = value.split(",");
-        for (var i in filters) {
+        for (var j = 0, lenj = filters.length; j < lenj; j++) {
             var filter = filters[i];
             if (discrete["MBOMTYPE"] == filter) {
                 filterList.push(discrete);
@@ -878,7 +878,7 @@ function compositeItemSet() {
         return;
     }
     if (items.length > 1) {
-        for (var i in items) {
+        for (var i = 0, len = items.length; i < len; i++) {
             var item = items[i];
             if (!itemcode) {
                 itemcode = tg.treegrid("getParent", item["ID"])["ITEM_CODE"];
@@ -1122,7 +1122,7 @@ function linkC2V() {
     }
     //必选中一合件一虚件才可操作
     var vitem,citem 
-    for (var i in items) {
+    for (var i = 0, len = items.length; i < len; i++) {
         var item = items[i];
         if (item["MBOMTYPE"] == "C") {
             vitem = item;
@@ -1204,7 +1204,7 @@ function deductionDialog() {
     }
     if (item && item["children"].length > 0) {
         items = [];
-        for (var i in item["children"]) {
+        for (var i = 0, len = item["children"].length; i < len; i++) {
             items.push(item["children"][i]);
         }
     } else if (item) {
@@ -1217,7 +1217,7 @@ function deductionDialog() {
     var pcode = undefined;
     var itemcodes = "";
     if (items.length > 0) {
-        for (var i in items) {
+        for (var i = 0, len = items.length; i < len; i++) {
             item = items[i];
             if (!parent) {
                 parent = tg.treegrid("getParent", item[treegridOption.idField]);
@@ -1283,7 +1283,7 @@ function clearMainSelected() {
 
 function clearMainChecked() {
     tg.treegrid("clearChecked");
-    for (var i in checkedRowIds) {
+    for (var i = 0, len = checkedRowIds.length; i < len; i++) {
         var rowid = checkedRowIds[i];
         $(rowid).removeClass(checkedCss);
     }
@@ -1325,7 +1325,7 @@ function checkAllChildren() {
     }
     clearMainChecked();
     var children = item.children;
-    for (var i in children) {
+    for (var i = 0, len = children.length; i < len; i++) {
         var id = children[i]["ID"];
         tg.treegrid("checkNode", id);
     }
@@ -1386,7 +1386,7 @@ function buildTree(options) {
         }
     }
 
-    for (var i in list) {
+    for (var i = 0, len = list.length; i < len; i++) {
         var item = list[i];
         item[children] = item[children] ? item[children] : [];
         buildTree($.extend(settings, { items: items, list: item[children], pval: item[return_id] }));

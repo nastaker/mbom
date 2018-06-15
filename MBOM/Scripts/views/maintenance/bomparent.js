@@ -12,7 +12,7 @@
                 parentNode.isParent = false;
                 return null;
             }
-            for (var i in childNodes.data) {
+            for (var i = 0, len = childNodes.data.length; i < len; i++) {
                 var item = childNodes.data[i];
                 item.isParent = true;
             }

@@ -2,8 +2,10 @@ namespace Repository
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    public class TN_SYS_LOG
+    [Table("TN_SYS_LOG")]
+    public class SysLog
     {
         [Key]
         public int CN_ID { get; set; }

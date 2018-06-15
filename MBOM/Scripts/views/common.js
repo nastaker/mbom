@@ -78,7 +78,7 @@ function removeByValue(arr, val) {
 
 function exists(arr, val) {
     var isExists = false;
-    for (var i in arr) {
+    for (var i = 0, len = arr.length; i < len; i++) {
         if (arr[i] == val) {
             isExists = true;
             break;
@@ -122,6 +122,20 @@ Date.prototype.format = function (fmt) {
         }
     }
     return fmt;
+}
+
+Array.prototype.get = function (id, key) {
+    var _this = this;
+    if (!key) {
+        key = "id";
+    }
+    for (var i = 0, len = _this.length; i < len; i++) {
+        var item = _this[i];
+        if (item[key] == id) {
+            return item;
+        }
+    }
+    return null;
 }
 
 function isJsonString(str) {  

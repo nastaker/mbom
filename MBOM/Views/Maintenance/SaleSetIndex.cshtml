@@ -9,14 +9,8 @@
     @Scripts.Render("~/bundles/saleset")
 }
 <input type="hidden" id="code" value="@Request.Params["code"]" />
-<div class="easyui-layout" data-options="fit:true" style="border-style: solid;border-width:0 1px;border-color:#D4D4D4;">
-    <div data-options="region:'north',border:false" style="border-style: solid;border-width:0 0 1px 0;border-color:#D4D4D4;padding: 5px;text-align:right;">
-        <div>
-            <a href="javascript:;" onclick="btnRejectChanges()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">@Lang.RejectChanges</a>
-            <a href="javascript:;" onclick="btnSaveChanges()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">@Lang.CompleteSettings</a>
-        </div>
-    </div>
-    <div data-options="region:'west',border:false" style="width:35%">
+<div class="easyui-layout" data-options="fit:true" style="border-width:0;">
+    <div data-options="region:'west',border:false" style="width:300px;border-style:solid;border-width:0 1px 0 0;border-color:#D4D4D4;">
         <!-- 操作栏 -->
         <div id="dgItemsToolbar" style="padding:5px;display:none">
             <a href="javascript:;" onclick="btnDgItemsCancelSelections()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">@Lang.CancelSelections</a>
@@ -25,14 +19,13 @@
         <!-- 所有零件 -->
         <table id="dgItems"></table>
     </div>
-    <div data-options="region:'center',border:false" style="width:5%;border-style: solid;border-width:0 1px;border-color:#D4D4D4;">
-    </div>
-    <div data-options="region:'east',border:false" style="width:60%">
+    <div data-options="region:'center',border:false" style="margin-left:20px;padding-right:20px;border-style:solid;border-width:0 0 0 1px;border-color:#D4D4D4;">
         <!-- 操作栏 -->
         <div id="dgSaleItemsToolbar" style="padding:5px;display:none">
             <a href="javascript:;" onclick="btnDgSaleItemsCancelSelections()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">@Lang.CancelSelections</a>
             <a href="javascript:;" onclick="btnDgSaleItemsSetItems()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">@Lang.SetItems</a>
-            <a href="javascript:;" onclick="btnDgSaleItemsEndEditing()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">@Lang.Save</a>
+            <a href="javascript:;" onclick="btnRejectChanges()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">@Lang.RejectChanges</a>
+            <a href="javascript:;" onclick="btnSaveChanges()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">@Lang.CompleteSettings</a>
         </div>
         <!-- 销售件 -->
         <table id="dgSaleItems"></table>

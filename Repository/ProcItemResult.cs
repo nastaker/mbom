@@ -90,6 +90,8 @@ namespace Repository
         public string NAME { get; set; }
         public string UNIT { get; set; }
         public string SHIPPINGADDR { get; set; }
+        public int? CUSTOMER_ID { get; set; }
+        public string CUSTOMERNAME { get; set; }
         public string CUSTOMERITEMCODE { get; set; }
         public string CUSTOMERITEMNAME { get; set; }
         public int ORDER { get; set; }

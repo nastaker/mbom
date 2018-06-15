@@ -49,7 +49,7 @@ namespace MBOM.Controllers
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
             query = Common.GetQueryFilter(query);
-            query = Common.GetQueryFilterUserId(query);
+            //query = Common.GetQueryFilterUserId(query);
             query = query.Where(obj => obj.PRODUCT_STATUS == "待发布");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
@@ -69,7 +69,7 @@ namespace MBOM.Controllers
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
             query = Common.GetQueryFilter(query);
-            query = Common.GetQueryFilterUserId(query);
+            //query = Common.GetQueryFilterUserId(query);
             query = query.Where(obj => obj.PRODUCT_STATUS == "转批中");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
@@ -89,7 +89,7 @@ namespace MBOM.Controllers
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
             query = Common.GetQueryFilter(query);
-            query = Common.GetQueryFilterUserId(query);
+            //query = Common.GetQueryFilterUserId(query);
             query = query.Where(obj => obj.PRODUCT_STATUS == "已转批");
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {

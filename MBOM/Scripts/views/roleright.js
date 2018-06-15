@@ -25,10 +25,10 @@
 
 function CheckHaveRights(nodes, rights)
 {
-    for (var i in nodes) {
+    for (var i = 0, len = nodes.length; i < len; i++) {
         var node = nodes[i];
         node.checked = false;
-        for (var j in rights) {
+        for (var j = 0, lenj = rights.length; j < lenj; j++) {
             var right = rights[j];
             if (node.ID == right.RightId) {
                 node.checked = true;
@@ -80,13 +80,13 @@ $(function () {
         var roleId = role.ID;
         var menuIds = [];
         var nodes = ztreeobj.getCheckedNodes();
-        for (var i in nodes) {
+        for (var i = 0, len = nodes.length; i < len; i++) {
             var node = nodes[i];
             menuIds.push(node.ID);
         }
         postData("/RoleRight/Edit", { roleId: roleId, menuIds: menuIds }, function (data) {
             if (data.success) {
-                for (var i in menuIds) {
+                for (var i = 0, len = menuIds.length; i < len; i++) {
                     role.RoleRights.push({ RightId: menuIds[i] });
                 }
                 InfoWin(data.msg);

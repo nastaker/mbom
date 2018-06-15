@@ -15,6 +15,11 @@
         "iconCls": "list-alt"
     },
     {
+        "text": lang.maintenance.mbom,
+        "url": "/Maintenance/MBOMIndex",
+        "iconCls": "list-alt"
+    },
+    {
         "text": lang.maintenance.bomList,
         "url": "/Maintenance/BOMListIndex",
         "iconCls": "list"

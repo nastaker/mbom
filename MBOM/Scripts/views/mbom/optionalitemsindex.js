@@ -114,7 +114,7 @@ function setOptionalItems() {
     }
     //获取选中物料的ID
     var ids = [];
-    for (var i in items) {
+    for (var i = 0, len = items.length; i < len; i++) {
         var item = items[i];
         ids.push(item["id"]);
     }

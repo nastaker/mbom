@@ -259,7 +259,7 @@ function addProduct() {
                     return false;
                 }
                 var ids = "";
-                for (var i in prods) {
+                for (var i = 0, len = prods.length; i < len; i++) {
                     var prod = prods[i];
                     ids = prod["CN_ID"] + "," + ids;
                 }
@@ -292,7 +292,7 @@ function deleteProduct() {
         return;
     }
     var ids = [];
-    for (var i in data) {
+    for (var i = 0, len = data.length; i < len; i++) {
         var prod = data[i];
         ids.push(prod["ID"]);
     }

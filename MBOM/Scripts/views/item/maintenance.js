@@ -102,7 +102,7 @@ $(function () {
         multiple: true,
         loadFilter: function (result) {
             if (result.success) {
-                for (var i in result.data) {
+                for (var i = 0, len = result.data.length; i < len; i++) {
                     result.data[i]["CN_NAME"] = $.trim(result.data[i]["CN_NAME"]);
                 }
                 return result.data;

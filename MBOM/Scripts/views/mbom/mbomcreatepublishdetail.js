@@ -323,7 +323,7 @@ function winConfirm() {
     var selectedItemid = item["CN_ID"];
     var records = dg.datagrid("getData").rows;
     var ismultiple = false;
-    for (var i in records) {
+    for (var i = 0, len = records.length; i < len; i++) {
         if (records[i]["itemid"] == selectedItemid) {
             ismultiple = true;
             break;

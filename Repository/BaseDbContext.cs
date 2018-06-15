@@ -27,44 +27,22 @@
 
         public virtual DbSet<AppProject> AppProjects { get; set; }
         public virtual DbSet<AppBom> AppBoms { get; set; }
-        public virtual DbSet<AppPbom> AppPboms { get; set; }
-        public virtual DbSet<SysClassBase> SysClassBases { get; set; }
-        public virtual DbSet<SysClassTypeDef> SysClassTypeDefs { get; set; }
-        public virtual DbSet<SysClass> SysClasses { get; set; }
-        public virtual DbSet<SysClassField> SysClassFields { get; set; }
         public virtual DbSet<DictItemType> DictItemTypes { get; set; }
         public virtual DbSet<AppItem> AppItems { get; set; }
         public virtual DbSet<AppItemHLink> AppItemHLinks { get; set; }
-        public virtual DbSet<AppItemLLink> AppItemLLinks { get; set; }
-        public virtual DbSet<AppItemLog> AppItemLogs { get; set; }
-        public virtual DbSet<AppItemSign> AppItemSigns { get; set; }
-        public virtual DbSet<AppItemTrackstep> AppItemTracksteps { get; set; }
         public virtual DbSet<AppProjectHLink> AppProjectHLinks { get; set; }
-        public virtual DbSet<AppProjectLLink> AppProjectLLinks { get; set; }
-        public virtual DbSet<AppProjectRel> AppProjectRels { get; set; }
         public virtual DbSet<AppProduct> AppProducts { get; set; }
+        public virtual DbSet<AppProductHlink> AppProductHlinks { get; set; }
         public virtual DbSet<AppProcess> AppProcesses { get; set; }
-        public virtual DbSet<AppProcessHlink> AppProcessHlinks { get; set; }
-        public virtual DbSet<AppProcessLLink> AppProcessLLinks { get; set; }
-        public virtual DbSet<AppProcessLog> AppProcessLogs { get; set; }
-        public virtual DbSet<AppProcessTrackstep> AppProcessTracksteps { get; set; }
         public virtual DbSet<AppProcessVer> AppProcessVers { get; set; }
         public virtual DbSet<AppProcessVerHlink> AppProcessVerHlinks { get; set; }
         public virtual DbSet<AppBomHlink> AppBomHlinks { get; set; }
         public virtual DbSet<AppOptionalItemHlink> AppOptionalItemHlinks { get; set; }
-        public virtual DbSet<AppPbomHlink> AppPbomHlinks { get; set; }
-        public virtual DbSet<AppPbomLLink> AppPbomLLinks { get; set; }
-        public virtual DbSet<AppPbomLog> AppPbomLogs { get; set; }
-        public virtual DbSet<AppPbomTrackstep> AppPbomTracksteps { get; set; }
         public virtual DbSet<AppPbomVer> AppPbomVers { get; set; }
-        public virtual DbSet<AppMbom> AppMboms { get; set; }
-        public virtual DbSet<AppMbomHlink> AppMbomHlinks { get; set; }
-        public virtual DbSet<AppMbomLLink> AppMbomLLinks { get; set; }
-        public virtual DbSet<AppMbomLog> AppMbomLogs { get; set; }
-        public virtual DbSet<AppMbomTrackstep> AppMbomTracksteps { get; set; }
         public virtual DbSet<AppMbomVer> AppMbomVers { get; set; }
         public virtual DbSet<DicItemUnit> DicItemUnits { get; set; }
         public virtual DbSet<DictShippingAddr> DictShippingAddrs { get; set; }
+        public virtual DbSet<DictCustomer> DictCustomers { get; set; }
         public virtual DbSet<AppWorkgroupUser> AppWorkgroupUsers { get; set; }
         public virtual DbSet<AppWorkgroup> AppWorkgroups { get; set; }
 
@@ -85,7 +63,7 @@
         public virtual DbSet<ViewItemWithType> ViewItemsWithType { get; set; }
         public virtual DbSet<ViewProductChange> ViewProductChanges { get; set; }
 
-        public virtual DbSet<TN_SYS_LOG> TN_SYS_LOG { get; set; }
+        public virtual DbSet<SysLog> SysLogs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

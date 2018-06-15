@@ -26,7 +26,6 @@ namespace Repository
         public bool? CN_B_IS_ASSEMBLY { get; set; }
         public string CN_DISPLAYNAME { get; set; }
         public string CN_S_FROM { get; set; }
-        public string CN_SHIPPINGADDR { get; set; }
         public string CN_DESC { get; set; }
         public int CN_CREATE_BY { get; set; }
         public string CN_CREATE_NAME { get; set; }

@@ -116,7 +116,7 @@ function itemOptionalMapDel() {
     }
     var hlinkids = "";
     var itemnames = "";
-    for(var i in items){
+    for (var i = 0, len = items.length; i < len; i++){
         var item = items[i];
         hlinkids = hlinkids + item["CN_HLINK_ID"] + ",";
         itemnames = itemnames + item["CN_OPTIONAL_ITEM_CODE"] + "，";
@@ -151,7 +151,7 @@ function itemOptionalMapAdd() {
     //获取选中物料的ID
     var itemid = $("#itemid").val();
     var ids = [];
-    for (var i in items) {
+    for (var i = 0, len = items.length; i < len; i++) {
         var item = items[i];
         ids.push(item["CN_ID"]);
     }

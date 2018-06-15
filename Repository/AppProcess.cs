@@ -1,12 +1,11 @@
 namespace Repository
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
-    public partial class AppMbom
+    [Table("TN_80_APP_0020_PROCESS")]
+    public partial class AppProcess
     {
         [Key]
         [Column(Order = 0)]
@@ -14,16 +13,21 @@ namespace Repository
 
         [Key]
         [Column(Order = 1)]
-        [StringLength(16)]
+        [StringLength(24)]
         public string CN_CODE { get; set; }
 
         [Key]
         [Column(Order = 2)]
+        [StringLength(18)]
+        public string CN_ITEM_CODE { get; set; }
+
+        [Key]
+        [Column(Order = 3)]
         [StringLength(24)]
         public string CN_NAME { get; set; }
 
         [Key]
-        [Column(Order = 3)]
+        [Column(Order = 4)]
         [StringLength(10)]
         public string CN_TYPE { get; set; }
 
@@ -31,7 +35,7 @@ namespace Repository
         public string CN_DESC { get; set; }
 
         [Key]
-        [Column(Order = 4)]
+        [Column(Order = 5)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int CN_CREATE_BY { get; set; }
 
@@ -42,7 +46,7 @@ namespace Repository
         public string CN_CREATE_LOGIN { get; set; }
 
         [Key]
-        [Column(Order = 5)]
+        [Column(Order = 6)]
         [StringLength(2)]
         public string CN_SYS_STATUS { get; set; }
 
@@ -50,19 +54,19 @@ namespace Repository
         public string CN_SYS_NOTE { get; set; }
 
         [Key]
-        [Column(Order = 6)]
+        [Column(Order = 7)]
         public DateTime CN_DT_CREATE { get; set; }
 
         [Key]
-        [Column(Order = 7, TypeName = "date")]
+        [Column(Order = 8, TypeName = "date")]
         public DateTime CN_DT_EFFECTIVE { get; set; }
 
         [Key]
-        [Column(Order = 8, TypeName = "date")]
+        [Column(Order = 9, TypeName = "date")]
         public DateTime CN_DT_EXPIRY { get; set; }
 
         [Key]
-        [Column(Order = 9)]
+        [Column(Order = 10)]
         [StringLength(36)]
         public string CN_GUID { get; set; }
     }

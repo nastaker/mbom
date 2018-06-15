@@ -21,7 +21,7 @@ namespace MBOM.Filters
         {
             using (BaseDbContext db = new BaseDbContext())
             {
-                db.TN_SYS_LOG.Add(new TN_SYS_LOG
+                db.SysLogs.Add(new SysLog
                 {
                     CN_ACTIONURL = actionUrl,
                     CN_USERIP = actionName,

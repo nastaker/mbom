@@ -39,7 +39,7 @@ $(function () {
         });
 
         var data = result.data;
-        for(var i = 0; i < data.length; i++)
+        for(var i = 0, len = data.length; i < len; i++)
         {
             var menu = data[i];
             var ul = $("<ul>").attr({ id: "tree" + menu.id }).addClass("myMenu");

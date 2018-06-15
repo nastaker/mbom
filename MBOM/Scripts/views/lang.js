@@ -74,6 +74,7 @@
     },
     saleSet: {
         shippingAddr: "发运地点",
+        customerName: "客户名称",
         customerItemCode: "客户物料号",
         customerItemName: "客户物料名称",
         saleSet: "销售件设置",
@@ -82,7 +83,7 @@
         productName: "零件名称",
         productUnit: "单位",
         saleWeight: "销售重量",
-        notValid: "请检查是否已经填写所有的销售重量",
+        notValid: "请检查是否已经填写所有的销售件信息",
         noChanges: "没有检查到任何修改，无需保存",
         saleSetSuccess: "销售件设置成功",
         saleSetFailed: "销售件设置失败，请检查填写信息是否有误或联系管理员"

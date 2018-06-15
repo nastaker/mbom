@@ -7,7 +7,7 @@ $(function () {
     var tab = $("#Mytab");
     var tabMenu = $("#TabMenu");
 
-    for (var i in menuData) {
+    for (var i = 0, len = menuData.length; i < len; i++) {
         var menu = menuData[i];
         var li = $("<li>").appendTo(ul);
         var icon = $("<i>").addClass("myIcon fa fa-" + menu.iconCls);
