@@ -1195,6 +1195,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 刷新MBOM数据 的本地化字符串。
+        /// </summary>
+        public static string RefreshMbom {
+            get {
+                return ResourceManager.GetString("RefreshMbom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 撤销更改 的本地化字符串。
         /// </summary>
         public static string RejectChanges {

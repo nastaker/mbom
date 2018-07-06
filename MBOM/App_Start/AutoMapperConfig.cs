@@ -28,7 +28,7 @@ namespace MBOM
                 .ForMember("ITEMID", opts => opts.MapFrom("CN_ID"));
             CreateMap<AppProcessVer, AppProcessVerView>();
             CreateMap<AppBom, AppBomView>();
-
+            CreateMap<AppProcessVerHlink, ProcItemProcess>();
             RecognizePrefixes("CN_");
         }
     }

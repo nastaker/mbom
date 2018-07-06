@@ -305,8 +305,24 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = Proc.ProcGetItemProcess(db, code);
-            return Json(ResultInfo.Success(itemlist));
+            var itemlist = (from p
+            in db.AppProcessVers
+            join pvl
+            in db.AppProcessVerHlinks
+            on p.CN_ID equals pvl.CN_ID
+            where 
+            pvl.CN_SYS_STATUS.Equals("Y")
+            && p.CN_CODE.TrimEnd().Equals(code.TrimEnd())
+            && p.CN_SYS_STATUS.Equals("Y")
+            orderby pvl.CN_GX_CODE
+            select new ProcItemProcess
+            {
+                HLINK_ID = pvl.CN_HLINK_ID,
+                GX_NAME = pvl.CN_GX_NAME,
+                GX_CODE = pvl.CN_GX_CODE,
+                GXNR = pvl.CN_GXNR
+            });
+            return Json(ResultInfo.Success(itemlist.ToList()));
         }
 
         [Description("查看产品分类")]
@@ -453,7 +469,7 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = db.AppProcesses.Where(process => process.CN_ID == id).ToList();
+            var itemlist = db.AppProcessVerHlinks.Where(process => process.CN_ID == id).ToList();
             var dtoModel = Mapper.Map<List<ProcItemProcess>>(itemlist);
             return Json(ResultInfo.Success(dtoModel));
         }

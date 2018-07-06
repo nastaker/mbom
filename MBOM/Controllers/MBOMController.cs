@@ -150,32 +150,32 @@ namespace MBOM.Controllers
             }
             var list = (from bomhlink
                 in db.AppBomHlinks
-                join item
-                in db.AppItems
-                on bomhlink.CN_COMPONENT_OBJECT_ID equals item.CN_ID
-                where
-                bomhlink.CN_BOM_ID == bomid
-                select new ProcBomDiff
-                {
-                    code = item.CN_CODE,
-                    item_code = item.CN_ITEM_CODE,
-                    hlink_id = bomhlink.CN_HLINK_ID,
-                    s_bom_type = bomhlink.CN_S_BOM_TYPE,
-                    bom_id = bomhlink.CN_BOM_ID,
-                    bom_id_pre = bomhlink.CN_BOM_ID_PRE,
-                    displayname = bomhlink.CN_STATUS_PBOM == "Y" ? bomhlink.CN_DISPLAYNAME : null,
-                    mbomname = bomhlink.CN_STATUS_MBOM == "Y" ? bomhlink.CN_DISPLAYNAME : null,
-                    order = bomhlink.CN_ORDER,
-                    quantity = bomhlink.CN_F_QUANTITY,
-                    sys_status = bomhlink.CN_SYS_STATUS,
-                    dt_create = bomhlink.CN_DT_CREATE,
-                    status_pbom = bomhlink.CN_STATUS_PBOM,
-                    status_mbom = bomhlink.CN_STATUS_MBOM,
-                    dt_ef_pbom = bomhlink.CN_DT_EF_PBOM,
-                    dt_ex_pbom = bomhlink.CN_DT_EX_PBOM,
-                    dt_ef_mbom = bomhlink.CN_DT_EF_MBOM,
-                    dt_ex_mbom = bomhlink.CN_DT_EX_MBOM
-                }).ToList();
+                        join item
+                        in db.AppItems
+                        on bomhlink.CN_COMPONENT_OBJECT_ID equals item.CN_ID
+                        where
+                        bomhlink.CN_BOM_ID == bomid
+                        select new ProcBomDiff
+                        {
+                            code = item.CN_CODE,
+                            item_code = item.CN_ITEM_CODE,
+                            hlink_id = bomhlink.CN_HLINK_ID,
+                            s_bom_type = bomhlink.CN_S_BOM_TYPE,
+                            bom_id = bomhlink.CN_BOM_ID,
+                            bom_id_pre = bomhlink.CN_BOM_ID_PRE,
+                            displayname = bomhlink.CN_STATUS_PBOM == "Y" ? bomhlink.CN_DISPLAYNAME : null,
+                            mbomname = bomhlink.CN_STATUS_MBOM == "Y" ? bomhlink.CN_DISPLAYNAME : null,
+                            order = bomhlink.CN_ORDER,
+                            quantity = bomhlink.CN_F_QUANTITY,
+                            sys_status = bomhlink.CN_SYS_STATUS,
+                            dt_create = bomhlink.CN_DT_CREATE,
+                            status_pbom = bomhlink.CN_STATUS_PBOM,
+                            status_mbom = bomhlink.CN_STATUS_MBOM,
+                            dt_ef_pbom = bomhlink.CN_DT_EF_PBOM,
+                            dt_ex_pbom = bomhlink.CN_DT_EX_PBOM,
+                            dt_ef_mbom = bomhlink.CN_DT_EF_MBOM,
+                            dt_ex_mbom = bomhlink.CN_DT_EX_MBOM
+                        }).ToList();
             return View(list);
         }
 
@@ -209,8 +209,8 @@ namespace MBOM.Controllers
         // MBOM 标记
         public JsonResult Mark(string code)
         {
-            var prod = db.AppProducts.Where(w=>w.CN_CODE == code.TrimEnd()).First();
-            if(prod == null)
+            var prod = db.AppProducts.Where(w => w.CN_CODE == code.TrimEnd()).First();
+            if (prod == null)
             {
                 return Json(ResultInfo.Fail("获取产品信息失败，标记失败"));
             }
@@ -284,7 +284,7 @@ namespace MBOM.Controllers
         [Description("引用自定义物料")]
         public JsonResult ItemLink(string code, int pid, string plink, int itemid, float quantity)
         {
-            if(pid == 0 || string.IsNullOrWhiteSpace(plink) || itemid == 0 || quantity == 0f)
+            if (pid == 0 || string.IsNullOrWhiteSpace(plink) || itemid == 0 || quantity == 0f)
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
@@ -347,7 +347,7 @@ namespace MBOM.Controllers
         [Description("设置为虚件")]
         public JsonResult VirtualItemSet(string code, int bomid, int itemid, int show)
         {
-            if(bomid == 0 || itemid == 0 || string.IsNullOrWhiteSpace(code))
+            if (bomid == 0 || itemid == 0 || string.IsNullOrWhiteSpace(code))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
@@ -382,7 +382,7 @@ namespace MBOM.Controllers
                 rt = ResultInfo.Parse(Proc.ProcVirtualItemDrop(db, code, itemid));
             }
             catch (SqlException ex)
-            {   
+            {
                 rt = ResultInfo.Fail(ex.Message);
             }
             return Json(rt);
@@ -398,7 +398,7 @@ namespace MBOM.Controllers
         [Description("引用虚件")]
         public JsonResult VirtualItemLink(string code, int parentitemid, int itemid, string parentlink, string link)
         {
-            if(parentitemid == 0 || itemid == 0 || string.IsNullOrWhiteSpace(parentlink) || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
+            if (parentitemid == 0 || itemid == 0 || string.IsNullOrWhiteSpace(parentlink) || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
@@ -528,6 +528,26 @@ namespace MBOM.Controllers
             try
             {
                 rt = ResultInfo.Parse(Proc.ProcEditCombineName(db, itemid, name));
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
+        }
+
+        //MBOM 刷新
+        [Description("MBOM刷新")]
+        public JsonResult RefreshMbom(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
+            ResultInfo rt = null;
+            try
+            {
+                rt = ResultInfo.Parse(Proc.ProcMbomRefresh(db, code, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {

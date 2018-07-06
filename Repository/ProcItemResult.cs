@@ -110,10 +110,10 @@ namespace Repository
 
     public class ProcItemProcess
     {
-        public int CN_HLINK_ID { get; set; }
-        public string CN_GX_CODE { get; set; }
-        public string CN_GX_NAME { get; set; }
-        public string CN_GXNR { get; set; }
+        public int HLINK_ID { get; set; }
+        public string GX_CODE { get; set; }
+        public string GX_NAME { get; set; }
+        public string GXNR { get; set; }
     }
 
     public class ProcProductChangeDetail

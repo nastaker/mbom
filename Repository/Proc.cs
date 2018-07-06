@@ -18,7 +18,6 @@ namespace Repository
         const string PROC_GET_ITEM_SALESETINFO = "PROC_GET_ITEM_SETINFO @code";
         const string PROC_GET_ITEM_LIST = "PROC_GET_ITEM_LIST @code";
         const string PROC_GET_PROCESS_ITEM_LIST = "PROC_GET_PROCESS_ITEM @code";
-        const string PROC_GET_ITEM_PROCESS = "PROC_GET_ITEM_PROCESS @code";
         const string PROC_GET_ITEM_CATE_LIST = "PROC_GET_ITEM_CATE_LIST @code,@catename";
         const string PROC_PRODUCT_TRANSFER_INITIATTE = "PROC_PRODUCT_TRANSFER_INITIATTE @code,@userid,@name,@login";
         const string PROC_MBOM_MAINTENANCE = "PROC_MBOM_MAINTENANCE @code,@userid,@name,@login";
@@ -35,6 +34,7 @@ namespace Repository
         const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @code,@itemid,@bomid,@link";
         const string PROC_COMPOSITE_EDIT_NAME = "PROC_COMPOSITE_EDIT_NAME @itemid,@name";
+        const string PROC_MBOM_REFRESH = "PROC_MBOM_REFRESH @code,@userid,@name,@login";
         const string PROC_MBOM_RELEASE = "PROC_MBOM_RELEASE @code,@userid,@name,@login";
         //产品变更
         const string PROC_PRODUCT_CHANGE_APPLY_CHANGES = "PROC_PRODUCT_CHANGE_APPLY_CHANGES @code,@reason,@userid,@name,@login";
@@ -106,16 +106,6 @@ namespace Repository
                 new SqlParameter("@code", code)
             };
             var result = db.Database.SqlQuery<ProcProcessItem>(PROC_GET_PROCESS_ITEM_LIST, param).ToList();
-            return result;
-        }
-
-        public static List<ProcItemProcess> ProcGetItemProcess(BaseDbContext db, string code)
-        {
-            SqlParameter[] param =
-            {
-                new SqlParameter("@code", code)
-            };
-            var result = db.Database.SqlQuery<ProcItemProcess>(PROC_GET_ITEM_PROCESS, param).ToList();
             return result;
         }
 
@@ -256,6 +246,19 @@ namespace Repository
                 new SqlParameter("@login", userinfo.Login)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_BOMHLINK_CHILD_ADD, param).SingleOrDefault();
+            return result;
+        }
+
+        public static ProcReturnMsg ProcMbomRefresh(BaseDbContext db, string code, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@code", code),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_MBOM_REFRESH, param).SingleOrDefault();
             return result;
         }
 

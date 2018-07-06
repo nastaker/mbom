@@ -35,7 +35,8 @@ var URL_ITEMPAGELIST = "/Item/MaintenancePageList"
 var URL_ITEM_LINK = "/MBOM/ItemLink"
 var URL_ITEM_UNLINK = "/MBOM/ItemUnlink"
 var URL_ITEM_EDITQUANTITY = "/MBOM/ItemEditQuantity"
-
+//刷新MBOM
+var URL_REFRESHMBOM = "/MBOM/RefreshMbom"
 
 var tg = $("#treegrid");
 var tgvi = $("#tgvi");
@@ -352,7 +353,7 @@ function filterDiscrete(value) {
         var discrete = discreteList[i];
         var filters = value.split(",");
         for (var j = 0, lenj = filters.length; j < lenj; j++) {
-            var filter = filters[i];
+            var filter = filters[j];
             if (discrete["MBOMTYPE"] == filter) {
                 filterList.push(discrete);
             } else if (discrete["CHA_SIGN"] == filter) {
@@ -1311,6 +1312,20 @@ function reloadAllTables(force) {
 
     reloadTable();
     reloadDiscrete();
+}
+//刷新MBOM
+function refreshMbom() {
+    $.messager.confirm("提示", "是否要刷新MBOM？", function (r) {
+        if (r) {
+            postData(URL_REFRESHMBOM, { code: params.code }, function (result) {
+                if (result.success) {
+                    window.location.reload();
+                } else {
+                    InfoWin(result.msg);
+                }
+            });
+        }
+    });
 }
 //切换-选中行同时选中节点
 function toggleCheckStateOnSelect() {

@@ -612,4 +612,7 @@
   <data name="MBOMProductChangeIndex" xml:space="preserve">
     <value>MBOM产品变更维护</value>
   </data>
+  <data name="RefreshMbom" xml:space="preserve">
+    <value>刷新MBOM数据</value>
+  </data>
 </root>
