@@ -11,7 +11,7 @@ namespace Repository
         public string CODE { get; set; }
         public string PROJECT_NAME { get; set; }
         [Key]
-        [ColumnAttribute(Order = 1)]
+        [Column(Order = 1)]
         public string PRODUCT_CODE { get; set; }
         public string PRODUCT_NAME { get; set; }
         public string PRODUCT_STATUS { get; set; }
@@ -19,11 +19,12 @@ namespace Repository
         public string CHECK_STATUS { get; set; }
         public string SALE_SET { get; set; }
         [Key]
-        [ColumnAttribute(Order = 2)]
+        [Column(Order = 2)]
         public string PBOMVER { get; set; }
         public DateTime DT_PBOMVER { get; set; }
         public string PBOM_CREATE_NAME { get; set; }
         public int OWNER_ID { get; set; }
         public string OWNER_NAME { get; set; }
+        public bool? MARK { get; set; }
     }
 }

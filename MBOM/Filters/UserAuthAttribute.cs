@@ -8,7 +8,6 @@ using MBOM.Unity;
 using Model;
 using System.Collections;
 using Repository;
-using Newtonsoft.Json;
 
 namespace MBOM.Filters
 {
@@ -54,7 +53,6 @@ namespace MBOM.Filters
             // 使用的缓存Cookie登录，返回登录界面
             if (logins[user.Name] == null)
             {
-                LogUserInfo(actionUrl, userip, requestType, false, "用户信息失效", user);
                 return false;
             }
             // 登录被注销（重复登录），提示重新登录
@@ -66,7 +64,6 @@ namespace MBOM.Filters
             }
             if (user.UserId == 0) //超级管理员不设限制
             {
-                LogUserInfo(actionUrl, userip, requestType, true, "", user);
                 return true;
             }
             var rightactions = (CacheHelper.GetCache("RightActions") as List<SysRightAction>);
@@ -77,7 +74,6 @@ namespace MBOM.Filters
 
             if(urls.Contains(actionUrl))
             {
-                LogUserInfo(actionUrl, userip, requestType, true, "", user);
                 return true;
             }
             else
