@@ -241,8 +241,7 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-/MBOM/AdminLTE
-/MBOM/Content/adminlte
-/MBOM/Scripts/adminlte
-/MBOM/Upload/Attachments/HGS9C 6904 000
-*.zip
+/MBOM/Upload/
+/MBOM/font
+/MBOM/Scripts/dist.js
+/MBOM/.vscode

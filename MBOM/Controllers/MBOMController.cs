@@ -284,7 +284,7 @@ namespace MBOM.Controllers
         [Description("引用自定义物料")]
         public JsonResult ItemLink(string code, int pid, string plink, int itemid, float quantity)
         {
-            if (pid == 0 || string.IsNullOrWhiteSpace(plink) || itemid == 0 || quantity == 0f)
+            if (pid == 0 || string.IsNullOrWhiteSpace(plink) || itemid == 0 || quantity < 0f)
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
