@@ -1,4 +1,5 @@
 ﻿var checkedRowIds = { count: 0 };
+var list = [];
 var discreteList = [];
 var parentId = undefined;
 var gradientStep = 6;
@@ -26,22 +27,34 @@ var URL_COMPOSITE_ITEM_DROP = "/MBOM/CompositeItemDrop";
 var URL_COMPOSITE_ITEM_LINK = "/MBOM/CompositeItemLink";
 var URL_COMPOSITE_ITEM_UNLINK = "/MBOM/CompositeItemUnlink";
 var URL_EDITCOMBINENAME = "/MBOM/EditCombineName";
-//
-var URL_ITEMPROCESSINFO = "/Item/ProductProcessInfo";
-var URL_ITEMDEDUCTIONSET = "/MBOM/ItemDeductionSet";
 //物料
 var URL_ITEMDETAIL = "/Item/ItemDetailIndex"
 var URL_ITEMPAGELIST = "/Item/MaintenancePageList"
 var URL_ITEM_LINK = "/MBOM/ItemLink"
 var URL_ITEM_UNLINK = "/MBOM/ItemUnlink"
 var URL_ITEM_EDITQUANTITY = "/MBOM/ItemEditQuantity"
-//刷新MBOM
-var URL_REFRESHMBOM = "/MBOM/RefreshMbom"
 
 var tg = $("#treegrid");
 var tgvi = $("#tgvi");
-var dgDeduction = $("#dgDeduction");
 var dgItem = $("#dgItem");
+
+var COLS = {
+    Level: "Level",
+    ParentId: "ParentId",
+    Id: "Id",
+    ItemId: "ItemId",
+    Name: "Name",
+    Code: "Code",
+    ItemCode: "ItemCode",
+    Guid: "Guid",
+    Quantity: "Quantity",
+    Unit: "Unit",
+    IsBorrow: "IsBorrow",
+    IsAssembly: "IsAssembly",
+    Type: "Type",
+    Status: "Status",
+    Order: "Order"
+}
 
 var treegridOption = {
     height: "100%",
@@ -49,18 +62,18 @@ var treegridOption = {
     rownumbers: true,
     lines: true,
     checkbox: function (row) {
-        if (row["MBOMTYPE"] == "产品" || row["MBOMTYPE"] == "VP") {
+        if (row[COLS.Type] == "产品" || row[COLS.Type] == "VP") {
             return false;
         }
         return true;
     },
     cascadeCheck: false,
-    idField: "ID",
-    treeField: "ITEM_CODE",
+    idField: COLS.Id,
+    treeField: COLS.ItemCode,
     toolbar: '#toolbar',
     rowStyler: function (row) {
         var cls = "";
-        switch (row["MBOMTYPE"]) {
+        switch (row[COLS.Type]) {
             case "VP":
                 cls = "parent-virtual";
                 break;
@@ -71,77 +84,26 @@ var treegridOption = {
                 cls = "main-combine";
                 break;
         }
-        if (row["CHA_DO"] == "Y" && row["CHA_SIGN"] == "Y") {
-            cls = "main-change-add-done";
-        } else if (row["CHA_DO"] == "Y" && row["CHA_SIGN"] == "N") {
-            cls = "main-change-remove-done";
-        } else if (row["CHA_DO"] == null && row["CHA_SIGN"] == "Y") {
-            cls = "main-change-add";
-        } else if (row["CHA_DO"] == null && row["CHA_SIGN"] == "N") {
-            cls = "main-change-remove";
-        }
         return { class: cls };
     },
     columns: [[
-        { field: 'LEVEL', title: lang.mbom.level, width: "35",align:"center" },
-        { field: 'ITEM_CODE', title: lang.mbom.itemCode, width: "250" },
-        { field: 'NAME', title: lang.mbom.itemName, width: "150" },
-        { field: 'QUANTITY', title: lang.mbom.quantity, width: "50",align:"right" },
-        { field: 'UNIT', title: lang.mbom.unit, align: "center", width: "35" },
+        { field: COLS.Level, title: lang.mbom.level, width: "35",align:"center" },
+        { field: COLS.ItemCode, title: lang.mbom.itemCode, width: "250" },
+        { field: COLS.Name, title: lang.mbom.itemName, width: "150" },
+        { field: COLS.Quantity, title: lang.mbom.quantity, width: "50",align:"right" },
+        { field: COLS.Unit, title: lang.mbom.unit, align: "center", width: "35" },
         {
-            field: 'ISBORROW', title: "借用", align: "center", width: "35",
+            field: COLS.IsBorrow, title: "借用", align: "center", width: "35",
             formatter: function (value, row, index) {
                 if (value) {
                     return  "借用";
                 }
             }
-        }
+        },
+        { field: COLS.Order, title: lang.menu.order, width: "50" }
     ]],
     onSelect: function (row) {
-        if (row == null) { return; }
-        //选中时判断tgvi中是否拥有此项子级，若有则标红
-        clearTgviClass();
-        //循环tgvi的根判断
-        var link = row["LINK"];
-        var plink = row["PARENT_LINK"]
-        var ptype = row["MBOMTYPE"];
-        var pid = row[treegridOption.idField];
-        var croots = tgvi.treegrid("getRoots");
-        var lastId = undefined;
-        var isFirst = true;
-        for (var i = 0, len = croots.length; i < len; i++) {
-            var croot = croots[i];
-            var crootId = croot[tgviOption.idField];
-            var classId = tgviTrPreId + crootId;
-            var c_plink = croot["PARENT_LINK"];
-            var c_mbomtype = croot["MBOMTYPE"];
-            if (c_plink === link) {
-                if (isFirst) {
-                    lastId = classId;
-                    isFirst = false;
-                }
-                if (c_mbomtype == "V") {
-                    $(classId).addClass("discrete-direct-virtual");
-                } else if (c_mbomtype == "C") {
-                    $(classId).addClass("discrete-combine");
-                }
-            } else if (ptype == "C" && pid != crootId && plink === c_plink && c_mbomtype == "C") {
-                $(classId).addClass("discrete-combine");
-            } else if (c_plink.indexOf(link) == 0 && c_mbomtype == "V") {
-                if (isFirst) {
-                    lastId = classId;
-                    isFirst = false;
-                }
-                $(classId).addClass("discrete-sub-virtual");
-            }
-        }
-        if (!isFirst) {
-            $(lastId).parents("div.datagrid-body").scrollTo(lastId);
-        }
-
-
-
-        if (!checkOnSelect) { return; } 
+        if (!checkOnSelect) { return; }
         var itemid = row[treegridOption.idField];
         var node = tg.treegrid("find", itemid);
         var checked = node.checked;
@@ -152,22 +114,27 @@ var treegridOption = {
         }
     },
     onBeforeCheckNode: function (row, checked) {
-        var itemid = row[treegridOption.idField];
-        var rowid = tgTrPreId + itemid;
+        var itemcode = row[COLS.ItemCode];
+        var id = row[treegridOption.idField];
+        var rowid = tgTrPreId + id;
+        var parent = tg.treegrid("getParent", id);
+        //判断是否和之前选择的属于同一直接父级
+        var children = tg.treegrid("getChildren", id);
+        if (parentId !== undefined && parent[treegridOption.idField] !== parentId) {
+            clearMainChecked();
+        }
         if (checked) {
-            clearMainSelected();
-            var canCheck = canCheckNode(itemid);
-            if (!canCheck) { return canCheck; }
+            parentId = parent[treegridOption.idField];
             checkedRowIds.count++;
-            checkedRowIds[itemid] = rowid;
-            $(checkedRowIds[itemid]).addClass(checkedCss);
+            checkedRowIds[itemcode] = rowid;
+            $(checkedRowIds[itemcode]).addClass(checkedCss);
         } else {
-            $(checkedRowIds[itemid]).removeClass(checkedCss);
+            $(checkedRowIds[itemcode]).removeClass(checkedCss);
             checkedRowIds.count--;
             if (checkedRowIds.count == 0) {
                 parentId = undefined;
             }
-            delete checkedRowIds[itemid];
+            delete checkedRowIds[itemcode];
         }
     }
 };
@@ -178,88 +145,35 @@ var tgviOption = {
     border: false,
     rownumbers: true,
     cascadeCheck: false,
-    idField: "ID",
-    treeField: "ITEM_CODE",
-    checkbox: function (row) {
-        if (row["ISROOT"]) {
-            return true;
-        }
-        return false;
-    },
-    onSelect: function(row){
-        if (row["ISROOT"]) {
-            var id = row["PARENTID"];
+    idField: COLS.Id,
+    treeField: COLS.ItemCode,
+    onSelect: function (row) {
+        if (row[COLS.Type] == "V" || row[COLS.Type] == "C") {
+            var id = row[COLS.ParentId];
             var item = tg.treegrid("find", id);
             if (item != null) {
                 tg.treegrid("select", id);
                 $(tgTrPreId + id).parents("div.datagrid-body").scrollTo(tgTrPreId + id);
             }
-        }
-    },
-    onBeforeCheckNode: function (row, checked) {
-        var tg = $(this);
-        if (checked) {
-            tg.treegrid("clearChecked");
+        } else {
+            tg.treegrid("select");
         }
     },
     rowStyler: function (row) {
         var cls;
-        if (row["ISLINKED"]) {
-            cls =  "discreteLinked";
-        }
-        if (row["CHA_DO"] == "Y" && row["CHA_SIGN"] == "Y") {
-            cls = "main-change-add-done";
-        } else if (row["CHA_DO"] == "Y" && row["CHA_SIGN"] == "N") {
-            cls = "main-change-remove-done";
-        } else if (row["CHA_DO"] == null && row["CHA_SIGN"] == "Y") {
-            cls = "main-change-add";
-        } else if (row["CHA_DO"] == null && row["CHA_SIGN"] == "N") {
-            cls = "main-change-remove";
+        if (row[COLS.Status] == "_VL") {
+            cls = "discreteLinked";
         }
         return { class: cls };
     },
     toolbar: '#dlgDiscreteToolbar',
     columns: [[
-        { field: 'ITEM_CODE', title: lang.mbom.itemCode, width: "170" },
-        { field: 'NAME', title: lang.mbom.itemName, width: "140" },
-        { field: 'QUANTITY', title: lang.mbom.quantity, align: "center", width: "35" },
-        { field: 'UNIT', title: lang.mbom.unit, align: "center", width: "35" },
-        {
-            field: 'CHA_SIGN', title: "物料状态", align: "center", width: "70",
-            formatter: function (value, row, index) {
-                if (value == "") {
-                    return "无变更";
-                } else if (value == "Y") {
-                    if (row["CHA_DO"] == "Y") {
-                        return "[已新增]";
-                    } else {
-                        return "新增";
-                    }
-                } else if (value == "N") {
-                    if (row["CHA_DO"] == "Y") {
-                        return "[已取消]";
-                    } else {
-                        return "取消";
-                    }
-                }
-            }
-        }
+        { field: COLS.ItemCode, title: lang.mbom.itemCode, width: "170" },
+        { field: COLS.Name, title: lang.mbom.itemName, width: "140" },
+        { field: COLS.Quantity, title: lang.mbom.quantity, align: "center", width: "35" },
+        { field: COLS.Unit, title: lang.mbom.unit, align: "center", width: "35" }
     ]]
 };
-
-var dgDeductionOption = {
-    height: "100%",
-    singleSelect: true,
-    rownumbers: true,
-    border: false,
-    fitColumns: true,
-    idField: 'HLINKID',
-    columns: [[
-        { field: 'GX_CODE', title: lang.processFlow.gxCode },
-        { field: 'GX_NAME', title: lang.processFlow.gxName },
-        { field: 'GXNR', title: lang.processFlow.gxnr }
-    ]]
-}
 
 var dgItemOption = {
     url: URL_ITEMPAGELIST,
@@ -306,14 +220,7 @@ var dgItemOption = {
 }
 
 $(function () {
-    postData(URL_ENTER, params, function (result) {
-        if (result.msg) {
-            InfoWin(result.msg)
-        }
-        if (result.success) {
-            InitPage();
-        }
-    });
+    InitPage();
 });
 /*
 
@@ -324,24 +231,11 @@ function InitPage() {
     tg.treegrid(treegridOption);
     tgvi.treegrid(tgviOption);
     dgItem.datagrid(dgItemOption);
-    dgDeduction.datagrid(dgDeductionOption);
     initDialogs();
     initEvents();
     reloadAllTables();
 }
 
-//重新加载右侧表格
-function reloadDiscrete() {
-    reloadTable({
-        treegrid: tgvi,
-        url: URL_DISCRETE_LIST,
-        loadSuccess: function(data){
-            discreteList = data;
-            var val = $("#cboDiscreteFilter").combobox("getValue");
-            filterDiscrete(val);
-        }
-    });
-}
 //过滤离散件
 function filterDiscrete(value) {
     if (!value) {
@@ -354,9 +248,7 @@ function filterDiscrete(value) {
         var filters = value.split(",");
         for (var j = 0, lenj = filters.length; j < lenj; j++) {
             var filter = filters[j];
-            if (discrete["MBOMTYPE"] == filter) {
-                filterList.push(discrete);
-            } else if (discrete["CHA_SIGN"] == filter) {
+            if (discrete[COLS.Type] == filter) {
                 filterList.push(discrete);
             }
         }
@@ -374,29 +266,14 @@ function clearTgviClass() {
     }
 }
 
-//是否可以选中节点
-function canCheckNode(itemid) {
-    var parent = tg.treegrid("getParent", itemid);
-    if (!parent) {
-        InfoWin(lang.mbom.noSelectRoot);
-        return false;
-    }
-    //判断是否和之前选择的属于同一直接父级
-    var children = tg.treegrid("getChildren", itemid);
-    if (parentId !== undefined && parent[treegridOption.idField] !== parentId) {
-        return false;
-    }
-    parentId = parent[treegridOption.idField];
-    return true;
-}
-
 //重新加载表格
 function reloadTable(options) {
     var defaults = {
         treegrid: tg,
         url: URL_ITEMTREE,
         loadSuccess: function(data){
-
+            var val = $("#cboDiscreteFilter").combobox("getValue");
+            filterDiscrete(val);
         }
     }
     options = $.extend(defaults, options);
@@ -413,13 +290,13 @@ function reloadTable(options) {
         if (!result.success) {
             return false;
         }
-        var list = [];
+        list = [];
+        discreteList = [];
         buildTree({
             items: result.data,
-            list: list,
-            pid: "PARENT_LINK",
-            id: "LINK"
+            list: list
         });
+        getDiscreteList(list[0].children);
         treegrid.treegrid("loadData", list);
         treegrid.treegrid("loaded");
         options.loadSuccess(list);
@@ -441,16 +318,7 @@ function initDialogs() {
         toolbar: '#dlgItemToolbar',
         footer: '#dlgItemFooter'
     });
-
-    $("#dlgDeduction").dialog({
-        width: 600,
-        height: 400,
-        modal: true,
-        closed: true,
-        toolbar: '#dlgDeductionToolbar',
-        footer: '#dlgDeductionFooter'
-    });
-
+    
     $("#dlgItemQuantity").dialog({
         width: 400,
         height: 200,
@@ -490,12 +358,12 @@ function itemEditQuant() {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
-    if (item["LEVEL"] == 0) {
+    if (item[COLS.Level] == 0) {
         AlertWin(lang.mbom.noSelectRoot);
         return;
     }
-    var itemcode = $.trim(item["ITEM_CODE"])
-    var quantity = $.trim(item["QUANTITY"])
+    var itemcode = $.trim(item[COLS.ItemCode])
+    var quantity = $.trim(item[COLS.Quantity])
     $("#dlgItemQuantity").dialog({
         closed: false,
         title: "修改引用物料数量[" + itemcode + "]"
@@ -510,8 +378,8 @@ function itemEditQuantityConfirm() {
         AlertWin(lang.mbom.notSelectMain);
         return;
     }
-    var hlinkid = item["HLINK_ID"];
-    if (!hlinkid) {
+    var guid = item[COLS.Guid];
+    if (!guid) {
         AlertWin(lang.mbom.noSelectRoot);
         return;
     }
@@ -525,7 +393,7 @@ function itemEditQuantityConfirm() {
     }
     $("#dlgItemQuantity").dialog("close");
     postData(URL_ITEM_EDITQUANTITY, {
-        hlinkid: hlinkid,
+        guid: guid,
         quantity: quantity
     }, function (result) {
         if (result.success) {
@@ -552,10 +420,10 @@ function itemLink() {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
-    var pitemcode = $.trim(pitem["ITEM_CODE"]);
+    var pitemcode = $.trim(pitem[COLS.ItemCode]);
     var title = "将引用至[" + pitemcode + "]下";
-    if (!pitem["IS_ASSEMBLY"]) {
-        $.messager.confirm("提示", "物料并非组件，确定要在此物料下引用吗？", function (r) {
+    if (!pitem[COLS.IsAssembly]) {
+        $.messager.confirm("提示", "物料["+pitemcode+"]并非组件，确定要在此物料下引用吗？", function (r) {
             if (r) {
                 openLinkDialog(title);
             }
@@ -574,19 +442,16 @@ function itemLinkConfirm() {
     //获取父级LINK、父级的链路
     var pitem = tg.treegrid("getSelected");
     var item = dgItem.datagrid("getSelected");
-    var pid = pitem["ITEMID"];
-    var plink = pitem["LINK"];
+    var pcode = pitem[COLS.Code];
     //获取引用的ITEMID
-    var itemid = item["CN_ID"];
+    var code = item[COLS.Code];
     //获取引用数量
     var quantity = txtQuant.textbox("getValue");
     //提交
     $("#dlgItem").dialog("close");
     postData(URL_ITEM_LINK, {
-        code: params.code,
-        pid: pid,
-        plink: plink,
-        itemid: itemid,
+        pcode: pcode,
+        code: code,
         quantity: quantity
     }, function (result) {
         if (result.success) {
@@ -601,17 +466,26 @@ function itemLinkConfirm() {
 //取消引用物料
 function itemUnlink() {
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    var items = tg.treegrid("getCheckedNodes");
+    var guids = "";
+    var itemcode = "";
+    if (!item && items.length == 0) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
-    var hlinkid = item["HLINK_ID"];
-    var itemcode = $.trim(item["ITEM_CODE"]);
+    if (items.length == 0) {
+        items.push(item);
+    }
+    for (var i = 0, j = items.length; i < j; i++) {
+        itemcode = itemcode + items[i][COLS.ItemCode] + ",";
+        guids = guids + items[i][COLS.Guid] + ",";
+    }
+    itemcode = itemcode.substr(0, itemcode.length - 1);
+    guids = guids.substr(0, guids.length - 1);
     $.messager.confirm("提示", "您确认要删除物料"+ itemcode +"的引用吗？此操作仅可用于自定义添加物料", function (r) {
         if (r) {
             postData(URL_ITEM_UNLINK, {
-                code: params.code,
-                hlinkid: hlinkid
+                guids: guids
             }, function (result) {
                 if (result.success) {
                     reloadAllTables();
@@ -656,11 +530,11 @@ function virtualItemSet() {
     if (items.length == 1) {
         item = items[0];
     }
-    if (!item["ITEMID"] || !item["BOM_ID"]) {
+    if (!item[COLS.Guid]) {
         AlertWin(lang.mbom.noSelectRoot);
         return false;
     }
-    if (item["MBOMTYPE"]) {
+    if (item[COLS.Type] != "") {
         AlertWin(lang.mbom.notSelectHaveType);
         return false;
     }
@@ -668,61 +542,14 @@ function virtualItemSet() {
         AlertWin(lang.mbom.haveToSelectParent);
         return false;
     }
-    var itemcode = $.trim(item["ITEM_CODE"]);
+    var itemcode = $.trim(item[COLS.ItemCode]);
+    var guid = item[COLS.Guid];
     $.messager.confirm("提示", "您将设置“&lt;" + itemcode + "&gt;”为虚件，请您确认！", function (r) {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_SET, {
-                code: params.code,
-                bomid: item["BOM_ID"],
-                itemid: item["ITEMID"],
-                show: 0
-            }, function (result) {
-                if (result.msg) {
-                    InfoWin(result.msg);
-                }
-                if (result.success) {
-                    reloadAllTables(true);
-                }
-            });
-        }
-    });
-}
-//设为虚件，且引用时显示在列表中
-function virtualItemSetShow() {
-    var item = tg.treegrid("getSelected");
-    var items = tg.treegrid("getCheckedNodes");
-    if (items.length == 0 && item == null) {
-        AlertWin(lang.mbom.notSelect);
-        return false;
-    } else if (items.length > 1) {
-        AlertWin(lang.mbom.noMultiSelect);
-        return false;
-    }
-    if (items.length == 1) {
-        item = items[0];
-    }
-    if (item["MBOMTYPE"]) {
-        AlertWin(lang.mbom.notSelectHaveType);
-        return false;
-    }
-    if (!item["ITEMID"] || !item["BOM_ID"]) {
-        AlertWin(lang.mbom.noSelectRoot);
-        return false;
-    }
-    if (item.children.length == 0) {
-        AlertWin(lang.mbom.haveToSelectParent);
-        return false;
-    }
-    var itemcode = $.trim(item["ITEM_CODE"]);
-    $.messager.confirm("提示", "您将设置“&lt;" + itemcode + "&gt;”为虚件，请您确认！", function (r) {
-        if (r) {
-            //选中有效，传入bomid和itemid
-            postData(URL_VIRTUAL_ITEM_SET, {
-                code: params.code,
-                bomid: item["BOM_ID"],
-                itemid: item["ITEMID"],
-                show: 1
+                prodcode: params.code,
+                guid: guid
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -736,24 +563,23 @@ function virtualItemSetShow() {
 }
 //删除虚件
 function virtualItemDrop() {
-    var items = tgvi.treegrid("getCheckedNodes");
-    if (items.length == 0) {
-        AlertWin(lang.mbom.notSelectDiscrete);
+    var item = tgvi.treegrid("getSelected");
+    var itemcode = $.trim(item[COLS.ItemCode]);
+    var guid = item[COLS.Guid]
+    if (item[COLS.Type] != "V") {
+        AlertWin(lang.mbom.notSelectVirtual);
         return false;
     }
-    if (items.length > 1) {
-        AlertWin(lang.mbom.notSelectSingleDiscrete)
+    if (item[COLS.Type] != "V") {
+        AlertWin(lang.mbom.notSelectVirtualRoot);
         return false;
     }
-    var item = items[0];
-    var itemcode = $.trim(item["ITEM_CODE"]);
     $.messager.confirm("提示", "您将删除虚件“&lt;" + itemcode + "&gt;”，请您确认！", function (r) {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_DROP, {
-                code: params.code,
-                bomid: item["BOM_ID"],
-                itemid: item["ITEMID"]
+                prodcode: params.code,
+                guid: guid
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -768,46 +594,43 @@ function virtualItemDrop() {
 
 //引用虚件
 function virtualItemLink() {
-    //判断是否选中主表，且选中的主表有效
+    //是否选中主表，且选中的主表有效
     var item = tg.treegrid("getSelected");
     if (!item) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
-    //判断右侧是否选中的有效
-    var citems = tgvi.treegrid("getCheckedNodes");
-    if (citems.length == 0) {
+    //右侧是否选中的有效
+    var citem = tgvi.treegrid("getSelected");
+    if (!citem) {
         AlertWin(lang.mbom.notSelectDiscrete);
         return false;
-    }else if (citems.length > 1) {
-        AlertWin(lang.mbom.notSelectSingleDiscrete);
-        return false;
     }
-    var citem = citems[0];
-    var plink = item["LINK"];
-    var cplink = citem["PARENT_LINK"];
-    var link = citem["LINK"];
-    var parentitemid = item["ITEMID"];
-    var itemid = citem["ITEMID"];
-    var type = citem["MBOMTYPE"];
-    var p_itemcode = $.trim(item["ITEM_CODE"]);
-    var c_itemcode = $.trim(citem["ITEM_CODE"]);
-    if (type != "V") {
+    //右侧是否选中根节点
+    if (citem[COLS.Type] != "V") {
         AlertWin(lang.mbom.notSelectDiscreteVirtual);
         return false;
     }
-    if (cplink.indexOf(plink) != 0 && plink != cplink) {
+    //左右是否为父子
+    if (citem[COLS.ParentId].indexOf(item[COLS.Id]) < 0) {
         AlertWin(lang.mbom.notChild);
+        return false;
+    }
+    //判断是否为子级
+    var p_itemcode = $.trim(item[COLS.ItemCode]);
+    var c_itemcode = $.trim(citem[COLS.ItemCode]);
+    var parentcode = item[COLS.Code];
+    var guid = citem[COLS.Guid];
+    if (citem[COLS.Type] != "V") {
+        AlertWin(lang.mbom.notSelectDiscreteVirtual);
         return false;
     }
     $.messager.confirm("提示", "您将在“" + p_itemcode + "”下引用虚件“" + c_itemcode + "”，请您确认！", function (r) {
         if (r) {
             postData(URL_VIRTUAL_ITEM_LINK, {
-                code: params.code,
-                parentitemid: parentitemid,
-                itemid: itemid,
-                parentlink: plink,
-                link: link
+                prodcode: params.code,
+                parentcode: parentcode,
+                guid: guid
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -822,29 +645,22 @@ function virtualItemLink() {
 //取消引用虚件
 function virtualItemUnlink() {
     //判断是否选中离散区的虚件
-    var items = tgvi.treegrid("getCheckedNodes");
-    if (items.length == 0) {
+    var item = tgvi.treegrid("getSelected");
+    if (!item) {
         AlertWin(lang.mbom.notSelectDiscrete);
         return false;
     }
-    if (items.length > 1) {
-        AlertWin(lang.mbom.notSelectSingleDiscrete)
-        return false;
-    }
-    var item = items[0];
-    var itemid = item["ITEMID"];
-    var link = item["LINK"];
-    var itemcode = $.trim(item["ITEM_CODE"]);
-    if (item["MBOMTYPE"] != "V") {
+    if (item[COLS.Type] != "V") {
         AlertWin(lang.mbom.notSelectVirtual);
         return false;
     }
+    var itemcode = $.trim(item[COLS.ItemCode]);
+    var guid = item[COLS.Guid]
     $.messager.confirm("提示", "您将取消虚件“&lt;" + itemcode + "&gt;”的引用，请您确认！", function (r) {
         if (r) {
             postData(URL_VIRTUAL_ITEM_UNLINK, {
-                code: params.code,
-                itemid: itemid,
-                link: link
+                prodcode: params.code,
+                guid: guid
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -863,47 +679,34 @@ function virtualItemUnlink() {
 */
 //新建合件
 function compositeItemSet() {
-    //获取选中的件的ITEMID、BOMID，若多个用逗号[,]拼接其ITEMID，但BOMID仅能是一个，若多个的情况取消操作
-    var bomid = undefined;
+    //纯显示用变量
     var itemcode = undefined;
     var parentitemcode = undefined;
-    var itemids = "";
     var childrenItemCodeStr = "";
     var childrenItemNameStr = "";
+    //业务用变量
+    var guids = "";
     var item = tg.treegrid("getSelected")
     var items = tg.treegrid("getCheckedNodes");
-    var parentlink;
     $("#cboCombineItemType").find("option[value=-]").prop("selected", "selected").change();
     if (!item && items.length == 0) {
         AlertWin(lang.mbom.notSelect);
         return;
     }
     if (items.length > 1) {
+        itemcode = tg.treegrid("getParent", items[0][COLS.Id])[COLS.ItemCode];
         for (var i = 0, len = items.length; i < len; i++) {
             var item = items[i];
-            if (!itemcode) {
-                itemcode = tg.treegrid("getParent", item["ID"])["ITEM_CODE"];
-            }
-            if (!bomid) {
-                bomid = item["BOM_ID"]
-            } else if (bomid != item["BOM_ID"]) {
-                AlertWin(lang.mbom.notSelectSameParent);
-                return;
-            }
-            itemids = item["ITEMID"] + "," + itemids;
-            childrenItemCodeStr = childrenItemCodeStr + item["ITEM_CODE"] + "<br/>";
-            childrenItemNameStr = childrenItemNameStr + item["NAME"] + "<br/>";
+            guids = item[COLS.Guid] + "," + guids;
+            childrenItemCodeStr = childrenItemCodeStr + item[COLS.ItemCode] + "<br/>";
+            childrenItemNameStr = childrenItemNameStr + item[COLS.Name] + "<br/>";
         }
-        itemids = itemids.substring(0, itemids.length - 1);
-        parentlink = items[0]["PARENT_LINK"];
+        guids = guids.substring(0, guids.length - 1);
         $("#dlgCreateCombineItem").dialog({
             title: "新建合件" + itemcode,
             itemcode: itemcode,
             data: {
-                code: params.code,
-                bomid: bomid,
-                parentlink: parentlink,
-                itemids: itemids
+                guids: guids
             },
             closed: false
         });
@@ -918,25 +721,20 @@ function compositeItemSet() {
         if (items.length == 1) {
             item = items[0];
         }
-        if (item["MBOMTYPE"] == "产品") {
+        if (item[COLS.Type] == "产品") {
             //选择的是根节点，不允许做合件
             AlertWin(lang.mbom.noSelectRoot);
             return;
         }
-        itemcode = $.trim(item["ITEM_CODE"])
-        parentitemcode = $.trim(tg.treegrid("getParent", item["ID"])["ITEM_CODE"]);
-        bomid = item["BOM_ID"];
-        itemids = item["ITEMID"];
-        parentlink = item["PARENT_LINK"];
+        itemcode = $.trim(item[COLS.ItemCode])
+        parentitemcode = $.trim(tg.treegrid("getParent", item[COLS.Id])[COLS.ItemCode]);
+        guids = item[COLS.Guid];
         $("#dlgCreateCombineItem").dialog({
             title: "新建合件" + itemcode,
             itemcode: itemcode,
             parentitemcode: parentitemcode,
             data: {
-                code: params.code,
-                bomid: bomid,
-                parentlink: parentlink,
-                itemids: itemids
+                guids: guids
             },
             closed: false
         });
@@ -946,7 +744,7 @@ function compositeItemSet() {
         $("#cboCombineItemType").find("option[value=K]").show();
         $("#cboCombineItemType").find("option[value=K]").prop("selected", "selected").change();
         $("#txtCombineItemChildrenItemCode").html(itemcode);
-        $("#txtCombineItemChildrenItemName").html(item["NAME"]);
+        $("#txtCombineItemChildrenItemName").html(item[COLS.Name]);
     }
 
 }
@@ -960,6 +758,7 @@ function dlgCreateCombineItemConfirm() {
     //获取cboCombineItemCode
     var type = $("#cboCombineItemType").val();
     data.type = type;
+    data.prodcode = params.code;
     //选中有效，传入data参数
     $("#dlgCreateCombineItem").dialog("close");
     postData(URL_COMPOSITE_ITEM_SET, data,
@@ -974,18 +773,22 @@ function dlgCreateCombineItemConfirm() {
 }
 //删除合件
 function compositeItemDrop() {
-    var items = tgvi.treegrid("getCheckedNodes");
-    if (items.length == 0) {
+    var item = tgvi.treegrid("getSelected") || tg.treegrid("getSelected")
+    var items = tg.treegrid("getCheckedNodes");
+    if (item == null && items.length == 0) {
         AlertWin(lang.mbom.notSelectDiscrete);
         return false;
     }
     if (items.length > 1) {
-        AlertWin(lang.mbom.notSelectSingleDiscrete)
+        AlertWin(lang.mbom.noMultiSelect);
         return false;
     }
-    var item = items[0];
-    var itemcode = $.trim(item["ITEM_CODE"]);
-    if (item["MBOMTYPE"] != "C") {
+    if (items.length == 1) {
+        item = items[0];
+    }
+    var itemcode = $.trim(item[COLS.ItemCode]);
+    var guid = item[COLS.Guid];
+    if (item[COLS.Type] != "C") {
         AlertWin(lang.mbom.notSelectDiscreteComposite)
         return false;
     }
@@ -993,10 +796,8 @@ function compositeItemDrop() {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_COMPOSITE_ITEM_DROP, {
-                code: params.code,
-                bomid: item["BOM_ID"],
-                itemid: item["ITEMID"],
-                parentlink: item["PARENT_LINK"]
+                prodcode: params.code,
+                guid: guid
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -1010,53 +811,41 @@ function compositeItemDrop() {
 } 
 //引用合件
 function compositeItemLink() {
-    //判断是否选中主表，且选中的主表有效
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    var items = tgvi.treegrid("getCheckedNodes");
+
+    var citem = tgvi.treegrid("getSelected");
+    //判断是否选中主表，且选中的主表有效
+    if (!item && items.length == 0) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
+    if (items.length > 1) {
+        AlertWin(lang.mbom.noMultiSelect);
+        return false;
+    }
+    if (items.length == 1) {
+        item = items[0];
+    }
     //判断右侧是否选中的有效
-    var citems = tgvi.treegrid("getCheckedNodes");
-    if (citems.length == 0) {
+    if (citem == null) {
         AlertWin(lang.mbom.notSelectDiscrete);
         return false;
-    } else if (citems.length > 1) {
-        AlertWin(lang.mbom.notSelectSingleDiscrete);
-        return false;
     }
-    var citem = citems[0];
-    var plink = item["LINK"];
-    var cplink = citem["PARENT_LINK"];
-    var link = citem["LINK"];
-    var parentitemid = item["ITEMID"];
-    var itemid = citem["ITEMID"];
-    var type = citem["MBOMTYPE"];
-    var p_code = $.trim(item["CODE"]);
-    var p_itemcode = $.trim(item["ITEM_CODE"])
-    var c_itemcode = $.trim(citem["ITEM_CODE"]);
-    if (p_code == c_itemcode) {
-        AlertWin(lang.mbom.notSelectSame);
-        return false;
-    }
-    if (type != "C") {
+    var p_itemcode = $.trim(item[COLS.ItemCode])
+    var c_itemcode = $.trim(citem[COLS.ItemCode]);
+    var parentcode = item[COLS.Code];
+    var guid = citem[COLS.Guid];
+    if (citem[COLS.Type] != "C") {
         AlertWin(lang.mbom.notSelectDiscreteComposite);
         return false;
-    }
-    if (item["MBOMTYPE"] == "C") {
-        if (item["PARENT_LINK"] != cplink) {
-            AlertWin(lang.mbom.notChild);
-            return false;
-        }
     }
     $.messager.confirm("提示", "您将在“" + p_itemcode + "”下引用合件“" + c_itemcode + "”，请您确认！", function (r) {
         if (r) {
             postData(URL_COMPOSITE_ITEM_LINK, {
-                code: params.code,
-                parentitemid: parentitemid,
-                itemid: itemid,
-                parentlink: plink,
-                link: link
+                prodcode: params.code,
+                parentcode: parentcode,
+                guid: guid
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -1071,7 +860,7 @@ function compositeItemLink() {
 //取消合件引用
 function compositeItemUnlink() {
     //判断是否选中主表，且选中的主表有效
-    var item = tg.treegrid("getSelected");
+    var item = tgvi.treegrid("getSelected") || tg.treegrid("getSelected");
     var items = tg.treegrid("getCheckedNodes");
     if (!item && items.length == 0) {
         AlertWin(lang.mbom.notSelectMain);
@@ -1084,71 +873,17 @@ function compositeItemUnlink() {
     if (items.length == 1) {
         item = items[0];
     }
-    var type = item["MBOMTYPE"];
-    var itemid = item["ITEMID"];
-    var itemcode = $.trim(item["ITEM_CODE"]);
-    var code = $.trim(item["CODE"]);
-    var link = item["LINK"];
-    var bomid = item["BOM_ID"];
-    if (type != "C") {
+    var itemcode = $.trim(item[COLS.ItemCode]);
+    var guid = $.trim(item[COLS.Guid]);
+    if (item[COLS.Type] != "C") {
         AlertWin(lang.mbom.notSelectComposite);
         return false;
     }
     $.messager.confirm("提示", "您将取消合件“" + itemcode + "”的引用，请您确认！", function (r) {
         if (r) {
             postData(URL_COMPOSITE_ITEM_UNLINK, {
-                code: params.code,
-                itemid: itemid,
-                bomid: bomid,
-                link: link
-            }, function (result) {
-                if (result.msg) {
-                    InfoWin(result.msg);
-                }
-                if (result.success) {
-                    reloadAllTables(true);
-                }
-            });
-        }
-    });
-}
-//虚件下引用合件
-function linkC2V() {
-    //判断右侧是否选中的有效
-    var items = tgvi.treegrid("getCheckedNodes");
-    //必选中两项才可操作
-    if (items.length != 2) {
-        AlertWin(lang.mbom.notSelectDiscreteTwoItems);
-        return false;
-    }
-    //必选中一合件一虚件才可操作
-    var vitem,citem 
-    for (var i = 0, len = items.length; i < len; i++) {
-        var item = items[i];
-        if (item["MBOMTYPE"] == "C") {
-            vitem = item;
-        } else {
-            citem = item;
-        }
-    }
-    if (!vitem || !citem) {
-        AlertWin(lang.mbom.notSelectDiscreteVCItems);
-        return false;
-    }
-    //
-    var v_itemcode = $.trim(vitem["ITEM_CODE"])
-    var c_itemcode = $.trim(citem["ITEM_CODE"])
-    var parentitemid = vitem["ITEMID"]
-    var itemid = citem["ITEMID"]
-    var plink = vitem["LINK"]
-    var link = citem["LINK"]
-    $.messager.confirm("提示", "您将在虚件“" + v_itemcode + "”下引用合件“" + c_itemcode + "”，请您确认！", function (r) {
-        if (r) {
-            postData(URL_COMPOSITE_ITEM_LINK, {
-                parentitemid: parentitemid,
-                itemid: itemid,
-                parentlink: plink,
-                link: link
+                prodcode: params.code,
+                guid: guid
             }, function (result) {
                 if (result.msg) {
                     InfoWin(result.msg);
@@ -1168,11 +903,11 @@ function editCombineName() {
         AlertWin(lang.mbom.notSelectDiscrete);
         return false;
     }
-    if (data["MBOMTYPE"] != "C") {
+    if (data[COLS.Type] != "C") {
         AlertWin(lang.mbom.notSelectComposite);
         return false;
     }
-    var itemid = data["ITEMID"];
+    var guid = data[COLS.Guid];
     var m = $.messager.prompt({
         title: lang.mbom.editCombineName,
         msg: lang.mbom.inputNewCombineName,
@@ -1180,7 +915,7 @@ function editCombineName() {
             if (!r) {
                 return;
             }
-            postData(URL_EDITCOMBINENAME, { itemid: itemid, name: r },
+            postData(URL_EDITCOMBINENAME, { guid: guid, name: r },
                 function (result) {
                     if (result.success) {
                         reloadDiscrete();
@@ -1191,91 +926,7 @@ function editCombineName() {
             );
         }
     });
-    m.find('.messager-input').val($.trim(data["NAME"]));
-}
-
-//打开扣料窗口
-function deductionDialog() {
-    //若当前未选中任何件则不允许启动扣料
-    var item = tg.treegrid("getSelected");
-    var items = tg.treegrid("getCheckedNodes");
-    if (!item && items.length == 0) {
-        AlertWin(lang.mbom.notSelect);
-        return false;
-    }
-    if (item && item["children"].length > 0) {
-        items = [];
-        for (var i = 0, len = item["children"].length; i < len; i++) {
-            items.push(item["children"][i]);
-        }
-    } else if (item) {
-        items = [];
-        items.push(item);
-    }
-    //获取当前选中的ITEMHLINKID
-    var bomhlinkids = "";
-    var parent = undefined;
-    var pcode = undefined;
-    var itemcodes = "";
-    if (items.length > 0) {
-        for (var i = 0, len = items.length; i < len; i++) {
-            item = items[i];
-            if (!parent) {
-                parent = tg.treegrid("getParent", item[treegridOption.idField]);
-            }
-            itemcodes = $.trim(item["ITEM_CODE"]) + "," + itemcodes;
-            bomhlinkids = item["HLINK_ID"] + "," + bomhlinkids;
-        }
-        bomhlinkids = bomhlinkids.substring(0, bomhlinkids.length - 1);
-        itemcodes = itemcodes.substring(0, itemcodes.length - 1);
-    }
-    //获取父级的CODE，获取到其工序；若父级为合件则继续找到上级，直到父级不是合件
-    while (parent["MBOMTYPE"] == "C") {
-        parent = tg.treegrid("getParent", parent[treegridOption.idField]);
-        if (parent == null) {
-            AlertWin(lang.mbom.getItemFailed);
-            return false;
-        }
-    }
-    pcode = parent["CODE"];
-    pitemcode = $.trim(parent["ITEM_CODE"]);
-    $("#dlgDeductionToolbar").html("设置扣料：" + itemcodes);
-    $("#dlgDeduction").dialog({
-        closed: false,
-        title: pitemcode + " " + lang.processFlow.processInfo
-    })
-    dgDeduction.datagrid("clearSelections");
-    dgDeduction.datagrid("loading");
-    postData(URL_ITEMPROCESSINFO, { code: pcode }, function (result) {
-        if (result.success) {
-            if (!result.data || result.data.length == 0) {
-                AlertWin(lang.mbom.notHaveProcessInfo);
-            }
-            dgDeduction.datagrid("loadData", result.data);
-            dgDeduction.datagrid("options").bomhlinkids = bomhlinkids;
-            dgDeduction.datagrid("loaded");
-        }
-    });
-    $("#dlgDeduction").dialog("center");
-}
-
-function deductionSet() {
-    var item = dgDeduction.datagrid("getSelected");
-    if (item == null) {
-        AlertWin(lang.mbom.notSelect)
-        return false;
-    }
-    var bomhids = dgDeduction.datagrid("options").bomhlinkids;
-    var pvhid = item["HLINK_ID"];
-    postData(URL_ITEMDEDUCTIONSET, { bomhids: bomhids, pvhid: pvhid }, function (result) {
-        if (result.success) {
-            InfoWin(lang.mbom.itemDeductionSetSuccess);
-            reloadTable();
-        } else {
-            InfoWin(result.msg);
-        }
-        $("#dlgDeduction").dialog("close");
-    });
+    m.find('.messager-input').val($.trim(data[COLS.Name]));
 }
 
 function clearMainSelected() {
@@ -1284,7 +935,7 @@ function clearMainSelected() {
 
 function clearMainChecked() {
     tg.treegrid("clearChecked");
-    for (var i = 0, len = checkedRowIds.length; i < len; i++) {
+    for (var i in checkedRowIds) {
         var rowid = checkedRowIds[i];
         $(rowid).removeClass(checkedCss);
     }
@@ -1311,21 +962,6 @@ function reloadAllTables(force) {
     }, refreshCooldown * 1000)
 
     reloadTable();
-    reloadDiscrete();
-}
-//刷新MBOM
-function refreshMbom() {
-    $.messager.confirm("提示", "是否要刷新MBOM？", function (r) {
-        if (r) {
-            postData(URL_REFRESHMBOM, { code: params.code }, function (result) {
-                if (result.success) {
-                    window.location.reload();
-                } else {
-                    InfoWin(result.msg);
-                }
-            });
-        }
-    });
 }
 //切换-选中行同时选中节点
 function toggleCheckStateOnSelect() {
@@ -1341,7 +977,7 @@ function checkAllChildren() {
     clearMainChecked();
     var children = item.children;
     for (var i = 0, len = children.length; i < len; i++) {
-        var id = children[i]["ID"];
+        var id = children[i][COLS.Id];
         tg.treegrid("checkNode", id);
     }
 }
@@ -1353,11 +989,8 @@ function buildTree(options) {
         items: [],
         list: [],
         pval: null,
-        pid: "pid",
-        id: "id",
-        return_pid: "PARENTID",
-        return_id:"ID",
-        isroot: "ISROOT",
+        pid: COLS.ParentId,
+        id: COLS.Id,
         children: "children"
     };
 
@@ -1367,10 +1000,7 @@ function buildTree(options) {
     var list = settings.list;
     var id = settings.id;
     var pid = settings.pid;
-    var return_id = settings.return_id;
-    var return_pid = settings.return_pid;
     var pval = settings.pval;
-    var isroot = settings.isroot;
     var children = settings.children;
 
     var count = items.length;
@@ -1380,17 +1010,14 @@ function buildTree(options) {
     }
     for (var i = 0; i < count; i++) {
         var item = items[i];
-        item[return_id] = item[id].replace(/,/g, "");
-        item[return_pid] = item[pid] == null ? null : item[pid].replace(/,/g, "");
-        if (item[return_pid] == pval || item[isroot]) {
-            switch (item["MBOMTYPE"]) {
+        if (item[pid] == pval || item[COLS.Level] == 0) {
+            switch (item[COLS.Type]) {
                 case "V":
-                case "VP":
-                case "VC":
+                case "CV":
                     item.iconCls = "icon-virtual";
                     break;
                 case "C":
-                case "CC":
+                case "VC":
                     item.iconCls = "icon-combine";
                     break;
             }
@@ -1404,6 +1031,23 @@ function buildTree(options) {
     for (var i = 0, len = list.length; i < len; i++) {
         var item = list[i];
         item[children] = item[children] ? item[children] : [];
-        buildTree($.extend(settings, { items: items, list: item[children], pval: item[return_id] }));
+        buildTree($.extend(settings, { items: items, list: item[children], pval: item[id] }));
+    }
+}
+
+function getDiscreteList(l) {
+    for (var i = 0, j = l.length; i < j; i++) {
+        var item = l[i];
+        if (item == null) {
+            continue;
+        }
+        if (item[COLS.Status] == "Y" ||
+            item[COLS.Status] == "V" ||
+            item[COLS.Status] == "C") {
+            getDiscreteList(item.children);
+            continue;
+        }
+        discreteList.push(l.splice(i, 1)[0]);
+        i--;
     }
 }

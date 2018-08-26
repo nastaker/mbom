@@ -20,21 +20,20 @@ namespace Repository
         const string PROC_GET_PROCESS_ITEM_LIST = "PROC_GET_PROCESS_ITEM @code";
         const string PROC_GET_ITEM_CATE_LIST = "PROC_GET_ITEM_CATE_LIST @code,@catename";
         const string PROC_PRODUCT_TRANSFER_INITIATTE = "PROC_PRODUCT_TRANSFER_INITIATTE @code,@userid,@name,@login";
-        const string PROC_MBOM_MAINTENANCE = "PROC_MBOM_MAINTENANCE @code,@userid,@name,@login";
+        const string PROC_MBOM_VER_CREATE = "PROC_MBOM_VER_CREATE @code,@ver,@dt_effective,@dt_expiry,@desc,@pbom_ver_guid,@userid,@name,@login";
         const string PROC_GET_MBOM_LIST = "PROC_GET_MBOM_MAINTENANCETREE @code";
         const string PROC_GET_PRODUCT_DISCRETE_LIST = "PROC_GET_PRODUCT_DISCRETE_LIST @code";
         //虚件
-        const string PROC_VIRTUAL_ITEM_SET = "PROC_VIRTUAL_ITEM_SET @code,@bomid,@itemid,@show,@userid,@name,@login";
-        const string PROC_VIRTUAL_ITEM_DROP = "PROC_VIRTUAL_ITEM_DROP @code,@itemid";
-        const string PROC_VIRTUAL_ITEM_LINK = "PROC_VIRTUAL_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
-        const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @code,@itemid,@link";
+        const string PROC_VIRTUAL_ITEM_SET = "PROC_VIRTUAL_ITEM_SET @prodcode,@guid,@userid,@name,@login";
+        const string PROC_VIRTUAL_ITEM_DROP = "PROC_VIRTUAL_ITEM_DROP @prodcode,@guid,@userid,@name,@login";
+        const string PROC_VIRTUAL_ITEM_LINK = "PROC_VIRTUAL_ITEM_LINK @prodcode,@parentcode,@guid,@userid,@name,@login";
+        const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @prodcode,@guid,@userid,@name,@login";
         //合件
-        const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @code,@bomid,@parentlink,@itemids,@type,@userid,@name,@login";
-        const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @code,@itemid,@parentlink";
-        const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @code,@parentitemid,@itemid,@parentlink,@link,@userid,@name,@login";
-        const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @code,@itemid,@bomid,@link";
+        const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @prodcode,@guids,@type,@userid,@name,@login";
+        const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @prodcode,@guid,@userid,@name,@login";
+        const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @prodcode,@parentcode,@guid,@userid,@name,@login";
+        const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @prodcode,@guid,@userid,@name,@login";
         const string PROC_COMPOSITE_EDIT_NAME = "PROC_COMPOSITE_EDIT_NAME @itemid,@name";
-        const string PROC_MBOM_REFRESH = "PROC_MBOM_REFRESH @code,@userid,@name,@login";
         const string PROC_MBOM_RELEASE = "PROC_MBOM_RELEASE @code,@userid,@name,@login";
         //产品变更
         const string PROC_PRODUCT_CHANGE_APPLY_CHANGES = "PROC_PRODUCT_CHANGE_APPLY_CHANGES @code,@reason,@userid,@name,@login";
@@ -249,19 +248,6 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcMbomRefresh(BaseDbContext db, string code, UserInfo userinfo)
-        {
-            SqlParameter[] param =
-            {
-                new SqlParameter("@code", code),
-                new SqlParameter("@userid", userinfo.UserId),
-                new SqlParameter("@name", userinfo.Name),
-                new SqlParameter("@login", userinfo.Login)
-            };
-            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_MBOM_REFRESH, param).SingleOrDefault();
-            return result;
-        }
-
         public static ProcReturnMsg ProcMbomRelease(BaseDbContext db, string code, UserInfo userinfo)
         {
             SqlParameter[] param =
@@ -393,17 +379,22 @@ namespace Repository
         }
 
         //MBOM
-        //MBOM维护功能进入检查
-        public static ProcReturnMsg ProcMbomMaintenance(BaseDbContext db, string code, UserInfo userinfo)
+        //MBOM创建新版本
+        public static ProcReturnMsg ProcCreateMbomVer(BaseDbContext db, string code, string ver, DateTime dtef, DateTime dtex, string pbom_ver_guid, string desc, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@code", code),
+                new SqlParameter("@ver", ver),
+                new SqlParameter("@dt_effective", dtef),
+                new SqlParameter("@dt_expiry", dtex),
+                new SqlParameter("@desc", desc),
+                new SqlParameter("@pbom_ver_guid", pbom_ver_guid),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)
             };
-            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_MBOM_MAINTENANCE, param).SingleOrDefault();
+            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_MBOM_VER_CREATE, param).SingleOrDefault();
             return result;
         }
 
@@ -453,14 +444,12 @@ namespace Repository
         }
 
         #region 虚件操作
-        public static ProcReturnMsg ProcVirtualItemSet(BaseDbContext db, string code, int bomid, int itemid, int show, UserInfo userinfo)
+        public static ProcReturnMsg ProcVirtualItemSet(BaseDbContext db, string prodcode, Guid guid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@bomid", bomid),
-                new SqlParameter("@itemid", itemid),
-                new SqlParameter("@show", show),
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@guid", guid),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)
@@ -469,26 +458,27 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcVirtualItemDrop(BaseDbContext db, string code, int itemid)
+        public static ProcReturnMsg ProcVirtualItemDrop(BaseDbContext db, string prodcode, Guid guid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@itemid", itemid)
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@guid", guid),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_VIRTUAL_ITEM_DROP, param).SingleOrDefault();
             return result;
         }
 
-        public static ProcReturnMsg ProcVirtualItemLink(BaseDbContext db, string code, int parentitemid, int itemid, string parentlink, string link, UserInfo userinfo)
+        public static ProcReturnMsg ProcVirtualItemLink(BaseDbContext db, string prodcode, string parentcode, Guid guid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@parentitemid", parentitemid),
-                new SqlParameter("@itemid", itemid),
-                new SqlParameter("@parentlink", parentlink),
-                new SqlParameter("@link", link),
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@parentcode", parentcode),
+                new SqlParameter("@guid", guid),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)
@@ -497,13 +487,15 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcVirtualItemUnlink(BaseDbContext db, string code, int itemid, string link)
+        public static ProcReturnMsg ProcVirtualItemUnlink(BaseDbContext db, string prodcode, Guid guid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@itemid", itemid),
-                new SqlParameter("@link", link)
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@guid", guid),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_VIRTUAL_ITEM_UNLINK, param).SingleOrDefault();
             return result;
@@ -511,14 +503,12 @@ namespace Repository
         #endregion
         #region 合件
         //设置合件
-        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db,string code, int bomid, string parentlink, string itemids, string type, UserInfo userinfo)
+        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db,string prodcode, string guids, string type, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@bomid", bomid),
-                new SqlParameter("@parentlink", parentlink),
-                new SqlParameter("@itemids", itemids),
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@guids", guids),
                 new SqlParameter("@type", type),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
@@ -528,27 +518,27 @@ namespace Repository
             return result;
         }
         //删除合件
-        public static ProcReturnMsg ProcCompositeItemDrop(BaseDbContext db, string code, int itemid, string parentlink)
+        public static ProcReturnMsg ProcCompositeItemDrop(BaseDbContext db, string prodcode, Guid guid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@itemid", itemid),
-                new SqlParameter("@parentlink", parentlink)
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@guid", guid),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_COMPOSITE_ITEM_DROP, param).SingleOrDefault();
             return result;
         }
         //引用合件
-        public static ProcReturnMsg ProcCompositeItemLink(BaseDbContext db,string code, int parentitemid, int itemid, string parentlink, string link, UserInfo userinfo)
+        public static ProcReturnMsg ProcCompositeItemLink(BaseDbContext db,string prodcode, string parentcode, Guid guid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@parentitemid", parentitemid),
-                new SqlParameter("@itemid", itemid),
-                new SqlParameter("@parentlink", parentlink),
-                new SqlParameter("@link", link),
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@parentcode", parentcode),
+                new SqlParameter("@guid", guid),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)
@@ -557,14 +547,15 @@ namespace Repository
             return result;
         }
         //删除合件引用
-        public static ProcReturnMsg ProcCompositeItemUnlink(BaseDbContext db,string code, int itemid, int bomid, string link)
+        public static ProcReturnMsg ProcCompositeItemUnlink(BaseDbContext db,string prodcode, Guid guid, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@itemid", itemid),
-                new SqlParameter("@bomid", bomid),
-                new SqlParameter("@link", link)
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@guid", guid),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_COMPOSITE_ITEM_UNLINK, param).SingleOrDefault();
             return result;

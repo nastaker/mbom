@@ -4,27 +4,21 @@ namespace Repository
 {
     public class ProcItemTree
     {
-        public int HLINK_ID { get; set; }
-        public int BOM_ID { get; set; }
-        public int LEVEL { get; set; }
-        public string PARENT_LINK { get; set; }
-        public string LINK { get; set; }
-        public string PARENTID { get; set; }
-        public string ID { get; set; }
-        public int ITEMID { get; set; }
-        public string ITEM_CODE { get; set; }
-        public string CODE { get; set; }
-        public string NAME { get; set; }
-        public double QUANTITY { get; set; }
-        public string UNIT { get; set; }
-        public int ORDER { get; set; }
-        public string MBOMTYPE { get; set; }
-        public string CHA_SIGN { get; set; }
-        public string CHA_DO { get; set; }
-        public bool? ISBORROW { get; set; }
-        public bool? IS_ASSEMBLY { get; set; }
-        public bool? ISROOT { get; set; }
-        public bool? ISLINKED { get; set; }
+        public int Level { get; set; }
+        public string ParentId { get; set; }
+        public string Id { get; set; }
+        public int ItemId { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public string ItemCode { get; set; }
+        public Guid? Guid { get; set; }
+        public double Quantity { get; set; }
+        public string Unit { get; set; }
+        public bool? IsBorrow { get; set; }
+        public bool? IsAssembly { get; set; }
+        public string Type { get; set; }
+        public string Status { get; set; }
+        public int Order { get; set; }
     }
 
     public class ProcItem

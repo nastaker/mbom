@@ -22,7 +22,9 @@ $(function () {
             { field: 'PRODUCT_NAME', title: lang.productName, width: 200 },
             { field: 'PROJECT_NAME', title: lang.projectName, width: 250 },
             { field: 'PBOMVER', title: lang.pbomVer, align: "center", width: 70 },
+            { field: 'PBOM_CREATE_NAME', title: 'PBOM创建人', align: "center", width: 80 },
             { field: 'MBOMVER', title: lang.mbomVer, align: "center", width: 70 },
+            { field: 'MBOM_CREATE_NAME', title: 'MBOM创建人', align: "center", width: 80 },
             { field: 'CHECK_STATUS', title: lang.mbom.checkStatus, align: "center", width: 60 },
             { field: 'TECH_STATUS', title: lang.mbom.techStatus, align: "center", width: 60 },
             { field: 'DESC', title: lang.remarks, width: 200 }

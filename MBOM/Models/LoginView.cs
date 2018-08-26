@@ -46,6 +46,15 @@ namespace MBOM.Models
 
         public static UserInfo GetUserInfo()
         {
+            if (HttpContext.Current.IsDebuggingEnabled)
+            {
+                return new UserInfo
+                {
+                    UserId = 0,
+                    Login = "Admin",
+                    Name = "超级管理员"
+                };
+            }
             LoginUserInfo loginUser = GetLoginUser();
             if(loginUser == null)
             {

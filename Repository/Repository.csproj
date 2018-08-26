@@ -57,7 +57,6 @@
     <Compile Include="AppBomHlink.cs" />
     <Compile Include="AppItem.cs" />
     <Compile Include="AppItemHLink.cs" />
-    <Compile Include="AppMbomVer.cs" />
     <Compile Include="AppOptionalItemHlink.cs" />
     <Compile Include="AppPBOMVer.cs" />
     <Compile Include="AppProcessVer.cs" />
@@ -81,6 +80,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SysLog.cs" />
     <Compile Include="AppProcess.cs" />
+    <Compile Include="AppMbomHlink.cs" />
+    <Compile Include="AppMbomVer.cs" />
     <Compile Include="ViewCreatePublishDetail.cs" />
     <Compile Include="ViewItemByType.cs" />
     <Compile Include="ViewItemMaintenance.cs" />

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
+using System;
 
 namespace MBOM.Controllers
 {
@@ -219,12 +220,54 @@ namespace MBOM.Controllers
             db.SaveChanges();
             return Json(ResultInfo.Success());
         }
-        // MBOM 维护进入检查
-        [Description("MBOM维护进入检查")]
-        public JsonResult Maintenance(string code)
+        // MBOM 创建新版本
+        [Description("MBOM 创建新版本")]
+        public JsonResult CreateVer(string code, string name, string itemcode, string ver, DateTime dtef, DateTime dtex, Guid? pbom_ver_guid, string desc)
         {
-            var procMsg = Proc.ProcMbomMaintenance(db, code, LoginUserInfo.GetUserInfo());
-            return Json(ResultInfo.Parse(procMsg.success, procMsg.msg));
+            if (pbom_ver_guid == null)
+            {
+                if (HttpContext.IsDebuggingEnabled)
+                {
+                    pbom_ver_guid = Guid.NewGuid();
+                }
+                else
+                {
+                    return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+                }
+            }
+            LoginUserInfo userinfo = LoginUserInfo.GetLoginUser();
+            DateTime now = DateTime.Now;
+            Guid guid = Guid.NewGuid();
+            int exists = db.AppMbomVers.Where(m =>
+            m.CN_CODE == code &&
+            m.CN_IS_TOERP < 2 &&
+            m.CN_DT_EFFECTIVE.CompareTo(now) == -1 &&
+            m.CN_DT_EXPIRY.CompareTo(now) == 1).Count();
+            if(exists > 0)
+            {
+                return Json(ResultInfo.Fail("产品有未完成发布的MBOM版本，无需创建新版本。"));
+            }
+            db.AppMbomVers.Add(new AppMbomVer
+            {
+                CN_GUID = guid,
+                CN_CODE = code,
+                CN_PBOM_GUID = pbom_ver_guid,
+                CN_STATUS = "Y",
+                CN_VER = ver,
+                CN_ITEM_CODE = itemcode,
+                CN_NAME = name,
+                CN_DESC = desc,
+                CN_DT_CREATE = now,
+                CN_DT_EFFECTIVE = dtef,
+                CN_DT_EXPIRY = dtex,
+                CN_CREATE_BY = userinfo.UserId,
+                CN_CREATE_LOGIN = userinfo.LoginName,
+                CN_CREATE_NAME = userinfo.Name,
+                CN_IS_TOERP = 0,
+                CN_DT_TOERP = DateTime.Parse("2100-01-01")
+            });
+            db.SaveChanges();
+            return Json(ResultInfo.Success("已成功创建版本，版本GUID：" + guid.ToString()));
         }
         //
         [MaintenanceActionFilter]
@@ -251,27 +294,6 @@ namespace MBOM.Controllers
             try
             {
                 var list = Proc.ProcGetMbomList(db, code);
-                rt = ResultInfo.Success(list);
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-        /// <summary>
-        /// 获取离散区信息
-        /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        [MaintenanceActionFilter]
-        [Description("获取离散区信息")]
-        public JsonResult DiscreteList(string code)
-        {
-            ResultInfo rt = null;
-            try
-            {
-                var list = Proc.ProcDiscreteList(db, code);
                 rt = ResultInfo.Success(list);
             }
             catch (SqlException ex)
@@ -345,16 +367,16 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("设置为虚件")]
-        public JsonResult VirtualItemSet(string code, int bomid, int itemid, int show)
+        public JsonResult VirtualItemSet(string prodcode,string guid)
         {
-            if (bomid == 0 || itemid == 0 || string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(prodcode) || !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemSet(db, code, bomid, itemid, show, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemSet(db, prodcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -370,16 +392,16 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("取消虚件设置")]
-        public JsonResult VirtualItemDrop(string code, int itemid)
+        public JsonResult VirtualItemDrop(string prodcode, string guid)
         {
-            if (itemid == 0 || string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(prodcode) || !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemDrop(db, code, itemid));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemDrop(db, prodcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -392,20 +414,23 @@ namespace MBOM.Controllers
         /// 引用虚件
         /// </summary>
         /// <param name="parentcode"></param>
-        /// <param name="code"></param>
+        /// <param name="prodcode"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
         [Description("引用虚件")]
-        public JsonResult VirtualItemLink(string code, int parentitemid, int itemid, string parentlink, string link)
+        public JsonResult VirtualItemLink(string prodcode, string parentcode, string guid)
         {
-            if (parentitemid == 0 || itemid == 0 || string.IsNullOrWhiteSpace(parentlink) || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(prodcode) ||
+                string.IsNullOrWhiteSpace(parentcode) ||
+                !Guid.TryParse(guid, out Guid g)
+                )
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemLink(db, code, parentitemid, itemid, parentlink, link, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemLink(db, prodcode, parentcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -420,16 +445,17 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("取消引用虚件")]
-        public JsonResult VirtualItemUnlink(string code, int itemid, string link)
+        public JsonResult VirtualItemUnlink(string prodcode, string guid)
         {
-            if (itemid == 0 || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(prodcode) ||
+                !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, code, itemid, link));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, prodcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -441,16 +467,17 @@ namespace MBOM.Controllers
 
         #region 合件操作
         [Description("设置合件")]
-        public JsonResult CompositeItemSet(string code, int bomid, string parentlink, string itemids, string type)
+        public JsonResult CompositeItemSet(string prodcode, string guids, string type)
         {
-            if (bomid == 0 || string.IsNullOrWhiteSpace(parentlink) || string.IsNullOrWhiteSpace(itemids) || string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(prodcode) ||
+                string.IsNullOrWhiteSpace(guids))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, code, bomid, parentlink, itemids, type, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, prodcode, guids, type, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -459,16 +486,17 @@ namespace MBOM.Controllers
             return Json(rt);
         }
         [Description("取消设置合件")]
-        public JsonResult CompositeItemDrop(string code, int itemid, string parentlink)
+        public JsonResult CompositeItemDrop(string prodcode, string guid)
         {
-            if (itemid == 0 || string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(parentlink))
+            if (string.IsNullOrWhiteSpace(prodcode) ||
+                !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemDrop(db, code, itemid, parentlink));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemDrop(db, prodcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -478,16 +506,18 @@ namespace MBOM.Controllers
         }
 
         [Description("引用合件")]
-        public JsonResult CompositeItemLink(string code, int parentitemid, int itemid, string parentlink, string link)
+        public JsonResult CompositeItemLink(string prodcode, string parentcode, string guid)
         {
-            if (parentitemid == 0 || itemid == 0 || string.IsNullOrWhiteSpace(parentlink) || string.IsNullOrWhiteSpace(link))
+            if (string.IsNullOrWhiteSpace(prodcode) || 
+                string.IsNullOrWhiteSpace(parentcode) ||
+                !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemLink(db, code, parentitemid, itemid, parentlink, link, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemLink(db, prodcode, parentcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -497,16 +527,17 @@ namespace MBOM.Controllers
         }
 
         [Description("取消引用合件")]
-        public JsonResult CompositeItemUnlink(string code, int itemid, int bomid, string link)
+        public JsonResult CompositeItemUnlink(string prodcode, string guid)
         {
-            if (itemid == 0 || bomid == 0 || string.IsNullOrWhiteSpace(link) || string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(prodcode) ||
+                !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemUnlink(db, code, itemid, bomid, link));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemUnlink(db, prodcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -528,26 +559,6 @@ namespace MBOM.Controllers
             try
             {
                 rt = ResultInfo.Parse(Proc.ProcEditCombineName(db, itemid, name));
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-
-        //MBOM 刷新
-        [Description("MBOM刷新")]
-        public JsonResult RefreshMbom(string code)
-        {
-            if (string.IsNullOrWhiteSpace(code))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            ResultInfo rt = null;
-            try
-            {
-                rt = ResultInfo.Parse(Proc.ProcMbomRefresh(db, code, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {

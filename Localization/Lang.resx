@@ -387,8 +387,8 @@
   <data name="MBOMPublish" xml:space="preserve">
     <value>MBOM发布</value>
   </data>
-  <data name="MBOMPublishMaintenance" xml:space="preserve">
-    <value>MBOM发布维护</value>
+  <data name="MBOMMaintenance" xml:space="preserve">
+    <value>MBOM维护</value>
   </data>
   <data name="MaintenanceIndex" xml:space="preserve">
     <value>MBOM发布维护</value>
@@ -523,7 +523,7 @@
     <value>物料操作</value>
   </data>
   <data name="ItemUnlink" xml:space="preserve">
-    <value>删除引用物料</value>
+    <value>删除物料引用</value>
   </data>
   <data name="ItemEditQuantity" xml:space="preserve">
     <value>修改物料数量</value>
@@ -614,5 +614,8 @@
   </data>
   <data name="RefreshMbom" xml:space="preserve">
     <value>刷新MBOM数据</value>
+  </data>
+  <data name="CreateVer" xml:space="preserve">
+    <value>创建新版本</value>
   </data>
 </root>

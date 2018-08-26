@@ -38,6 +38,10 @@ namespace MBOM.Filters
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
+            if(httpContext.IsDebuggingEnabled)
+            {
+                return true;
+            }
             var user = LoginUserInfo.GetLoginUser();
             // 未登录，返回登录界面
             if (user == null)

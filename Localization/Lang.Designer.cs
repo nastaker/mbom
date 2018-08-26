@@ -295,6 +295,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 创建新版本 的本地化字符串。
+        /// </summary>
+        public static string CreateVer {
+            get {
+                return ResourceManager.GetString("CreateVer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 当前三表日期 的本地化字符串。
         /// </summary>
         public static string CurrentTableDate3 {
@@ -781,7 +790,7 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 删除引用物料 的本地化字符串。
+        ///   查找类似 删除物料引用 的本地化字符串。
         /// </summary>
         public static string ItemUnlink {
             get {
@@ -898,6 +907,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 MBOM维护 的本地化字符串。
+        /// </summary>
+        public static string MBOMMaintenance {
+            get {
+                return ResourceManager.GetString("MBOMMaintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 MBOM产品变更维护 的本地化字符串。
         /// </summary>
         public static string MBOMProductChangeIndex {
@@ -912,15 +930,6 @@ namespace Localization {
         public static string MBOMPublish {
             get {
                 return ResourceManager.GetString("MBOMPublish", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 MBOM发布维护 的本地化字符串。
-        /// </summary>
-        public static string MBOMPublishMaintenance {
-            get {
-                return ResourceManager.GetString("MBOMPublishMaintenance", resourceCulture);
             }
         }
         
