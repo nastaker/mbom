@@ -20,11 +20,10 @@ namespace MBOM
 				.Include(
                         "~/Scripts/modernizr-*"));
             bundles.Add(new ScriptBundle("~/bundles/bootstrap")
-				.Include(
-                      "~/Scripts/bootstrap.js"));
+                .Include("~/Scripts/umd/popper.js")
+                .Include("~/Scripts/bootstrap.js"));
             bundles.Add(new ScriptBundle("~/bundles/ztree")
-				.Include(
-                      "~/Scripts/ztree/jquery.ztree.core.js"));
+                .Include("~/Scripts/ztree/jquery.ztree.core.js"));
             bundles.Add(new ScriptBundle("~/bundles/common")
 				.Include(
                       "~/Scripts/views/lang.js",
@@ -125,7 +124,7 @@ namespace MBOM
                       "~/Scripts/views/group/index.js"));
             bundles.Add(new StyleBundle("~/bundles/ztreecss")
 				.Include(
-                      "~/Content/ztree/zTreeStyle/zTreeStyle.css", new CssRewriteUrlTransform()));
+                      "~/Content/ztree/awesomeStyle/awesome.css", new CssRewriteUrlTransform()));
             bundles.Add(new StyleBundle("~/bundles/css")
 				.Include(
                       "~/Content/bootstrap.css",

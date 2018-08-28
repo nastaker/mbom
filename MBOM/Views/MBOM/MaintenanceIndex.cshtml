@@ -19,57 +19,52 @@
 <div class="easyui-layout" data-options="fit:true">
     <div data-options="region:'center',border:false">
         <div id="toolbar" style="width:100%;padding:5px;">
-            <div class="btn-group">
+            <div class="btn-group" role="group">
                 <div class="btn-group">
-                    <button id="btnOPVirtual" type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span>@Lang.VirtualPiecesOperation</span>
-                        <span class="caret"></span>
+                    <button id="btnOPVirtual" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @Lang.VirtualPiecesOperation
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:;" onclick="virtualItemSet()">@Lang.VirtualPiecesSet</a></li>
-                        <li><a href="javascript:;" onclick="virtualItemDrop()">@Lang.VirtualPiecesCancel</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="javascript:;" onclick="virtualItemLink()">@Lang.VirtualPiecesQuoteSet</a></li>
-                        <li><a href="javascript:;" onclick="virtualItemUnlink()">@Lang.VirtualPiecesQuoteCancel</a></li>
-                    </ul>
+                    <div class="dropdown-menu" aria-labelledby="btnOPVirtual">
+                        <a class="dropdown-item" href="javascript:;" onclick="virtualItemSet()">@Lang.VirtualPiecesSet</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="virtualItemDrop()">@Lang.VirtualPiecesCancel</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;" onclick="virtualItemLink()">@Lang.VirtualPiecesQuoteSet</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="virtualItemUnlink()">@Lang.VirtualPiecesQuoteCancel</a>
+                    </div>
                 </div>
                 <div class="btn-group">
-                    <button id="btnOPComposite" type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span>@Lang.CompositePiecesOperation</span>
-                        <span class="caret"></span>
+                    <button id="btnOPComposite" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @Lang.CompositePiecesOperation
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:;" onclick="compositeItemSet()">@Lang.CompositePiecesSet</a></li>
-                        <li><a href="javascript:;" onclick="compositeItemDrop()">@Lang.CompositePiecesCancel</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="javascript:;" onclick="compositeItemLink()">@Lang.CompositePiecesQuoteSet</a></li>
-                        <li><a href="javascript:;" onclick="compositeItemUnlink()">@Lang.CompositePiecesQuoteCancel</a></li>
-                    </ul>
+                    <div class="dropdown-menu" aria-labelledby="btnOPComposite">
+                        <a class="dropdown-item" href="javascript:;" onclick="compositeItemSet()">@Lang.CompositePiecesSet</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="compositeItemDrop()">@Lang.CompositePiecesCancel</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;" onclick="compositeItemLink()">@Lang.CompositePiecesQuoteSet</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="compositeItemUnlink()">@Lang.CompositePiecesQuoteCancel</a>
+                    </div>
                 </div>
                 <div class="btn-group">
-                    <button id="btnOPTable" type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span>@Lang.TableOperation</span>
-                        <span class="caret"></span>
+                    <button id="btnOPTable" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @Lang.TableOperation
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:;" onclick="checkAllChildren()">@Lang.CheckAllChildren</a></li>
-                        <li><a href="javascript:;" onclick="clearChecked()">@Lang.ClearCheckedAll</a></li>
-                        <li><a href="javascript:;" id="btnToggleCheckState" onclick="toggleCheckStateOnSelect()">@Lang.ToggleCheckStateOnSelect</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="javascript:;" onclick="reloadAllTables()">@Lang.ReloadTable</a></li>
-                    </ul>
+                    <div class="dropdown-menu" aria-labelledby="btnOPTable">
+                        <a class="dropdown-item" href="javascript:;" onclick="checkAllChildren()">@Lang.CheckAllChildren</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="clearChecked()">@Lang.ClearCheckedAll</a>
+                        <a id="btnToggleCheckState" class="dropdown-item" href="javascript:;" onclick="toggleCheckStateOnSelect()">@Lang.ToggleCheckStateOnSelect</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;" onclick="reloadAllTables()">@Lang.ReloadTable</a>
+                    </div>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnOPLink" type="button" class="btn btn-secondary dropdown-toggle btngroup-op" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span>@Lang.ItemOperation</span>
-                        <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a href="javascript:;" onclick="itemLink()">@Lang.ItemLink</a></li>
-                        <li><a href="javascript:;" onclick="itemEditQuant()">@Lang.ItemEditQuantity</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="javascript:;" onclick="itemUnlink()">@Lang.ItemUnlink</a></li>
-                    </ul>
+                    <div class="dropdown-menu" aria-labelledby="btnOPLink">
+                        <a class="dropdown-item" href="javascript:;" onclick="itemLink()">@Lang.ItemLink</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="itemEditQuant()">@Lang.ItemEditQuantity</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="itemUnlink()">@Lang.ItemUnlink</a>
+                    </div>
                 </div>
             </div>
         </div>

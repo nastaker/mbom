@@ -1,9 +1,27 @@
-﻿var zTreeSetting = {
+﻿var obj = {
+    id: "Id",
+    pid: "ParentId",
+    code: "Code",
+    itemcode: "ItemCode",
+    name: "Name",
+    quantity: "Quantity"
+}
+
+var zTreeSetting = {
+    view: {
+        expandSpeed: 0,
+        showIcon: false,
+        txtSelectedEnable: true,
+        addDiyDom: addDiyDom,
+        dblClickExpand: function (treeId, treeNode) {
+            return treeNode.level > 0;
+        }
+    },
     data: {
         simpleData:{
             enable: true,
-            idKey: "ID",
-            pIdKey: "PARENTID",
+            idKey: obj.id,
+            pIdKey: obj.pid,
             rootPId: null
         },
         key: {
@@ -11,9 +29,6 @@
             children: "children",
             url: "xUrl"
         }
-    },
-    view: {
-        addDiyDom: addDiyDom
     }
 };
 
@@ -24,7 +39,7 @@ $(function () {
         if (result.success) {
             var data = result.data;
             if (data.length == 0) {
-                data.push({ PARENTID: null, CODE: "", ITEM_CODE: "", NAME: "本产品不含有PBOM", QUANTITY: "如有疑问请联系管理员" });
+                data.push({ Name: "本产品不含有PBOM", Quantity: "如有疑问请联系管理员" });
             }
             $.fn.zTree.init(tree, zTreeSetting, data);
             var treeObj = $.fn.zTree.getZTreeObj("treeItems");
@@ -33,15 +48,15 @@ $(function () {
     });
 });
 
-var showCode = true;
+var showCode = false;
 function addDiyDom(treeId, treeNode) {
-    if (treeNode["LEVEL"] === 0) {
+    if (treeNode["Level"] === 0) {
         var aObj = $("#" + treeNode.tId + "_a");
-        var id = treeNode["ID"];
-        var name = treeNode["NAME"];
+        var id = treeNode[obj.id];
+        var name = treeNode[obj.name];
         if ($("#diyBtn_" + id).length > 0) return;
-        var editStr = "<span id='diyBtn_space_" + id + "' >&nbsp;</span><span class='button' id='diyBtn_" + id + "' title='切换数据显示' onfocus='this.blur();'></span>";
-        aObj.append(editStr);
+        var editStr = "<span class='button' style='display:inline-block;width:18px;height:18px;vertical-align:middle;' id='diyBtn_" + id + "' title='切换数据显示' onfocus='this.blur();'></span>";
+        aObj.after(editStr);
         var btn = $("#diyBtn_" + id);
         if (btn) {
             btn.css({
@@ -56,9 +71,9 @@ function addDiyDom(treeId, treeNode) {
 
 function getName(node) {
     if (showCode) {
-        return node["CODE"] + node["NAME"] + "(" + node["QUANTITY"] + ")";
+        return node[obj.code] + " "+ node[obj.name] + " (" + node[obj.quantity] + ")";
     } else {
-        return node["ITEM_CODE"] + node["NAME"] + "(" + node["QUANTITY"] + ")";
+        return node[obj.itemcode] + " " + node[obj.name] + " (" + node[obj.quantity] + ")";
     }
 }
 

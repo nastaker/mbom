@@ -121,7 +121,7 @@ var treegridOption = {
         //判断是否和之前选择的属于同一直接父级
         var children = tg.treegrid("getChildren", id);
         if (parentId !== undefined && parent[treegridOption.idField] !== parentId) {
-            clearMainChecked();
+            clearChecked();
         }
         if (checked) {
             parentId = parent[treegridOption.idField];
@@ -340,7 +340,7 @@ function initEvents() {
     $("#cboCombineItemType").change(function () {
         var itemcode = $("#dlgCreateCombineItem").dialog("options").itemcode;
         var parentitemcode = $("#dlgCreateCombineItem").dialog("options").parentitemcode;
-        if (!itemcode) { return; }
+        if (item == nullcode) { return; }
         var type = $(this).val();
         if (type == "K" || type == "L") {
             $("#txtCombineItemName").html(itemcode.replace(/(K|K[0-9])?P1\s*$/, "KP1"));
@@ -354,7 +354,7 @@ function initEvents() {
 //添加物料
 function itemEditQuant() {
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    if (item == null) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
@@ -374,7 +374,7 @@ function itemEditQuant() {
 
 function itemEditQuantityConfirm() {
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    if (item == null) {
         AlertWin(lang.mbom.notSelectMain);
         return;
     }
@@ -469,7 +469,7 @@ function itemUnlink() {
     var items = tg.treegrid("getCheckedNodes");
     var guids = "";
     var itemcode = "";
-    if (!item && items.length == 0) {
+    if (item == null && items.length == 0) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
@@ -505,7 +505,7 @@ function queryItem() {
 
 function showItemDetail() {
     var item = dgItem.datagrid("getSelected");
-    if (!item) { return; }
+    if (item == null) { return; }
     var title = "物料详情" + item.CN_ITEM_CODE + " " + item.CN_NAME;
     var code = item.CN_CODE
     window.parent.openTab(title, URL_ITEMDETAIL + "?code=" + code);
@@ -530,7 +530,7 @@ function virtualItemSet() {
     if (items.length == 1) {
         item = items[0];
     }
-    if (!item[COLS.Guid]) {
+    if (item == null[COLS.Guid]) {
         AlertWin(lang.mbom.noSelectRoot);
         return false;
     }
@@ -564,16 +564,16 @@ function virtualItemSet() {
 //删除虚件
 function virtualItemDrop() {
     var item = tgvi.treegrid("getSelected");
-    var itemcode = $.trim(item[COLS.ItemCode]);
-    var guid = item[COLS.Guid]
-    if (item[COLS.Type] != "V") {
-        AlertWin(lang.mbom.notSelectVirtual);
+    if (item == null) {
+        AlertWin(lang.mbom.notSelect);
         return false;
     }
     if (item[COLS.Type] != "V") {
         AlertWin(lang.mbom.notSelectVirtualRoot);
         return false;
     }
+    var itemcode = $.trim(item[COLS.ItemCode]);
+    var guid = item[COLS.Guid];
     $.messager.confirm("提示", "您将删除虚件“&lt;" + itemcode + "&gt;”，请您确认！", function (r) {
         if (r) {
             //选中有效，传入bomid和itemid
@@ -596,7 +596,7 @@ function virtualItemDrop() {
 function virtualItemLink() {
     //是否选中主表，且选中的主表有效
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    if (item == null) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
@@ -646,7 +646,7 @@ function virtualItemLink() {
 function virtualItemUnlink() {
     //判断是否选中离散区的虚件
     var item = tgvi.treegrid("getSelected");
-    if (!item) {
+    if (item == null) {
         AlertWin(lang.mbom.notSelectDiscrete);
         return false;
     }
@@ -689,7 +689,7 @@ function compositeItemSet() {
     var item = tg.treegrid("getSelected")
     var items = tg.treegrid("getCheckedNodes");
     $("#cboCombineItemType").find("option[value=-]").prop("selected", "selected").change();
-    if (!item && items.length == 0) {
+    if (item == null && items.length == 0) {
         AlertWin(lang.mbom.notSelect);
         return;
     }
@@ -816,7 +816,7 @@ function compositeItemLink() {
 
     var citem = tgvi.treegrid("getSelected");
     //判断是否选中主表，且选中的主表有效
-    if (!item && items.length == 0) {
+    if (item == null && items.length == 0) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
@@ -862,7 +862,7 @@ function compositeItemUnlink() {
     //判断是否选中主表，且选中的主表有效
     var item = tgvi.treegrid("getSelected") || tg.treegrid("getSelected");
     var items = tg.treegrid("getCheckedNodes");
-    if (!item && items.length == 0) {
+    if (item == null && items.length == 0) {
         AlertWin(lang.mbom.notSelectMain);
         return false;
     }
@@ -929,26 +929,17 @@ function editCombineName() {
     m.find('.messager-input').val($.trim(data[COLS.Name]));
 }
 
-function clearMainSelected() {
-    tg.treegrid("unselectAll");
-}
-
-function clearMainChecked() {
+//清空所有的选中
+function clearChecked() {
     tg.treegrid("clearChecked");
+    tg.treegrid("unselectAll");
+    tgvi.treegrid("unselectAll");
     for (var i in checkedRowIds) {
         var rowid = checkedRowIds[i];
         $(rowid).removeClass(checkedCss);
     }
     checkedRowIds = { count: 0 };
     parentId = undefined;
-}
-function clearDiscreteChecked() {
-    tgvi.treegrid("clearChecked");
-}
-//清空所有的选中
-function clearChecked() {
-    clearMainChecked();
-    clearDiscreteChecked();
 }
 //重新加载所有表格
 function reloadAllTables(force) {
@@ -970,11 +961,11 @@ function toggleCheckStateOnSelect() {
 }
 function checkAllChildren() {
     var item = tg.treegrid("getSelected");
-    if (!item) {
+    if (item == null) {
         AlertWin(lang.mbom.notSelectMain);
         return;
     }
-    clearMainChecked();
+    clearChecked();
     var children = item.children;
     for (var i = 0, len = children.length; i < len; i++) {
         var id = children[i][COLS.Id];
