@@ -17,52 +17,17 @@
     display: none !important;
     background: none;
 }
-
-.parent-virtual {
-    opacity: 0.8;
-    color: rgba(255, 0, 0, 0.8);
-    background-color: rgba(207, 207, 207, 0.8);
-}
 .main-virtual {
     color: #ED4337;
     font-weight: bold;
 }
 .main-combine {
-    color:#806afb;
-    font-weight:bold;
-}
-.main-change-add {
-    color: white;
-    background-color: forestgreen;
-}
-
-.main-change-remove {
-    background-color: indianred;
-    color: white;
-}
-.main-change-add-done {
-    color: rgba(34, 139, 34, 0.80);
+    color: #806afb;
     font-weight: bold;
-    background-color: #d0d0d0;
 }
-
-.main-change-remove-done {
-    color: rgba(205, 92, 92, 0.80);
+.main-user {
+    color: #158a43;
     font-weight: bold;
-    background-color: #d0d0d0;
-}
-.discrete-direct-virtual {
-    font-weight: bold;
-    color: #fff;
-    background-color: #f33;
-}
-.discrete-sub-virtual{
-    background-color: #ff3;
-}
-.discrete-combine{
-    font-weight: bold;
-    color: #fff;
-    background-color: #6045f4;
 }
 .discreteLinked{
     color: #333;

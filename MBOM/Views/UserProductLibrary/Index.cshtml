@@ -3,7 +3,7 @@
     ViewBag.Title = Lang.ProductPBomDetail;
 }
 @section styles{
-    @Styles.Render("~/bundles/ztreecss")
+    <link href="~/Content/ztree/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
     <style type="text/css">
         #win {
             display: none;
@@ -38,7 +38,7 @@
     <script src="~/Scripts/ztree/jquery.ztree.exedit.min.js"></script>
 }
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'west',border:false,split:true" style="width:200px;border-style:solid;border-width:0 1px 0 0;border-color:#D4D4D4;">
+    <div data-options="region:'west',border:false,split:true" style="width:300px;border-style:solid;border-width:0 1px 0 0;border-color:#D4D4D4;">
         <ul id="tree" class="ztree"></ul>
     </div>
     <div data-options="region:'center',border:false" style="background:#eee;border-style:solid;border-width:0 0 0 1px;border-color:#D4D4D4;">

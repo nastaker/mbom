@@ -304,16 +304,16 @@ namespace MBOM.Controllers
         }
 
         [Description("引用自定义物料")]
-        public JsonResult ItemLink(string code, int pid, string plink, int itemid, float quantity)
+        public JsonResult ItemLink(string prodcode, string parentcode, string code, float quantity)
         {
-            if (pid == 0 || string.IsNullOrWhiteSpace(plink) || itemid == 0 || quantity < 0f)
+            if (string.IsNullOrWhiteSpace(parentcode) || string.IsNullOrWhiteSpace(code) || quantity < 0f)
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcItemLink(db, code, pid, plink, itemid, quantity, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemLink(db, prodcode, parentcode, code, quantity, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -323,16 +323,12 @@ namespace MBOM.Controllers
         }
 
         [Description("删除引用的自定义物料")]
-        public JsonResult ItemUnlink(string code, int hlinkid)
+        public JsonResult ItemUnlink(string prodcode, string guids)
         {
-            if (hlinkid == 0 || string.IsNullOrWhiteSpace(code))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcItemUnLink(db, code, hlinkid, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemUnLink(db, prodcode, guids, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -342,16 +338,16 @@ namespace MBOM.Controllers
         }
 
         [Description("修改引用的自定义物料数量")]
-        public JsonResult ItemEditQuantity(int hlinkid, float quantity)
+        public JsonResult ItemEditQuantity(string guid, float quantity)
         {
-            if (hlinkid == 0)
+            if (!Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcItemEditQuantity(db, hlinkid, quantity));
+                rt = ResultInfo.Parse(Proc.ProcItemEditQuantity(db, g, quantity));
             }
             catch (SqlException ex)
             {

@@ -17,6 +17,7 @@ namespace Repository
         const string PROC_GET_ITEM_MBOM_TREE = "PROC_GET_ITEM_MBOM_TREE @code";
         const string PROC_GET_ITEM_SALESETINFO = "PROC_GET_ITEM_SETINFO @code";
         const string PROC_GET_ITEM_LIST = "PROC_GET_ITEM_LIST @code";
+        const string PROC_GET_ITEM_PARENT = "PROC_GET_ITEM_PARENT @code";
         const string PROC_GET_PROCESS_ITEM_LIST = "PROC_GET_PROCESS_ITEM @code";
         const string PROC_GET_ITEM_CATE_LIST = "PROC_GET_ITEM_CATE_LIST @code,@catename";
         const string PROC_PRODUCT_TRANSFER_INITIATTE = "PROC_PRODUCT_TRANSFER_INITIATTE @code,@userid,@name,@login";
@@ -35,6 +36,10 @@ namespace Repository
         const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @prodcode,@guid,@userid,@name,@login";
         const string PROC_COMPOSITE_EDIT_NAME = "PROC_COMPOSITE_EDIT_NAME @itemid,@name";
         const string PROC_MBOM_RELEASE = "PROC_MBOM_RELEASE @code,@userid,@name,@login";
+        //引用件
+        const string PROC_ITEM_LINK = "PROC_ITEM_LINK @prodcode,@parentcode,@code,@quantity,@userid,@name,@login";
+        const string PROC_ITEM_UNLINK = "PROC_ITEM_UNLINK @prodcode,@guids,@userid,@name,@login";
+        const string PROC_ITEM_EDITLINKQUANTITY = "PROC_ITEM_EDITLINKQUANTITY @guid,@quantity";
         //产品变更
         const string PROC_PRODUCT_CHANGE_APPLY_CHANGES = "PROC_PRODUCT_CHANGE_APPLY_CHANGES @code,@reason,@userid,@name,@login";
         const string PROC_PRODUCT_CHANGE_APPLY_VIRTUAL_CHANGES = "PROC_PRODUCT_CHANGE_APPLY_VIRTUAL_CHANGES @code,@reason,@userid,@name,@login";
@@ -42,9 +47,6 @@ namespace Repository
         const string PROC_MBOM_INTEGRITY_CHECK = "PROC_MBOM_INTEGRITY_CHECK @code";
         const string PROC_USER_PROD_LIB_LINK_ADD = "PROC_USER_PROD_LIB_LINK_ADD @libid,@ids,@userid,@name,@login";
         const string PROC_GET_BOM_DIFF = "PROC_GET_BOM_DIFF @bomid";
-        const string PROC_ITEM_LINK = "PROC_ITEM_LINK @code,@pid,@plink,@itemid,@quantity,@userid,@name,@login";
-        const string PROC_ITEM_UNLINK = "PROC_ITEM_UNLINK @code,@hlinkid,@userid,@name,@login";
-        const string PROC_ITEM_EDITLINKQUANTITY = "PROC_ITEM_EDITLINKQUANTITY @hlinkid,@quantity";
         const string PROC_OPTIONALITEMS_SET = "PROC_OPTIONALITEMS_SET @itemids,@userid,@name,@login";
         const string PROC_OPTIONALITEM_MAP_ADD = "PROC_OPTIONALITEM_MAP_ADD @itemid,@itemids,@userid,@name,@login";
         const string PROC_OPTIONALITEM_MAP_REMOVE = "PROC_OPTIONALITEM_MAP_REMOVE @hlinkids";
@@ -298,23 +300,23 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcItemEditQuantity(BaseDbContext db, int hlinkid, float quantity)
+        public static ProcReturnMsg ProcItemEditQuantity(BaseDbContext db, Guid guid, float quantity)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@hlinkid", hlinkid),
+                new SqlParameter("@guid", guid),
                 new SqlParameter("@quantity", quantity)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_ITEM_EDITLINKQUANTITY, param).SingleOrDefault();
             return result;
         }
 
-        public static ProcReturnMsg ProcItemUnLink(BaseDbContext db, string code, int hlinkid, UserInfo userinfo)
+        public static ProcReturnMsg ProcItemUnLink(BaseDbContext db, string prodcode, string guids, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
-                new SqlParameter("@hlinkid", hlinkid),
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@guids", guids),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)
@@ -323,14 +325,13 @@ namespace Repository
             return result;
         }
 
-        public static ProcReturnMsg ProcItemLink(BaseDbContext db, string code, int pid, string plink, int itemid, float quantity, UserInfo userinfo)
+        public static ProcReturnMsg ProcItemLink(BaseDbContext db, string prodcode, string parentcode, string code, float quantity, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
+                new SqlParameter("@prodcode", prodcode),
+                new SqlParameter("@parentcode", parentcode),
                 new SqlParameter("@code", code),
-                new SqlParameter("@pid", pid),
-                new SqlParameter("@plink", plink),
-                new SqlParameter("@itemid", itemid),
                 new SqlParameter("@quantity", quantity),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
@@ -351,6 +352,16 @@ namespace Repository
                 new SqlParameter("@login", userinfo.Login)
             };
             var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_USER_PROD_LIB_LINK_ADD, param).SingleOrDefault();
+            return result;
+        }
+
+        public static List<ProcProcessItem> ProcGetItemParent(BaseDbContext db, string code)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@code", code)
+            };
+            var result = db.Database.SqlQuery<ProcProcessItem>(PROC_GET_ITEM_PARENT, param).ToList();
             return result;
         }
 

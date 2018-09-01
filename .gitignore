@@ -245,3 +245,4 @@ ModelManifest.xml
 /MBOM/font
 /MBOM/Scripts/dist.js
 /MBOM/.vscode
+*.bundle

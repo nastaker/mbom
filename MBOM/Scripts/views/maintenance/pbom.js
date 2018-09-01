@@ -13,6 +13,7 @@ var zTreeSetting = {
         showIcon: false,
         txtSelectedEnable: true,
         addDiyDom: addDiyDom,
+        fontCss: getFont,
         dblClickExpand: function (treeId, treeNode) {
             return treeNode.level > 0;
         }
@@ -35,11 +36,11 @@ var zTreeSetting = {
 $(function () {
     var tree = $("#treeItems");
 
-    postData(URL_ITEMTREE, param, function (result) {
+    $.post(URL_ITEMTREE, param, function (result) {
         if (result.success) {
             var data = result.data;
             if (data.length == 0) {
-                data.push({ Name: "本产品不含有PBOM", Quantity: "如有疑问请联系管理员" });
+                data.push({ Code: "", ItemCode: "", Name: "无下级物料", Quantity: "如有疑问请联系管理员" });
             }
             $.fn.zTree.init(tree, zTreeSetting, data);
             var treeObj = $.fn.zTree.getZTreeObj("treeItems");
@@ -47,6 +48,18 @@ $(function () {
         }
     });
 });
+
+function getFont(treeId, node) {
+    if (node["Type"] == "C") {
+        return { color: "blue" };
+    }
+    else if (node["Type"] == "V") {
+        return { color: "red" };
+    }
+    else {
+        return {};
+    }
+}
 
 var showCode = false;
 function addDiyDom(treeId, treeNode) {
@@ -62,7 +75,7 @@ function addDiyDom(treeId, treeNode) {
             btn.css({
                 margin: 0,
                 background: "url(../Content/ztree/zTreeStyle/img/diy/9.png) no-repeat scroll 0 0 transparent",
-                verticalAlign: "top"
+                verticalAlign: "middle"
             });
             btn.bind("click", swithDisplay);
         }

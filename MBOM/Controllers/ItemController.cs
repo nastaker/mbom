@@ -475,22 +475,21 @@ namespace MBOM.Controllers
         }
 
         [Description("查找Item的父级")]
-        public JsonResult ItemParentList(int itemid)
+        public JsonResult FindParent(string code)
         {
-            if(itemid == 0)
+            if(string.IsNullOrWhiteSpace(code))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            
-            var itemlist = db.Database.SqlQuery<AppItem>(@"
-                SELECT PITEM.*
-                FROM TN_80_APP_0025_BOM_HLINK AS BOMH
-                INNER JOIN TN_80_APP_0000_ITEM AS ITEM ON ITEM.CN_ID = BOMH.CN_COMPONENT_OBJECT_ID AND ITEM.CN_ID = @p0
-                INNER JOIN TN_80_APP_0025_BOM AS BOM ON BOM.CN_ID = BOMH.CN_BOM_ID
-                INNER JOIN TN_80_APP_0000_ITEM AS PITEM ON PITEM.CN_CODE = BOM.CN_CODE
-                WHERE (BOMH.CN_STATUS_MBOM = 'Y' OR CN_STATUS_MBOM = '')", itemid);
-            var dtoModel = Mapper.Map<List<ProcProcessItem>>(itemlist);
-            return Json(ResultInfo.Success(dtoModel));
+            try
+            {
+                List<ProcProcessItem> parent = Proc.ProcGetItemParent(db, code);
+                return Json(ResultInfo.Success(parent));
+            }
+            catch (SqlException ex)
+            {
+                return Json(ResultInfo.Fail(ex.Message));
+            }
         }
 
         [Description("物料分类标识切换（采购或自制件）")]

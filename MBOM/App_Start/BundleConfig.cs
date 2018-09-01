@@ -28,6 +28,8 @@ namespace MBOM
 				.Include(
                       "~/Scripts/views/lang.js",
                       "~/Scripts/views/common.js"));
+            bundles.Add(new ScriptBundle("~/bundles/js/jstree")
+                .Include("~/Scripts/jsTree3/jstree.js"));
             bundles.Add(new ScriptBundle("~/bundles/mbommaintenance")
 				.Include(
                       "~/Scripts/views/mbom/maintenance.js"));
@@ -123,7 +125,7 @@ namespace MBOM
 				.Include(
                       "~/Scripts/views/group/index.js"));
             bundles.Add(new StyleBundle("~/bundles/ztreecss")
-				.Include(
+                .Include(
                       "~/Content/ztree/awesomeStyle/awesome.css", new CssRewriteUrlTransform()));
             bundles.Add(new StyleBundle("~/bundles/css")
 				.Include(
@@ -134,7 +136,8 @@ namespace MBOM
             bundles.Add(new StyleBundle("~/bundles/easyui")
                 .Include("~/Scripts/easyui/themes/bootstrap/easyui.css", new CssRewriteUrlTransform())
                 .Include("~/Scripts/easyui/themes/icon.css", new CssRewriteUrlTransform()));
-
+            bundles.Add(new StyleBundle("~/bundles/css/jstree")
+                .Include("~/Content/jsTree/themes/default/style.css"));
             bundles.Add(new StyleBundle("~/bundles/mbomcss")
                 .Include("~/Content/easyui-icons.css", new CssRewriteUrlTransform())
                 .Include("~/Content/views/mbom/maintenance.css"));

@@ -13,7 +13,7 @@ website:    http://code.google.com/p/jquerytree/
 /* End of Imports  ------------------*/
 .ztree {
     padding: 5px;
-    font-size: 1.2em;
+    font-size: 1em;
     font-family: arial;
 }
 
@@ -67,7 +67,6 @@ website:    http://code.google.com/p/jquerytree/
             .ztree li span.button {
                 position: relative;
                 cursor: pointer;
-                font-size: 1.1em;
             }
 
                 .ztree li span.button::before {

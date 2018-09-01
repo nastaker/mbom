@@ -1,4 +1,4 @@
-﻿var checkedRowIds = { count: 0 };
+var checkedRowIds = { count: 0 };
 var list = [];
 var discreteList = [];
 var parentId = undefined;
@@ -74,14 +74,14 @@ var treegridOption = {
     rowStyler: function (row) {
         var cls = "";
         switch (row[COLS.Type]) {
-            case "VP":
-                cls = "parent-virtual";
-                break;
             case "V":
                 cls = "main-virtual";
                 break;
             case "C":
                 cls = "main-combine";
+                break;
+            case "U":
+                cls = "main-user";
                 break;
         }
         return { class: cls };
@@ -216,7 +216,12 @@ var dgItemOption = {
                 return value;
             }
         }
-    ]]
+    ]],
+    onLoadSuccess: function (data) {
+        if (data.rows.length > 0) {
+            dgItem.datagrid("selectRow", 0);
+        }
+    }
 }
 
 $(function () {
@@ -254,16 +259,6 @@ function filterDiscrete(value) {
         }
     }
     tgvi.treegrid("loadData", filterList);
-}
-
-//清空离散区表的关联样式
-function clearTgviClass() {
-    var croots = tgvi.treegrid("getRoots");
-    for (var i in croots) {
-        var croot = croots[i];
-        var crootId = croot[tgviOption.idField];
-        $(tgviTrPreId + crootId).removeClass("discrete-direct-virtual discrete-sub-virtual discrete-combine");
-    }
 }
 
 //重新加载表格
@@ -340,7 +335,7 @@ function initEvents() {
     $("#cboCombineItemType").change(function () {
         var itemcode = $("#dlgCreateCombineItem").dialog("options").itemcode;
         var parentitemcode = $("#dlgCreateCombineItem").dialog("options").parentitemcode;
-        if (item == nullcode) { return; }
+        if (itemcode == null) { return; }
         var type = $(this).val();
         if (type == "K" || type == "L") {
             $("#txtCombineItemName").html(itemcode.replace(/(K|K[0-9])?P1\s*$/, "KP1"));
@@ -411,7 +406,6 @@ function openLinkDialog(title) {
     });
     $("#txtItemLinkQuantity").textbox("clear");
     dgItem.datagrid("clearSelections");
-    $("#dlgItem").dialog("center");
 }
 //引用物料
 function itemLink() {
@@ -442,15 +436,21 @@ function itemLinkConfirm() {
     //获取父级LINK、父级的链路
     var pitem = tg.treegrid("getSelected");
     var item = dgItem.datagrid("getSelected");
-    var pcode = pitem[COLS.Code];
+    if (item == null) {
+        AlertWin("请选择要引用的物料");
+        return;
+    }
+    var parentcode = pitem[COLS.Code];
     //获取引用的ITEMID
-    var code = item[COLS.Code];
+    var code = item["CN_CODE"];
     //获取引用数量
     var quantity = txtQuant.textbox("getValue");
     //提交
+    dgItem.datagrid("clearSelections");
     $("#dlgItem").dialog("close");
     postData(URL_ITEM_LINK, {
-        pcode: pcode,
+        prodcode: params.code,
+        parentcode: parentcode,
         code: code,
         quantity: quantity
     }, function (result) {
@@ -482,9 +482,10 @@ function itemUnlink() {
     }
     itemcode = itemcode.substr(0, itemcode.length - 1);
     guids = guids.substr(0, guids.length - 1);
-    $.messager.confirm("提示", "您确认要删除物料"+ itemcode +"的引用吗？此操作仅可用于自定义添加物料", function (r) {
+    $.messager.confirm("提示", "您确认要删除物料"+ itemcode +"的引用吗？", function (r) {
         if (r) {
             postData(URL_ITEM_UNLINK, {
+                prodcode: params.code,
                 guids: guids
             }, function (result) {
                 if (result.success) {
@@ -530,7 +531,7 @@ function virtualItemSet() {
     if (items.length == 1) {
         item = items[0];
     }
-    if (item == null[COLS.Guid]) {
+    if (item[COLS.Guid] == null) {
         AlertWin(lang.mbom.noSelectRoot);
         return false;
     }
@@ -1004,11 +1005,9 @@ function buildTree(options) {
         if (item[pid] == pval || item[COLS.Level] == 0) {
             switch (item[COLS.Type]) {
                 case "V":
-                case "CV":
                     item.iconCls = "icon-virtual";
                     break;
                 case "C":
-                case "VC":
                     item.iconCls = "icon-combine";
                     break;
             }

@@ -1,9 +1,15 @@
 ﻿@using Localization;
 @{
     ViewBag.Title = Lang.MBOMList;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
     @Styles.Render("~/bundles/ztreecss")
+    <style type="text/css">
+        .ztree li span.button.switch.level0 {
+            display: none;
+        }
+    </style>
 }
 @section scripts{
     <script type="text/javascript">
@@ -13,15 +19,7 @@
     <!-- import js -->
     <!-- zTree -->
     @Scripts.Render("~/bundles/ztree")
-    <!-- common js -->
-    @Scripts.Render("~/bundles/common")
     <!-- page js -->
     @Scripts.Render("~/bundles/pbom")
 }
-
-<div class="easyui-layout" data-options="fit:true,border:false">
-    <div style="height:100%;overflow: auto;">
-        <ul id="treeItems" class="ztree"></ul>
-    </div>
-</div>
-
+<ul id="treeItems" class="ztree"></ul>
