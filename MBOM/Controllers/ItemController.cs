@@ -32,7 +32,7 @@ namespace MBOM.Controllers
         public ActionResult Edit(ViewItemMaintenance view, int[] CN_TYPE)
         {
             var msg = string.Empty;
-            var user = LoginUserInfo.GetLoginUser();
+            var user = LoginUserInfo.GetUserInfo();
             var now = DateTime.Now;
             
             AppItem item = null;
@@ -50,7 +50,7 @@ namespace MBOM.Controllers
                 item.CN_SYS_STATUS = "Y";
                 item.CN_IS_TOERP = 0;
                 item.CN_CREATE_BY = user.UserId;
-                item.CN_CREATE_LOGIN = user.LoginName;
+                item.CN_CREATE_LOGIN = user.Login;
                 item.CN_CREATE_NAME = user.Name;
 
                 var bom = new AppBom
@@ -61,7 +61,7 @@ namespace MBOM.Controllers
                     CN_TYPE = "",
                     CN_DT_CREATE = now,
                     CN_CREATE_BY = user.UserId,
-                    CN_CREATE_LOGIN = user.LoginName,
+                    CN_CREATE_LOGIN = user.Login,
                     CN_CREATE_NAME = user.Name,
                     CN_SYS_STATUS = "Y"
                 };
@@ -111,7 +111,7 @@ namespace MBOM.Controllers
                     CN_DISPLAYNAME = "自定义物料",
                     CN_SYS_STATUS = "Y",
                     CN_CREATE_BY = user.UserId,
-                    CN_CREATE_LOGIN = user.LoginName,
+                    CN_CREATE_LOGIN = user.Login,
                     CN_CREATE_NAME = user.Name
                 });
             }
@@ -270,9 +270,13 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(prodTree));
         }
         [Description("查看物料MBOM")]
-        public JsonResult MbomTree(string code)
+        public JsonResult MbomTree(string guid, string code)
         {
-            var prodTree = Proc.ProcGetItemMBomTree(db, code);
+            if (string.IsNullOrWhiteSpace(guid))
+            {
+                guid = string.Empty;
+            }
+            var prodTree = Proc.ProcGetItemMBomTree(db, guid, code);
             return Json(ResultInfo.Success(prodTree));
         }
 

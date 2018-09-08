@@ -31,7 +31,7 @@ namespace MBOM.Controllers
         [Description("用户产品库列表")]
         public JsonResult List()
         {
-            var userinfo = LoginUserInfo.GetLoginUser();
+            var userinfo = LoginUserInfo.GetUserInfo();
             List<UserProductLibrary> list = db.UserProductLibraries.ToList();
             if (list.Count == 0)
             {
@@ -41,7 +41,7 @@ namespace MBOM.Controllers
                     Name = "我的文件夹",
                     Order = 0,
                     CreateBy = userinfo.UserId,
-                    CreateLogin = userinfo.LoginName,
+                    CreateLogin = userinfo.Login,
                     CreateName = userinfo.Name,
                     Desc = "系统创建节点"
                 });
@@ -67,7 +67,7 @@ namespace MBOM.Controllers
             }
             var model = Mapper.Map<UserProductLibrary>(view);
             model.CreateBy = userinfo.UserId;
-            model.CreateLogin = userinfo.LoginName;
+            model.CreateLogin = userinfo.Login;
             model.CreateName = userinfo.Name;
             model = db.UserProductLibraries.Add(model);
             db.SaveChanges();

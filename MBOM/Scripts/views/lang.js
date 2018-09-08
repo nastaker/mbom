@@ -174,6 +174,6 @@
         process: "扣料工序",
         level:"层级",
         unit: "单位",
-        kl:"扣料信息"
+        selectProductMbomVer: "请选择一个产品以创建对应MBOM版本"
     }
 };

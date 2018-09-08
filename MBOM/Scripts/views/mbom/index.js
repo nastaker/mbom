@@ -1,8 +1,8 @@
-﻿var URL_MAINTENANCELIST = "/MBOM/MaintenancePageList"
-var URL_MAINTENANCEPAGE = "/MBOM/MenuIndex"
-var URL_MBOM_VER_CREATE = "/MBOM/CreateVer"
-var URL_MBOMRELEASE = "/MBOM/Release"
-var URL_MBOMMARK = "/MBOM/Mark"
+﻿var URL_MAINTENANCELIST = "/MBOM/MaintenancePageList";
+var URL_MAINTENANCEPAGE = "/MBOM/MenuIndex";
+var URL_MBOM_VER_CREATE = "/MBOM/CreateVer";
+var URL_MBOMRELEASE = "/MBOM/Release";
+var URL_MBOMMARK = "/MBOM/Mark";
 var dg = $("#dgProducts");
 var dlgCreateMBOMVer = $("#dlgCreateMBOMVer");
 $(function () {
@@ -14,7 +14,7 @@ $(function () {
         singleSelect: true,
         pagination: true,
         border: false,
-        idField: "PROJECT_ID",
+        idField: "PRODUCT_CODE",
         toolbar: '#toolbar',
         rowStyler: function (index, row) {
             if(row["MARK"])
@@ -39,72 +39,100 @@ $(function () {
         title: '创建新的MBOM版本',
         footer: "#dlgCreateMBOMVerFooter",
         width: 350,
-        height: 280,
+        height: 300,
         closed: true,
         modal: true
     });
 });
 
+function multiSelectSwitch(checked) {
+    dg.datagrid({
+        singleSelect: checked
+    })
+}
 function query() {
     var data = $("#queryFrm").serializeJSON();
     dg.datagrid("clearSelections");
     dg.datagrid("load", data);
 }
-function queryDefault() {
-    dg.datagrid("clearSelections");
-    dg.datagrid("load", {});
-}
 function createMbomVer() {
-    //没有版本，需要用户创建MBOM版本，创建完成后才能进入维护
+    var prod = dg.datagrid("getSelected");
+    if (prod === null) {
+        AlertWin(lang.mbom.selectProductMbomVer);
+        return false;
+    }
+    var ver = "M1";
+    if (prod.MBOMVER) {
+        ver = "M" + (parseInt(prod.MBOMVER.substr(1, prod.MBOMVER.length)) + 1);
+    }
     dlgCreateMBOMVer.dialog("open");
-    $("#txtVer").textbox("setText", "M1");
+    $("#txtVer").textbox("setText", ver);
 }
 function createMbomVerConfirm() {
     var prod = dg.datagrid("getSelected");
-    if (prod == null) { return false; }
+    if (prod === null) {
+        AlertWin(lang.mbom.selectProductMbomVer);
+        return false;
+    }
     var ver = $("#txtVer").textbox("getText");
     var dtef = $("#txtEfDate").textbox("getText");
     var dtex = $("#txtExDate").textbox("getText");
     var pbom_ver_guid = prod["PBOM_VER_GUID"];
     var desc = $("#txtDesc").textbox("getText");
     postData(URL_MBOM_VER_CREATE, {
-        code: prod.PRODUCT_CODE,
-        name: prod.PRODUCT_NAME,
-        itemcode: prod.PRODUCT_ITEMCODE,
+        prodcode: prod.PRODUCT_CODE,
         ver: ver,
         dtef: dtef,
         dtex: dtex,
         pbom_ver_guid: pbom_ver_guid,
         desc: desc
     }, function (result) {
+        $.messager.confirm("提示", "是否进入维护页面！", function (r) {
+            if (r) {
+                publishMaintenance();
+            }
+        });
         InfoWin(result.msg);
+        dlgCreateMBOMVer.dialog("close");
     });
 }
 function publishMaintenance() {
     var prod = dg.datagrid("getSelected");
-    if (prod == null) { return false; }
-
+    if (prod === null) {
+        AlertWin(lang.mbom.selectProductMbomVer);
+        return false;
+    }
     var param = "?code=" + prod.PRODUCT_CODE;
     var title = $.trim(prod.PRODUCT_NAME) + "【" + $.trim(prod.PRODUCT_CODE) + "】";
     window.parent.openTab(title, URL_MAINTENANCEPAGE + param);    
 }
 function publish() {
-    var prod = dg.datagrid("getSelected");
-    if (prod == null) {
+    var prods = dg.datagrid("getSelections");
+    if (prods.length == 0) {
         AlertWin(lang.mbom.notSelect);
         return false;
     }
-    var param = {
-        code: prod.PRODUCT_CODE
-    };
-    postData(URL_MBOMRELEASE, param, function (result) {
-        if (result.success) {
-            InfoWin(result.msg);
-        } else {
-            AlertWin(result.msg);
+    var prodcodes = "";
+    for (var i = 0, j = prods.length; i < j; i++) {
+        var prod = prods[i];
+        prodcodes = prod.PRODUCT_CODE + "," + prodcodes;
+    }
+    prodcodes = prodcodes.substr(0, prodcodes.length - 1);
+    $.messager.confirm("提示", "您将发布产品[" + prodcodes+"]，请您确认！", function (r) {
+        if (r) {
+            var param = {
+                code: prodcodes
+            };
+            postData(URL_MBOMRELEASE, param, function (result) {
+                if (result.success) {
+                    InfoWin(result.msg);
+                } else {
+                    AlertWin(result.msg);
+                }
+                dg.datagrid("clearSelections");
+                dg.datagrid("reload");
+            });
         }
-        dg.datagrid("clearSelections");
-        dg.datagrid("reload");
     });
 }
 function mark() {

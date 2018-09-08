@@ -94,6 +94,14 @@ namespace MBOM.Controllers
         [Description("获取用户菜单树数据")]
         public JsonResult UserMenuList()
         {
+            if (HttpContext.IsDebuggingEnabled)
+            {
+                IOrderedQueryable<SysMenu> m = db.SysMenus.OrderBy(m1 => m1.Order);
+                var mv = Mapper.Map<List<TreeMenuView>>(m);
+                var nmv = new List<TreeMenuView>();
+                ConstructTree(mv, nmv, null);
+                return Json(ResultInfo.Success(nmv));
+            }
             var userInfo = LoginUserInfo.GetLoginUser();
             if (userInfo == null)
             {

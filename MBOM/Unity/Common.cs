@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using MBOM.Models;
+using Model;
 using Repository;
 
 namespace MBOM.Unity
@@ -20,7 +21,7 @@ namespace MBOM.Unity
         }
         internal static IQueryable<ViewProjectProductPbom> GetQueryFilterUserId(IQueryable<ViewProjectProductPbom> query)
         {
-            var user = LoginUserInfo.GetLoginUser();
+            UserInfo user = LoginUserInfo.GetUserInfo();
             if (user.UserId > 0)
             {
                 return from x

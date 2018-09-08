@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using System;
+using Model;
 
 namespace MBOM.Controllers
 {
@@ -222,52 +223,26 @@ namespace MBOM.Controllers
         }
         // MBOM 创建新版本
         [Description("MBOM 创建新版本")]
-        public JsonResult CreateVer(string code, string name, string itemcode, string ver, DateTime dtef, DateTime dtex, Guid? pbom_ver_guid, string desc)
+        public JsonResult CreateVer(string prodcode, string ver, DateTime dtef, DateTime dtex, string pbom_ver_guid, string desc)
         {
-            if (pbom_ver_guid == null)
+            if (String.IsNullOrWhiteSpace(prodcode))
             {
-                if (HttpContext.IsDebuggingEnabled)
-                {
-                    pbom_ver_guid = Guid.NewGuid();
-                }
-                else
-                {
-                    return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-                }
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            LoginUserInfo userinfo = LoginUserInfo.GetLoginUser();
-            DateTime now = DateTime.Now;
-            Guid guid = Guid.NewGuid();
-            int exists = db.AppMbomVers.Where(m =>
-            m.CN_CODE == code &&
-            m.CN_IS_TOERP < 2 &&
-            m.CN_DT_EFFECTIVE.CompareTo(now) == -1 &&
-            m.CN_DT_EXPIRY.CompareTo(now) == 1).Count();
-            if(exists > 0)
+            if (!Guid.TryParse(pbom_ver_guid, out Guid pvguid))
             {
-                return Json(ResultInfo.Fail("产品有未完成发布的MBOM版本，无需创建新版本。"));
+                pbom_ver_guid = Guid.NewGuid().ToString();
             }
-            db.AppMbomVers.Add(new AppMbomVer
+            ResultInfo rt = null;
+            try
             {
-                CN_GUID = guid,
-                CN_CODE = code,
-                CN_PBOM_GUID = pbom_ver_guid,
-                CN_STATUS = "Y",
-                CN_VER = ver,
-                CN_ITEM_CODE = itemcode,
-                CN_NAME = name,
-                CN_DESC = desc,
-                CN_DT_CREATE = now,
-                CN_DT_EFFECTIVE = dtef,
-                CN_DT_EXPIRY = dtex,
-                CN_CREATE_BY = userinfo.UserId,
-                CN_CREATE_LOGIN = userinfo.LoginName,
-                CN_CREATE_NAME = userinfo.Name,
-                CN_IS_TOERP = 0,
-                CN_DT_TOERP = DateTime.Parse("2100-01-01")
-            });
-            db.SaveChanges();
-            return Json(ResultInfo.Success("已成功创建版本，版本GUID：" + guid.ToString()));
+                rt = ResultInfo.Parse(Proc.ProcCreateMbomVer(db, prodcode, ver, dtef, dtex ,pbom_ver_guid, desc, LoginUserInfo.GetUserInfo()));
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
         }
         //
         [MaintenanceActionFilter]
@@ -284,7 +259,6 @@ namespace MBOM.Controllers
             var list = db.AppMbomVers.Where(p => p.CN_CODE == code).ToList();
             return Json(ResultInfo.Success(list));
         }
-
         // MBOM 数据
         [MaintenanceActionFilter]
         [Description("产品MBOM数据")]
@@ -804,7 +778,15 @@ namespace MBOM.Controllers
             var query = db.ViewMbomMaintenances.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
             {
-                query = query.Where(obj => obj.PRODUCT_CODE.Contains(view.PRODUCT_CODE));
+                if(view.PRODUCT_CODE.IndexOf(",") > 0)
+                {
+                    string[] prodcodes = view.PRODUCT_CODE.Split(',');
+                    query = query.Where(obj => prodcodes.Contains(obj.PRODUCT_CODE));
+                }
+                else
+                {
+                    query = query.Where(obj => obj.PRODUCT_CODE.Contains(view.PRODUCT_CODE));
+                }
             }
             if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
             {

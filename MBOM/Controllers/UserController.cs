@@ -84,7 +84,7 @@ namespace MBOM.Controllers
             LoginUserInfo userInfo = new LoginUserInfo
             {
                 UserId = userid,
-                LoginName = login,
+                Login = login,
                 Name = name,
                 groupid = model.groupid,
                 groupname = groupname,

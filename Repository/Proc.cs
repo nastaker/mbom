@@ -14,14 +14,14 @@ namespace Repository
     public static class Proc
     {
         const string PROC_GET_ITEM_PBOM_TREE = "PROC_GET_ITEM_PBOM_TREE @code";
-        const string PROC_GET_ITEM_MBOM_TREE = "PROC_GET_ITEM_MBOM_TREE @code";
+        const string PROC_GET_ITEM_MBOM_TREE = "PROC_GET_ITEM_MBOM_TREE @guid_ver,@code";
         const string PROC_GET_ITEM_SALESETINFO = "PROC_GET_ITEM_SETINFO @code";
         const string PROC_GET_ITEM_LIST = "PROC_GET_ITEM_LIST @code";
         const string PROC_GET_ITEM_PARENT = "PROC_GET_ITEM_PARENT @code";
         const string PROC_GET_PROCESS_ITEM_LIST = "PROC_GET_PROCESS_ITEM @code";
         const string PROC_GET_ITEM_CATE_LIST = "PROC_GET_ITEM_CATE_LIST @code,@catename";
         const string PROC_PRODUCT_TRANSFER_INITIATTE = "PROC_PRODUCT_TRANSFER_INITIATTE @code,@userid,@name,@login";
-        const string PROC_MBOM_VER_CREATE = "PROC_MBOM_VER_CREATE @code,@ver,@dt_effective,@dt_expiry,@desc,@pbom_ver_guid,@userid,@name,@login";
+        const string PROC_MBOM_VER_CREATE = "PROC_MBOM_VER_CREATE @prodcode,@ver,@dt_effective,@dt_expiry,@desc,@pbom_ver_guid,@userid,@name,@login";
         const string PROC_GET_MBOM_LIST = "PROC_GET_MBOM_MAINTENANCETREE @code";
         const string PROC_GET_PRODUCT_DISCRETE_LIST = "PROC_GET_PRODUCT_DISCRETE_LIST @code";
         //虚件
@@ -70,10 +70,11 @@ namespace Repository
             return result;
         }
 
-        public static List<ProcItemTree> ProcGetItemMBomTree(BaseDbContext db, string code)
+        public static List<ProcItemTree> ProcGetItemMBomTree(BaseDbContext db, string guid, string code)
         {
             SqlParameter[] param =
             {
+                new SqlParameter("@guid_ver", guid),
                 new SqlParameter("@code", code)
             };
             var result = db.Database.SqlQuery<ProcItemTree>(PROC_GET_ITEM_MBOM_TREE, param).ToList();
@@ -391,11 +392,11 @@ namespace Repository
 
         //MBOM
         //MBOM创建新版本
-        public static ProcReturnMsg ProcCreateMbomVer(BaseDbContext db, string code, string ver, DateTime dtef, DateTime dtex, string pbom_ver_guid, string desc, UserInfo userinfo)
+        public static ProcReturnMsg ProcCreateMbomVer(BaseDbContext db, string prodcode, string ver, DateTime dtef, DateTime dtex, string pbom_ver_guid, string desc, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
-                new SqlParameter("@code", code),
+                new SqlParameter("@prodcode", prodcode),
                 new SqlParameter("@ver", ver),
                 new SqlParameter("@dt_effective", dtef),
                 new SqlParameter("@dt_expiry", dtex),

@@ -29,7 +29,7 @@ namespace MBOM.Filters
                     CN_ISSUCCESS = issuccess,
                     CN_USERID = user.UserId,
                     CN_USERNAME = user.Name,
-                    CN_USERLOGIN = user.LoginName,
+                    CN_USERLOGIN = user.Login,
                     CN_DT_DATE = DateTime.Now
                 });
                 db.SaveChanges();
@@ -48,6 +48,10 @@ namespace MBOM.Filters
             {
                 return false;
             }
+            if (user.UserId == 0) //超级管理员不设限制
+            {
+                return true;
+            }
             Hashtable logins = httpContext.Application["Logins"] as Hashtable;
             var controller = httpContext.Request.RequestContext.RouteData.Route.GetRouteData(httpContext).Values["controller"];
             var action = httpContext.Request.RequestContext.RouteData.Route.GetRouteData(httpContext).Values["action"];
@@ -65,10 +69,6 @@ namespace MBOM.Filters
                 LogUserInfo(actionUrl, userip, requestType, false, "用户在其他地方登录", user);
                 httpContext.Response.StatusCode = 412;
                 return false;
-            }
-            if (user.UserId == 0) //超级管理员不设限制
-            {
-                return true;
             }
             var rightactions = (CacheHelper.GetCache("RightActions") as List<SysRightAction>);
 

@@ -27,7 +27,7 @@ namespace MBOM.Models
     public class LoginUserInfo
     {
         public int UserId { get; set; }
-        public string LoginName { get; set; }
+        public string Login { get; set; }
         public string Name { get; set; }
         public int groupid { get; set; }
         public string groupname { get; set; }
@@ -35,6 +35,16 @@ namespace MBOM.Models
 
         public static LoginUserInfo GetLoginUser()
         {
+            if (HttpContext.Current.IsDebuggingEnabled)
+            {
+                return new LoginUserInfo
+                {
+                    UserId = 0,
+                    Login = "Admin",
+                    Name = "超级管理员",
+                    groupname = "测试",
+                };
+            }
             HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
             if (authCookie == null)
             {
@@ -63,7 +73,7 @@ namespace MBOM.Models
             return new UserInfo
             {
                 UserId = loginUser.UserId,
-                Login = loginUser.LoginName,
+                Login = loginUser.Login,
                 Name = loginUser.Name
             };
         }
