@@ -46,70 +46,9 @@ namespace Repository
             }
             set { _createTime = value; }
         }
-        public DateTime CN_DT_EFFECTIVE_DESIGN
-        {
-            get
-            {
-                if (_createTime == null)
-                {
-                    return DateTime.Now;
-                }
-                if (_createTime.HasValue && _createTime.Value > DateTime.MinValue)
-                {
-                    return _createTime.Value;
-                }
-                return DateTime.Now;
-            }
-            set { _createTime = value; }
-        }
-        public DateTime CN_DT_EXPIRY_DESIGN
-        {
-            get
-            {
-                if (_createTime == null)
-                {
-                    return DateTime.Now;
-                }
-                if (_createTime.HasValue && _createTime.Value > DateTime.MinValue)
-                {
-                    return _createTime.Value;
-                }
-                return DateTime.Now;
-            }
-            set { _createTime = value; }
-        }
-        public DateTime CN_DT_EFFECTIVE_ERP
-        {
-            get
-            {
-                if (_createTime == null)
-                {
-                    return DateTime.Now;
-                }
-                if (_createTime.HasValue && _createTime.Value > DateTime.MinValue)
-                {
-                    return _createTime.Value;
-                }
-                return DateTime.Now;
-            }
-            set { _createTime = value; }
-        }
-        public DateTime CN_DT_EXPIRY_ERP
-        {
-            get
-            {
-                if (_createTime == null)
-                {
-                    return DateTime.Now;
-                }
-                if (_createTime.HasValue && _createTime.Value > DateTime.MinValue)
-                {
-                    return _createTime.Value;
-                }
-                return DateTime.Now;
-            }
-            set { _createTime = value; }
-        }
+        public DateTime CN_DT_EFFECTIVE_ERP { get; set; }
+        public DateTime CN_DT_EXPIRY_ERP {get;set;}
+        public DateTime CN_DT_TOERP { get; set; }
         private DateTime? _createTime;
     }
 }

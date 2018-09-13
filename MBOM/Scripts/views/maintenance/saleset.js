@@ -1,14 +1,14 @@
-﻿var URL_SALESETLIST = "/Item/SaleSetList";
+﻿var URL_SELLLIST = "/Item/SellList";
 var URL_SAVESALESETLIST = "/Item/SaveSaleSetList";
 var URL_SHIPPINGADDRLIST = "/Item/GetShippingAddr";
 var URL_CUSTOMERCODENAME = "/Item/GetCustomerCodeName";
 
-var code = $("#code").val();
+var prod_itemcode = $("#prod_itemcode").val();
 var dgItems = $("#dgItems");
 var dgSaleItems = $("#dgSaleItems");
 var shippingAddrData;
 var customerCodeNames;
-var param = { code: code };
+var param = { prod_itemcode: prod_itemcode };
 $(function () {
     var isError = false;
     postDataSync(URL_SHIPPINGADDRLIST, {}, function (result) {
@@ -62,8 +62,7 @@ $(function () {
                     formatter: function (data) {
                         return '<span style="font-weight:bold">' + data["CN_NAME"] + '</span><br/>' +
                             '<span style="color:#888">' + data["CN_CODE"] + '</span>';
-                    },
-                    required: true
+                    }
                 }
             }
         },
@@ -76,7 +75,7 @@ $(function () {
             },
             editor: {
                 type: 'textbox',
-                options: { validType: 'maxlength[18]', tipPosition: "top", required: true }
+                options: { validType: 'maxlength[18]', tipPosition: "top" }
             }
         },
         {
@@ -88,7 +87,7 @@ $(function () {
             },
             editor: {
                 type: 'textbox',
-                options: { validType: 'maxlength[20]', tipPosition: "top", required: true }
+                options: { validType: 'maxlength[20]', tipPosition: "top" }
             }
         },
         {
@@ -101,11 +100,9 @@ $(function () {
             editor: {
                 type: 'combobox',
                 options: {
-                    editable: false,
                     valueField: 'CN_NAME',
                     textField: 'CN_NAME',
-                    data: shippingAddrData,
-                    required: true
+                    data: shippingAddrData
                 }
             }
         },
@@ -118,7 +115,7 @@ $(function () {
             },
             editor: {
                 type: 'numberbox',
-                options: { precision: 4, required: true }
+                options: { precision: 4 }
             }
         },
         { field: 'UNIT', title: lang.saleSet.productUnit, width: 40, align:"center" }
@@ -149,7 +146,7 @@ $(function () {
     dgSaleItems.datagrid($.extend({}, commonOptions, saleItemsOptions));
     //
     //获取SALE_SET
-    postData(URL_SALESETLIST, param, function (result) {
+    postData(URL_SELLLIST, param, function (result) {
         //saleset 
         // 为 0 时，表示未设置为销售件
         // 为 1 时，表示已设置为销售件
@@ -242,7 +239,13 @@ function onEndEdit(index, row, changes) {
             row["CUSTOMERNAME"] = item.CN_NAME;
         } else {
             row["CUSTOMER_ID"] = null;
-            row["CUSTOMERNAME"] =  null;
+            row["CUSTOMERNAME"] = null;
+        }
+    }
+    if (changes["SHIPPINGADDR"]) {
+        var sad = shippingAddrData.get(changes["SHIPPINGADDR"], "CN_NAME");
+        if (!sad) {
+            row["SHIPPINGADDR"] = null;
         }
     }
 }

@@ -1,0 +1,54 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = "MaintenanceIndex";
+}
+@section styles{
+    <!-- custom css -->
+    @Styles.Render("~/bundles/mbomcss")
+}
+@section scripts{
+    <script type="text/javascript">
+        var params = { itemcode: "@Request.Params["itemcode"]" };
+    </script>
+    <!-- custom js -->
+    @Scripts.Render("~/bundles/common")
+    @Scripts.Render("~/bundles/ComponentMaintenance")
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <div id="toolbar" style="width:100%;padding:5px;">
+            <div class="btn-group" role="group">
+                <button id="btnItemLink" type="button" onclick="itemLink()" class="btn btn-primary">@Lang.ItemLink</button>
+                <button id="btnItemUnlink" type="button" onclick="itemUnlink()" class="btn btn-danger">@Lang.ItemUnlink</button>
+                <button id="btnReloadTable" type="button" onclick="reloadTable()" class="btn btn-success">@Lang.ReloadTable</button>
+                <button id="btnPublish" type="button" onclick="publish()" class="btn btn-warning">@Lang.MBOMPublish</button>
+            </div>
+        </div>
+        <table id="treegrid">
+        </table>
+    </div>
+</div>
+
+<div id="dlgItem">
+    <div id="dlgItemToolbar">
+        <form id="queryFrm">
+            <div>
+                <span>@Lang.ItemCode：</span>
+                <input type="text" name="CN_ITEM_CODE" class="easyui-textbox" style="width:120px;"/>
+                <span>@Lang.ItemName：</span>
+                <input type="text" name="CN_NAME" class="easyui-textbox" style="width:120px;" />
+                <a href="javascript:;" class="easyui-linkbutton" onclick="queryItem()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+                <a href="javascript:;" class="easyui-linkbutton" onclick="showItemDetail()" data-options="iconCls:'icon-search'">@Lang.ItemBomDetail</a>
+            </div>
+        </form>
+    </div>
+    <table id="dgItem"></table>
+    <div id="dlgItemFooter" class="text-right">
+        <span>
+            引用数量：
+        </span>
+        <input type="text" id="txtItemLinkQuantity" name="quantity" class="easyui-textbox" data-options="validType:'number',tipPosition:'top'" required style="width:120px;" />
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="itemLinkConfirm()">确认</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgItem').dialog('close')">关闭</a>
+    </div>
+</div>

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
 using MBOM.Unity;
+using System;
 
 namespace MBOM.Controllers
 {
@@ -36,11 +37,26 @@ namespace MBOM.Controllers
             return View();
         }
 
-        [Description("转批发起操作")]
-        public JsonResult Initiate(string code)
+        [Description("创建产品版本")]
+        public JsonResult CreateProductVer(string prod_itemcode, string name, string desc)
         {
             var userinfo = LoginUserInfo.GetUserInfo();
-            var proc = Proc.ProcProductTransferInitiate(db, code, userinfo);
+            try
+            {
+                var proc = Proc.ProcCreateProductVer(db, prod_itemcode, name, desc, userinfo);
+                return Json(ResultInfo.Parse(proc));
+            }
+            catch (Exception ex)
+            {
+                return Json(ResultInfo.Fail(ex.Message));
+            }
+        }
+
+        [Description("转批发起操作")]
+        public JsonResult Initiate(string prod_itemcode)
+        {
+            var userinfo = LoginUserInfo.GetUserInfo();
+            var proc = Proc.ProcProductTransferInitiate(db, prod_itemcode, userinfo);
             return Json(ResultInfo.Success(proc));
         }
 

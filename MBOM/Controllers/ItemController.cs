@@ -28,13 +28,23 @@ namespace MBOM.Controllers
             this.db = db;
         }
 
+        [Description("查看产品基本信息")]
+        public JsonResult BaseInfo(string prod_itemcode)
+        {
+            var viewModel = db.ViewProjectProductPboms.Where(m => m.PRODUCT_ITEM_CODE == prod_itemcode.Trim());
+            if (viewModel.Count() == 0)
+            {
+                return Json(ResultInfo.Fail("未查询到产品信息。"));
+            }
+            return Json(ResultInfo.Success(viewModel.First()));
+        }
+
         [Description("添加或修改自定义物料")]
         public ActionResult Edit(ViewItemMaintenance view, int[] CN_TYPE)
         {
             var msg = string.Empty;
             var user = LoginUserInfo.GetUserInfo();
             var now = DateTime.Now;
-            
             AppItem item = null;
             if (view.CN_ID == 0)
             {
@@ -78,23 +88,25 @@ namespace MBOM.Controllers
                 item = db.AppItems.SingleOrDefault(where => where.CN_ID == view.CN_ID);
                 if (item == null)
                 {
-                    return Json(ResultInfo.Fail("物料信息不存在，请联系管理员。"));
+                    return Json(ResultInfo.Fail("未查询到物料信息，请联系管理员。"));
                 }
-
                 var bomh = db.AppBomHlinks.Where(w => w.CN_COMPONENT_OBJECT_ID == view.CN_ID).ToList();
                 if (bomh != null && bomh.Count > 0)
                 {
                     return Json(ResultInfo.Fail("物料已经被引用，无法进行修改。"));
                 }
-
-                if (item.CN_IS_TOERP == 1)
+                if (item.CN_IS_TOERP > 0)
                 {
-                    return Json(ResultInfo.Fail("物料已发布到ERP系统，无法修改！"));
+                    return Json(ResultInfo.Fail("物料已发布，无法进行修改。"));
                 }
                 item.CN_NAME = view.CN_NAME;
                 item.CN_UNIT = view.CN_UNIT;
                 item.CN_WEIGHT = view.CN_WEIGHT;
-                db.AppItemHLinks.RemoveRange(db.AppItemHLinks.Where(w => w.CN_ID == item.CN_ID && w.CN_DISPLAYNAME == "自定义物料"));
+                var list = db.AppItemHLinks.Where(w => w.CN_ID == item.CN_ID && (w.CN_COMPONENT_OBJECT_ID == 2 || w.CN_COMPONENT_OBJECT_ID == 3 || w.CN_COMPONENT_OBJECT_ID == 13)).ToList();
+                if(list != null && list.Count > 0)
+                {
+                    db.AppItemHLinks.RemoveRange(list);
+                }
                 msg = "修改成功";
             }
             List<AppItemHLink> typelist = new List<AppItemHLink>();
@@ -105,10 +117,12 @@ namespace MBOM.Controllers
                     CN_ID = item.CN_ID,
                     CN_COMPONENT_CLASS_ID = 105,
                     CN_COMPONENT_OBJECT_ID = type,
-                    CN_B_IS_ASSEMBLY = false,
                     CN_DT_CREATE = now,
+                    CN_DT_EFFECTIVE = now,
+                    CN_DT_EXPIRY = DateTime.Parse("2100-01-01"),
+                    CN_DT_TOERP = DateTime.Parse("2100-01-01"),
                     CN_UNIT = item.CN_UNIT,
-                    CN_DISPLAYNAME = "自定义物料",
+                    CN_DISPLAYNAME = "",
                     CN_SYS_STATUS = "Y",
                     CN_CREATE_BY = user.UserId,
                     CN_CREATE_LOGIN = user.Login,
@@ -128,9 +142,8 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail("物料不存在，或已经被删除，请刷新后重试。"));
             }
-
-            var bomh = db.AppBomHlinks.Where(where => where.CN_COMPONENT_OBJECT_ID == id).ToList();
-            if (bomh != null && bomh.Count > 0)
+            // TODO：检测是否被引用
+            if (item == null)
             {
                 return Json(ResultInfo.Fail("物料已经被引用，无法进行删除。"));
             }
@@ -152,10 +165,10 @@ namespace MBOM.Controllers
 
         // GET: Item
         [Description("查看[ITEM基本信息页面]")]
-        public ActionResult BaseInfoIndex(string code)
+        public ActionResult BaseInfoIndex(string prod_itemcode)
         {
-            
-            var item = db.AppItems.SingleOrDefault(where => where.CN_CODE == code);
+
+            var item = db.AppItems.SingleOrDefault(where => where.CN_ITEM_CODE == prod_itemcode);
             return View(item);
         }
 
@@ -166,11 +179,11 @@ namespace MBOM.Controllers
         }
 
         [Description("查看[附件查看页面]")]
-        public ActionResult AttachmentsViewIndex(string code, int filetype)
+        public ActionResult AttachmentsViewIndex(string prod_itemcode, int filetype)
         {
             //是展示
-            
-            var attachs = db.SysAttachments.Where(w => w.FileType == filetype && w.Code == code);
+
+            var attachs = db.SysAttachments.Where(w => w.FileType == filetype && w.ItemCode == prod_itemcode);
             var rt = Mapper.Map<List<FileResponse>>(attachs);
             return View(rt);
         }
@@ -189,18 +202,18 @@ namespace MBOM.Controllers
 
         [HttpPost]
         [Description("上传附件")]
-        public JsonResult UploadAttachment(string code, int filetype,HttpPostedFileBase file)
+        public JsonResult UploadAttachment(string prod_itemcode, int filetype, HttpPostedFileBase file)
         {
             //如果file不为空，则是保存文件
-            
+
             if (file != null)
             {
                 string dir = Path.Combine(PATH_ATTACHMENTS_FOLDER,
-                                                code,
+                                                prod_itemcode,
                                                 filetype.ToString());
                 string filepath = Path.Combine(dir, file.FileName);
                 //获取item数据
-                var item = db.AppItems.SingleOrDefault(i => i.CN_CODE == code);
+                var item = db.AppItems.SingleOrDefault(i => i.CN_ITEM_CODE == prod_itemcode);
                 //写数据库
                 var newAttach = db.SysAttachments.Add(new SysAttachment
                 {
@@ -225,12 +238,12 @@ namespace MBOM.Controllers
             else
             {
                 //是展示
-                var attachs = db.SysAttachments.Where(a => a.FileType == filetype && a.Code == code);
+                var attachs = db.SysAttachments.Where(a => a.FileType == filetype && a.ItemCode == prod_itemcode);
                 var rt = Mapper.Map<List<FileResponse>>(attachs);
                 return Json(ResultInfo.Success(rt));
             }
         }
-        
+
         [Description("删除附件")]
         public JsonResult DeleteAttachment(int id)
         {
@@ -257,82 +270,86 @@ namespace MBOM.Controllers
         }
 
         [Description("查看销售件")]
-        public JsonResult SaleSetList(string code)
+        public JsonResult SellList(string prod_itemcode)
         {
-            var list = Proc.ProcGetItemSaleSetInfo(db, code);
+            var list = Proc.ProcGetProductSellInfo(db, prod_itemcode);
             return Json(ResultInfo.Success(list));
         }
 
         [Description("查看物料PBOM")]
-        public JsonResult PbomTree(string code)
+        public JsonResult PbomTree(string prod_itemcode, DateTime date)
         {
-            var prodTree = Proc.ProcGetItemPBomTree(db, code);
+            if (string.IsNullOrWhiteSpace(prod_itemcode))
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
+            var prodTree = Proc.ProcGetItemPBomTree(db, prod_itemcode, date);
             return Json(ResultInfo.Success(prodTree));
         }
         [Description("查看物料MBOM")]
-        public JsonResult MbomTree(string guid, string code)
+        public JsonResult MbomTree(string prod_itemcode, DateTime date)
         {
-            if (string.IsNullOrWhiteSpace(guid))
+            if (string.IsNullOrWhiteSpace(prod_itemcode))
             {
-                guid = string.Empty;
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var prodTree = Proc.ProcGetItemMBomTree(db, guid, code);
+            var prodTree = Proc.ProcGetItemMBomTree(db, prod_itemcode, date);
             return Json(ResultInfo.Success(prodTree));
         }
 
         [Description("查看物料详情")]
-        public JsonResult ProductList(string code)  
+        public JsonResult ProductList(string prod_itemcode)
         {
-            if (string.IsNullOrEmpty(code))
+            if (string.IsNullOrEmpty(prod_itemcode))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = Proc.ProcProductList(db, code);
+            var itemlist = Proc.ProcProductList(db, prod_itemcode);
             return Json(ResultInfo.Success(itemlist));
         }
 
         [Description("查看工序")]
-        public JsonResult ProductProcessList(string code)
+        public JsonResult ProductProcessList(string prod_itemcode)
         {
-            if (string.IsNullOrEmpty(code))
+            if (string.IsNullOrEmpty(prod_itemcode))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = Proc.ProcGetProcessItemList(db, code);
+            var itemlist = Proc.ProcGetProcessItemList(db, prod_itemcode);
             return Json(ResultInfo.Success(itemlist));
         }
 
         [Description("查看物料工序详情")]
-        public JsonResult ProductProcessInfo(string code)
+        public JsonResult ProductProcessInfo(string prod_itemcode)
         {
-            if (string.IsNullOrEmpty(code))
+            if (string.IsNullOrEmpty(prod_itemcode))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             var itemlist = (from p
             in db.AppProcessVers
-            join pvl
-            in db.AppProcessVerHlinks
-            on p.CN_ID equals pvl.CN_ID
-            where 
-            pvl.CN_SYS_STATUS.Equals("Y")
-            && p.CN_CODE.TrimEnd().Equals(code.TrimEnd())
-            && p.CN_SYS_STATUS.Equals("Y")
-            orderby pvl.CN_GX_CODE
-            select new ProcItemProcess
-            {
-                HLINK_ID = pvl.CN_HLINK_ID,
-                GX_NAME = pvl.CN_GX_NAME,
-                GX_CODE = pvl.CN_GX_CODE,
-                GXNR = pvl.CN_GXNR
-            });
+                            join pvl
+                            in db.AppProcessVerHlinks
+                            on p.CN_ID equals pvl.CN_ID
+                            where
+                            pvl.CN_SYS_STATUS.Equals("Y")
+                            && p.CN_ITEM_CODE.TrimEnd().Equals(prod_itemcode.TrimEnd())
+                            && p.CN_SYS_STATUS.Equals("Y")
+                            orderby pvl.CN_GX_CODE
+                            select new ProcItemProcess
+                            {
+                                HLINK_ID = pvl.CN_HLINK_ID,
+                                GX_NAME = pvl.CN_GX_NAME,
+                                GX_CODE = pvl.CN_GX_CODE,
+                                GXNR = pvl.CN_GXNR
+                            });
             return Json(ResultInfo.Success(itemlist.ToList()));
         }
 
         [Description("查看产品分类")]
-        public JsonResult ProductCateList(string code, string catename)
+        public JsonResult ProductCateList(string prod_itemcode, string catename)
         {
-            if (string.IsNullOrEmpty(code))
+            if (string.IsNullOrEmpty(prod_itemcode))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
@@ -340,16 +357,16 @@ namespace MBOM.Controllers
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            var itemlist = Proc.ProcGetItemCateList(db, code, catename);
+            var itemlist = Proc.ProcGetItemCateList(db, prod_itemcode, catename);
             return Json(ResultInfo.Success(itemlist));
         }
 
         [Description("销售件设置")]
         public JsonResult SaveSaleSetList(
-            string code,
+            string prod_itemcode,
             List<ProcItemSetInfo> list)
         {
-            if(list == null)
+            if (list == null)
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
@@ -357,7 +374,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcSetSaleList(db, code, str, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcSetSaleList(db, prod_itemcode, str, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -371,13 +388,13 @@ namespace MBOM.Controllers
             StringBuilder sb = new StringBuilder();
             foreach (var item in list)
             {
-                sb.Append(String.Format("{6},{5},{4},{3},{2},{1},{0};", 
-                    item.CUSTOMER_ID, 
-                    item.CUSTOMERITEMNAME, 
-                    item.CUSTOMERITEMCODE, 
-                    item.SHIPPINGADDR, 
-                    item.F_QUANTITY, 
-                    item.ITEMID, 
+                sb.Append(String.Format("{6},{5},{4},{3},{2},{1},{0};",
+                    item.CUSTOMER_ID,
+                    item.CUSTOMERITEMNAME,
+                    item.CUSTOMERITEMCODE,
+                    item.SHIPPINGADDR,
+                    item.F_QUANTITY,
+                    item.ITEMID,
                     item.TYPE));
             }
             return sb.ToString();
@@ -413,7 +430,7 @@ namespace MBOM.Controllers
         [Description("添加选装件对应关系")]
         public JsonResult OptionalItemMapAdd(int itemid, string itemids)
         {
-            if(itemid == 0)
+            if (itemid == 0)
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
@@ -459,9 +476,9 @@ namespace MBOM.Controllers
         }
 
         [Description("查看物料工序版本")]
-        public JsonResult ItemProcessVer(string code)
+        public JsonResult ItemProcessVer(string prod_itemcode)
         {
-            var list = db.AppProcessVers.Where(ver => ver.CN_CODE == code).ToList();
+            var list = db.AppProcessVers.Where(ver => ver.CN_ITEM_CODE == prod_itemcode).ToList();
             var dtoModel = Mapper.Map<List<AppProcessVerView>>(list);
             return Json(ResultInfo.Success(dtoModel));
         }
@@ -479,15 +496,15 @@ namespace MBOM.Controllers
         }
 
         [Description("查找Item的父级")]
-        public JsonResult FindParent(string code)
+        public JsonResult FindParent(string prod_itemcode)
         {
-            if(string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(prod_itemcode))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             try
             {
-                List<ProcProcessItem> parent = Proc.ProcGetItemParent(db, code);
+                List<ProcProcessItem> parent = Proc.ProcGetItemParent(db, prod_itemcode);
                 return Json(ResultInfo.Success(parent));
             }
             catch (SqlException ex)

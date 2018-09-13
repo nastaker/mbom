@@ -29,10 +29,11 @@
         weight: "重量",
         unit: "单位",
         type: "类型",
-        istoerp: "是否发布",
+        istoerp: "发布状态",
         status: "状态",
         expiryerp: "过期日期",
         create: "创建日期",
+        dttoerp: "发布日期",
         createby: "创建用户ID",
         createlogin: "创建用户",
         createname: "创建人"
@@ -55,7 +56,9 @@
     },
     transfer: {
         initiateSuccess:"转批成功",
-        initiateFailed:"转批发起失败，请联系管理员"
+        initiateFailed: "转批发起失败，请联系管理员",
+        prodver: "销售件版本",
+        prodverstatus: "销售件版本状态"
     },
     maintenance: {
         baseInfo: "基本信息",
@@ -90,7 +93,7 @@
     },
     bomlist: {
         dataGetFailed: "数据获取失败，请重试或联系管理员",
-        child: "部件",
+        child: "版本",
         selfmade: "自制件",
         standard: "标准件",
         purchase: "采购件",
@@ -174,6 +177,8 @@
         process: "扣料工序",
         level:"层级",
         unit: "单位",
+        ver: "MBOM版本",
+        dtver: "MBOM版本日期",
         selectProductMbomVer: "请选择一个产品以创建对应MBOM版本"
     }
 };

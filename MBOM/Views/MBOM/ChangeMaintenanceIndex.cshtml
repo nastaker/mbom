@@ -1,17 +1,17 @@
 ﻿@using Localization;
 @{
-    ViewBag.Title = Lang.MBOMChangeMaintenance;
+    ViewBag.Title = Lang.ProductDetail;
 }
 @section scripts{
+    <script type="text/javascript">
+        var params = { prod_itemcode: "@Request.Params["prod_itemcode"]" };
+    </script>
     <!-- jQuery Plugins -->
     <script src="~/Scripts/jquery.mask.js"></script>
     <!-- custom js -->
     @Scripts.Render("~/bundles/common")
-    @Scripts.Render("~/bundles/productchange/menudata")
+    @Scripts.Render("~/bundles/menudata3")
     @Scripts.Render("~/bundles/menu")
-    <script type="text/javascript">
-        var params = { code: "@Request.Params["code"]" };
-    </script>
 }
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'west',border:false,split:true,title:'@Lang.CompanyName'" style="width:150px;border-style:solid;border-width:0 1px 0 0;border-color:#D4D4D4;">

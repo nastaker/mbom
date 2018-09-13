@@ -58,7 +58,7 @@
     <Compile Include="AppItem.cs" />
     <Compile Include="AppItemHLink.cs" />
     <Compile Include="AppOptionalItemHlink.cs" />
-    <Compile Include="AppPBOMVer.cs" />
+    <Compile Include="AppPbomVer.cs" />
     <Compile Include="AppProcessVer.cs" />
     <Compile Include="AppProcessVerHlink.cs" />
     <Compile Include="AppProduct.cs" />

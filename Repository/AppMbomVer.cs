@@ -10,7 +10,7 @@ namespace Repository
         [Key]
         public int CN_ID { get; set; }
         public Guid CN_GUID { get; set; }
-        public Guid? CN_PBOM_GUID { get; set; }
+        public Guid? CN_GUID_PBOM { get; set; }
         public string CN_STATUS { get; set; }
         public string CN_VER { get; set; }
         public string CN_NAME { get; set; }

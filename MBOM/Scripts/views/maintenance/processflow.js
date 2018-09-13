@@ -5,7 +5,7 @@ var dgItems = $("#dgItems");
 var dgItemProcess = $("#dgItemProcess");
 $(function () {
     var columns = [[
-        { field: 'CODE', title: lang.saleSet.productCode },
+        { field: 'ITEMCODE', title: lang.saleSet.productCode },
         { field: 'NAME', title: lang.saleSet.productName }
     ]];
     var dgItemProcessColumns = [[
@@ -55,7 +55,7 @@ function onSelect(index, row) {
         dgItemProcess.datagrid("loadData", row.processFlow);
         dgItemProcess.datagrid("loaded");
     } else {
-        dgItemProcess.datagrid("reload", { code: row.CODE });
+        dgItemProcess.datagrid("reload", { prod_itemcode: row.ITEMCODE });
     }
 }
 

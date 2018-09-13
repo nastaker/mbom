@@ -89,7 +89,7 @@ var dgConfig = {
         {
             title: "操作", field: "ID", width: 60,
             formatter: function (value, row, index) {
-                return "<a href='javascript:;' onclick='showProductInfo(\"" + row["ProductCode"] + "\",\"" + row["ItemCode"] + "\",\"" + row["ProductName"] + "\")'>查看详情</a>"
+                return "<a href='javascript:;' onclick='showProductInfo(\"" + row["ItemCode"] + "\",\"" + row["ProductName"] + "\")'>查看详情</a>"
             }
         }
     ]],
@@ -228,14 +228,14 @@ function productinfo() {
         AlertWin(lang.mbom.notSelect)
         return false;
     }
-    var code = prod.CN_CODE;
+    var prod_itemcode = prod.CN_ITEM_CODE;
     var title = "产品详情" + prod.CN_ITEM_CODE + " " + prod.CN_NAME;
-    window.parent.openTab(title, URL_PRODUCTDETAIL + "?code=" + code);
+    window.parent.openTab(title, URL_PRODUCTDETAIL + "?prod_itemcode=" + prod_itemcode);
 }
 
-function showProductInfo(code, itemcode, name) {
+function showProductInfo(itemcode, name) {
     var title = "产品详情" + itemcode + " " + name;
-    window.parent.openTab(title, URL_PRODUCTDETAIL + "?code=" + code);
+    window.parent.openTab(title, URL_PRODUCTDETAIL + "?prod_itemcode=" + itemcode);
 }
 
 function addProduct() {

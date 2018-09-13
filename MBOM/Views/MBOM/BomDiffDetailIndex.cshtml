@@ -30,31 +30,8 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var bom in Model)
-        {
-            <tr>
-                <td>@bom.item_code</td>
-                <td>@bom.code</td>
-                @if (string.IsNullOrWhiteSpace(bom.displayname))
-                {
-                    <td class="danger"></td>
-                }
-                else
-                {
-                    <td>@bom.displayname</td>
-                }
-                @if (string.IsNullOrWhiteSpace(bom.mbomname))
-                {
-                    <td class="danger"></td>
-                }
-                else
-                {
-                    <td>@bom.mbomname</td>
-                }
-                <td>@bom.quantity</td>
-                <td>@bom.dt_ef_pbom</td>
-                <td>@bom.dt_ef_mbom</td>
-            </tr>
-        }
+        <tr>
+            <td></td>
+        </tr>
     </tbody>
 </table>

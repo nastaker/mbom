@@ -21,6 +21,15 @@
     color: #ED4337;
     font-weight: bold;
 }
+.main-virtual-parent {
+    color: #ED4337;
+    background: rgba(0, 0, 0, 0.10);
+    font-weight: bold;
+}
+.main-virtual-parent-child {
+    color: rgba(237, 67, 55, 0.50);
+    background: rgba(0, 0, 0, 0.10);
+}
 .main-combine {
     color: #806afb;
     font-weight: bold;

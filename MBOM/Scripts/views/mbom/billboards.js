@@ -55,6 +55,6 @@ function showDetail() {
     var item = dg.datagrid("getSelected");
     if (!item) { return; }
     var title = "物料详情" + item.CN_ITEM_CODE + " " + item.CN_NAME;
-    var code = item.CN_CODE
-    window.parent.openTab(title, URL_ITEMDETAIL + "?code=" + code);
+    var prod_itemcode = item.CN_ITEM_CODE
+    window.parent.openTab(title, URL_ITEMDETAIL + "?prod_itemcode=" + prod_itemcode);
 }

@@ -47,7 +47,7 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   使用此强类型资源类，为所有资源查找
+        ///   重写当前线程的 CurrentUICulture 属性
         ///   重写当前线程的 CurrentUICulture 属性。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -147,6 +147,24 @@ namespace Localization {
         public static string CheckAllChildren {
             get {
                 return ResourceManager.GetString("CheckAllChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 选中下级所有合件 的本地化字符串。
+        /// </summary>
+        public static string CheckAllCombineChildren {
+            get {
+                return ResourceManager.GetString("CheckAllCombineChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 选中下级所有虚件 的本地化字符串。
+        /// </summary>
+        public static string CheckAllVirtualChildren {
+            get {
+                return ResourceManager.GetString("CheckAllVirtualChildren", resourceCulture);
             }
         }
         
@@ -741,6 +759,15 @@ namespace Localization {
         public static string ItemLink {
             get {
                 return ResourceManager.GetString("ItemLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 物料维护 的本地化字符串。
+        /// </summary>
+        public static string ItemMaintenance {
+            get {
+                return ResourceManager.GetString("ItemMaintenance", resourceCulture);
             }
         }
         

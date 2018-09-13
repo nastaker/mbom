@@ -1,4 +1,4 @@
-﻿var URL_MAINTENANCELIST = "/MBOM/MaintenancePageList";
+﻿var URL_MAINTENANCELIST = "/MBOM/ChangeMaintenancePageList";
 var URL_MAINTENANCEPAGE = "/MBOM/MenuIndex";
 var URL_MBOM_VER_CREATE = "/MBOM/CreateVer";
 var URL_MBOMRELEASE = "/MBOM/Release";
@@ -17,8 +17,8 @@ $(function () {
         idField: "PRODUCT_CODE",
         toolbar: '#toolbar',
         rowStyler: function (index, row) {
-            if(row["MARK"])
-            return { style: "background-color:#66ccff" };
+            if (row["MARK"])
+                return { style: "background-color:#66ccff" };
         },
         columns: [[
             { field: 'PRODUCT_CODE', title: lang.productCode, width: 150 },
@@ -74,6 +74,9 @@ function createMbomVerConfirm() {
         AlertWin(lang.mbom.selectProductMbomVer);
         return false;
     }
+    if (!$("#frmCreateMbomVer").form("validate")) {
+        return false;
+    }
     var ver = $("#txtVer").textbox("getText");
     var dtef = $("#txtEfDate").textbox("getText");
     var dtex = $("#txtExDate").textbox("getText");
@@ -104,7 +107,7 @@ function publishMaintenance() {
     }
     var param = "?prod_itemcode=" + prod.PRODUCT_ITEM_CODE;
     var title = $.trim(prod.PRODUCT_NAME) + "【" + $.trim(prod.PRODUCT_CODE) + "】";
-    window.parent.openTab(title, URL_MAINTENANCEPAGE + param);    
+    window.parent.openTab(title, URL_MAINTENANCEPAGE + param);
 }
 function publish() {
     var prods = dg.datagrid("getSelections");
@@ -118,7 +121,7 @@ function publish() {
         prod_itemcodes = prod.PRODUCT_ITEM_CODE + "," + prod_itemcodes;
     }
     prod_itemcodes = prod_itemcodes.substr(0, prod_itemcodes.length - 1);
-    $.messager.confirm("提示", "您将发布产品[" + prod_itemcodes+"]，请您确认！", function (r) {
+    $.messager.confirm("提示", "您将发布产品[" + prod_itemcodes + "]，请您确认！", function (r) {
         if (r) {
             var param = {
                 prod_itemcode: prod_itemcodes

@@ -14,7 +14,7 @@ namespace Repository
         [Column(Order = 1)]
         public string PRODUCT_CODE { get; set; }
         public string PRODUCT_NAME { get; set; }
-        public string PRODUCT_ITEMCODE { get; set; }
+        public string PRODUCT_ITEM_CODE { get; set; }
         public string PRODUCT_STATUS { get; set; }
         public string TECH_STATUS { get; set; }
         public string CHECK_STATUS { get; set; }
@@ -22,6 +22,7 @@ namespace Repository
         [Key]
         [Column(Order = 2)]
         public string PBOMVER { get; set; }
+        public string PBOMVER_GUID { get; set; }
         public DateTime DT_PBOMVER { get; set; }
         public string PBOM_CREATE_NAME { get; set; }
         public string MBOMVER { get; set; }

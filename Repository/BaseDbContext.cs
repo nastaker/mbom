@@ -55,14 +55,8 @@
         public virtual DbSet<ViewItemMaintenance> ViewItemMaintenances { get; set; }
         public virtual DbSet<ViewNoOptionalItem> ViewNoOptionalItems { get; set; }
         public virtual DbSet<ViewOptionalItem> ViewOptionalItems { get; set; }
-        public virtual DbSet<ViewPbomChangeProduct> ViewPbomChangeProducts { get; set; }
-        public virtual DbSet<ViewPbomChangeItem> ViewPbomChangeItems { get; set; }
-        public virtual DbSet<ViewPbomChangeItemAll> ViewPbomChangeItemsAll { get; set; }
-        public virtual DbSet<ViewItemChangeDetail> ViewItemChangeDetails { get; set; }
-        public virtual DbSet<ViewCreatePublishDetail> ViewCreatePublishDetails { get; set; }
         public virtual DbSet<ViewItemByType> ViewItemsByType { get; set; }
         public virtual DbSet<ViewItemWithType> ViewItemsWithType { get; set; }
-        public virtual DbSet<ViewProductChange> ViewProductChanges { get; set; }
 
         public virtual DbSet<SysLog> SysLogs { get; set; }
 

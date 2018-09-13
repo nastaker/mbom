@@ -17,13 +17,16 @@ namespace Repository
         [Key]
         [Column(Order = 1)]
         public string PRODUCT_CODE { get; set; }
+        public string PRODUCT_ITEM_CODE { get; set; }
         public string PRODUCT_NAME { get; set; }
         public string PRODUCT_STATUS { get; set; }
         public string CHECK_STATUS { get; set; }
         public string SALE_SET { get; set; }
-        public string VER { get; set; }
-        public DateTime DT_VER { get; set; }
-        public string CREATE_NAME { get; set; }
+        public string PBOMVER { get; set; }
+        public DateTime PBOMVER_DT { get; set; }
+        public string PBOMVER_CREATE_NAME { get; set; }
+        public string PRODVER_NAME { get; set; }
+        public short? PRODVER_STATUS { get; set; }
         public DateTime? PDM_PUB_DATE { get; set; }
         public string PDM_PUB_NAME { get; set; }
         public DateTime? MBOM_PUBED_DATE { get; set; }

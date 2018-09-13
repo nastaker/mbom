@@ -618,4 +618,13 @@
   <data name="CreateVer" xml:space="preserve">
     <value>创建新版本</value>
   </data>
+  <data name="CheckAllCombineChildren" xml:space="preserve">
+    <value>选中下级所有合件</value>
+  </data>
+  <data name="CheckAllVirtualChildren" xml:space="preserve">
+    <value>选中下级所有虚件</value>
+  </data>
+  <data name="ItemMaintenance" xml:space="preserve">
+    <value>物料维护</value>
+  </data>
 </root>

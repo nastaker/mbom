@@ -6,7 +6,7 @@
     },
     {
         "text": lang.maintenance.saleSet,
-        "url": "/Maintenance/SaleSetIndex",
+        "url": "/Maintenance/SellIndex",
         "iconCls": "cubes"
     },
     {

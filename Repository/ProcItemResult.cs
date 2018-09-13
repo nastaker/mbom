@@ -2,6 +2,12 @@ using System;
 
 namespace Repository
 {
+    public class ProcBomVer
+    {
+        public string Ver { get; set; }
+        public string DateTimeCreate { get; set; }
+        public string Desc { get; set; }
+    } 
     public class ProcItemTree
     {
         public int Level { get; set; }
@@ -16,6 +22,7 @@ namespace Repository
         public string Unit { get; set; }
         public bool? IsBorrow { get; set; }
         public bool? IsAssembly { get; set; }
+        public int IsToErp { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
         public int Order { get; set; }
@@ -99,7 +106,7 @@ namespace Repository
     {
         public int ITEMID { get; set; }
         public string NAME { get; set; }
-        public string CODE { get; set; }
+        public string ITEMCODE { get; set; }
     }
 
     public class ProcItemProcess

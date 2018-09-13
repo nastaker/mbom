@@ -100,6 +100,24 @@ $.extend($.fn.validatebox.defaults.rules, {
             return value.length <= param[0]
         },
         message: '最多不可超过 {0} 字'
+    },
+    validDate: {
+        validator: function (value) {
+            var date = $.fn.datebox.defaults.parser(value);
+            var s = $.fn.datebox.defaults.formatter(date);
+            return s == value;
+        },
+        message: '请输入有效日期'
+    },
+    greaterThan: {
+        validator: function (value, param) {
+            var v1 = $(param[0]).datebox('getValue');
+            var d1 = $.fn.datebox.defaults.parser(v1);
+            var d2 = $.fn.datebox.defaults.parser(value);
+            param[0] = v1;
+            return d2 > d1;
+        },
+        message: '日期不得小于 {0}'
     }
 });
 

@@ -53,7 +53,7 @@ function productinfo() {
         AlertWin(lang.mbom.notSelect)
         return false;
     }
-    var code = prod.CN_CODE;
+    var prod_itemcode = prod.CN_ITEM_CODE;
     var title = "产品详情" + prod.CN_ITEM_CODE + " " + prod.CN_NAME;
-    window.parent.openTab(title, URL_PRODUCTDETAIL + "?code=" + code);
+    window.parent.openTab(title, URL_PRODUCTDETAIL + "?prod_itemcode=" + prod_itemcode);
 }

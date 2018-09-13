@@ -1,5 +1,5 @@
-﻿var URL_PRODUCT_PBOMVER_LIST = "/MBOM/ProductPbomVerList";
-var URL_ITEMTREE = "/Item/PbomTree"
+﻿var URL_PRODUCT_MBOMVER_LIST = "/MBOM/ProductMbomVerList";
+var URL_ITEMTREE = "/Item/MbomTree"
 var obj = {
     id: "Id",
     pid: "ParentId",
@@ -15,6 +15,7 @@ var zTreeSetting = {
         showIcon: false,
         txtSelectedEnable: true,
         addDiyDom: addDiyDom,
+        fontCss: getFont,
         dblClickExpand: function (treeId, treeNode) {
             return treeNode.level > 0;
         }
@@ -35,7 +36,7 @@ var zTreeSetting = {
 };
 
 var dgOption = {
-    url: URL_PRODUCT_PBOMVER_LIST,
+    url: URL_PRODUCT_MBOMVER_LIST,
     queryParams: param,
     height: "100%",
     rownumbers: true,
@@ -45,8 +46,8 @@ var dgOption = {
     idField: 'Ver',
     loadFilter: loadFilter,
     columns: [[
-        { field: 'Ver', title: lang.pbom.ver },
-        { field: 'DateTimeCreate', title: lang.pbom.dtver },
+        { field: 'Ver', title: lang.mbom.ver },
+        { field: 'DateTimeCreate', title: lang.mbom.dtver },
         { field: 'Desc', title: lang.pbom.desc }
     ]],
     onSelect: function (index, row) {
@@ -67,11 +68,26 @@ var dgOption = {
     }
 }
 var tree = $("#treeItems");
-var dgMbomVer = $("#dgPbomVer");
+var dgMbomVer = $("#dgMbomVer");
 
 $(function () {
     dgMbomVer.datagrid(dgOption);
 });
+
+function getFont(treeId, node) {
+    if (node["Type"] == "C") {
+        return { color: "blue" };
+    }
+    else if (node["Type"] == "V") {
+        return { color: "red" };
+    }
+    else if (node["Type"] == "U") {
+        return { color: "green" };
+    }
+    else {
+        return {};
+    }
+}
 
 var showCode = false;
 function addDiyDom(treeId, treeNode) {
@@ -107,5 +123,3 @@ function swithDisplay() {
     var treeObj = $.fn.zTree.getZTreeObj("treeItems");
     treeObj.refresh();
 }
-
-

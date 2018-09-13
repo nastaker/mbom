@@ -246,3 +246,4 @@ ModelManifest.xml
 /MBOM/Scripts/dist.js
 /MBOM/.vscode
 *.bundle
+*.lock

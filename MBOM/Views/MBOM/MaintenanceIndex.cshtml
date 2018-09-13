@@ -8,7 +8,7 @@
 }
 @section scripts{
     <script type="text/javascript">
-        var params = { code: "@Request.Params["code"]" };
+        var params = { prod_itemcode: "@Request.Params["prod_itemcode"]" };
     </script>
     <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
     <script src="~/Scripts/jquery.scrollTo.min.js"></script>
@@ -49,11 +49,14 @@
                         @Lang.TableOperation
                     </button>
                     <div class="dropdown-menu" aria-labelledby="btnOPTable">
-                        <a class="dropdown-item" href="javascript:;" onclick="checkAllChildren()">@Lang.CheckAllChildren</a>
-                        <a class="dropdown-item" href="javascript:;" onclick="clearChecked()">@Lang.ClearCheckedAll</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="reloadAllTables()">@Lang.ReloadTable</a>
                         <a id="btnToggleCheckState" class="dropdown-item" href="javascript:;" onclick="toggleCheckStateOnSelect()">@Lang.ToggleCheckStateOnSelect</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:;" onclick="reloadAllTables()">@Lang.ReloadTable</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="clearChecked()">@Lang.ClearCheckedAll</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;" onclick="checkAllChildren()">@Lang.CheckAllChildren</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="checkVirtualChildren()">@Lang.CheckAllVirtualChildren</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="checkCombineChildren()">@Lang.CheckAllCombineChildren</a>
                     </div>
                 </div>
                 <div class="btn-group">

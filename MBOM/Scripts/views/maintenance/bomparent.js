@@ -8,20 +8,21 @@ $(function () {
             "check_callback": true,
             'data': function (obj, callback) {
                 if (obj.id === "#") {
-                    callback([{ text: data["CODE"] + " " + data["NAME"], CODE: data["CODE"], children: true }]);
+                    callback([{ text: data["ITEMCODE"] + " " + data["NAME"], ITEMCODE: data["ITEMCODE"], children: true }]);
                     return;
                 }
                 var param = obj.original;
                 var arr = [];
                 $.post("/Item/FindParent", {
-                    code: param["CODE"]
+                    prod_itemcode: param["ITEMCODE"]
                 }, function (result) {
                     var items = result.data;
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
+                        console.log(item)
                         arr.push({
-                            "text": item["CODE"] + " " + item["NAME"],
-                            "CODE": item["CODE"],
+                            "text": item["ITEMCODE"] + " " + item["NAME"],
+                            "ITEMCODE": item["ITEMCODE"],
                             "NAME": item["NAME"],
                             children: true
                         });

@@ -16,7 +16,7 @@ namespace MBOM.Models
         public bool ItemVirtual { get; set; }
         public bool ItemCombine { get; set; }
     }
-    public class ProductView
+    public class ItemView
     {
         public string Code { get; set; }
         public string ItemCode { get; set; }

@@ -7,7 +7,7 @@
     @Scripts.Render("~/bundles/common")
     <script type="text/javascript">
         var param = {
-            code: "@Request.Params["code"]",
+            prod_itemcode: "@Request.Params["prod_itemcode"]",
             catename: lang.bomlist.selfmade
         };
         var URL_ITEMCATELIST = "/Item/ProductCateList"

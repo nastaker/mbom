@@ -62,7 +62,11 @@ var treegridOption = {
     rownumbers: true,
     lines: true,
     checkbox: function (row) {
-        if (row[COLS.Type] == "产品" || row[COLS.Type] == "VP") {
+        if (row[COLS.Type] == "产品") {
+            return false;
+        } else if (row[COLS.Type] == "VP") {
+            return false;
+        } else if (row[COLS.Type] == "VPC") {
             return false;
         }
         return true;
@@ -82,6 +86,12 @@ var treegridOption = {
                 break;
             case "U":
                 cls = "main-user";
+                break;
+            case "VP":
+                cls = "main-virtual-parent";
+                break;
+            case "VPC":
+                cls = "main-virtual-parent-child";
                 break;
         }
         return { class: cls };
@@ -440,18 +450,18 @@ function itemLinkConfirm() {
         AlertWin("请选择要引用的物料");
         return;
     }
-    var parentcode = pitem[COLS.Code];
+    var itemcode_parent = pitem[COLS.ItemCode];
     //获取引用的ITEMID
-    var code = item["CN_CODE"];
+    var itemcode = item["CN_ITEM_CODE"];
     //获取引用数量
     var quantity = txtQuant.textbox("getValue");
     //提交
     dgItem.datagrid("clearSelections");
     $("#dlgItem").dialog("close");
     postData(URL_ITEM_LINK, {
-        prodcode: params.code,
-        parentcode: parentcode,
-        code: code,
+        prod_itemcode: params.prod_itemcode,
+        itemcode_parent: itemcode_parent,
+        itemcode: itemcode,
         quantity: quantity
     }, function (result) {
         if (result.success) {
@@ -485,7 +495,7 @@ function itemUnlink() {
     $.messager.confirm("提示", "您确认要删除物料"+ itemcode +"的引用吗？", function (r) {
         if (r) {
             postData(URL_ITEM_UNLINK, {
-                prodcode: params.code,
+                prod_itemcode: params.prod_itemcode,
                 guids: guids
             }, function (result) {
                 if (result.success) {
@@ -508,8 +518,8 @@ function showItemDetail() {
     var item = dgItem.datagrid("getSelected");
     if (item == null) { return; }
     var title = "物料详情" + item.CN_ITEM_CODE + " " + item.CN_NAME;
-    var code = item.CN_CODE
-    window.parent.openTab(title, URL_ITEMDETAIL + "?code=" + code);
+    var prod_itemcode = item.CN_ITEM_CODE
+    window.parent.openTab(title, URL_ITEMDETAIL + "?prod_itemcode=" + prod_itemcode);
 }
 /**
 //
@@ -549,7 +559,7 @@ function virtualItemSet() {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_SET, {
-                prodcode: params.code,
+                prod_itemcode: params.prod_itemcode,
                 guid: guid
             }, function (result) {
                 if (result.msg) {
@@ -579,7 +589,7 @@ function virtualItemDrop() {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_VIRTUAL_ITEM_DROP, {
-                prodcode: params.code,
+                prod_itemcode: params.prod_itemcode,
                 guid: guid
             }, function (result) {
                 if (result.msg) {
@@ -620,7 +630,6 @@ function virtualItemLink() {
     //判断是否为子级
     var p_itemcode = $.trim(item[COLS.ItemCode]);
     var c_itemcode = $.trim(citem[COLS.ItemCode]);
-    var parentcode = item[COLS.Code];
     var guid = citem[COLS.Guid];
     if (citem[COLS.Type] != "V") {
         AlertWin(lang.mbom.notSelectDiscreteVirtual);
@@ -629,8 +638,8 @@ function virtualItemLink() {
     $.messager.confirm("提示", "您将在“" + p_itemcode + "”下引用虚件“" + c_itemcode + "”，请您确认！", function (r) {
         if (r) {
             postData(URL_VIRTUAL_ITEM_LINK, {
-                prodcode: params.code,
-                parentcode: parentcode,
+                prod_itemcode: params.prod_itemcode,
+                parentcode: p_itemcode,
                 guid: guid
             }, function (result) {
                 if (result.msg) {
@@ -660,7 +669,7 @@ function virtualItemUnlink() {
     $.messager.confirm("提示", "您将取消虚件“&lt;" + itemcode + "&gt;”的引用，请您确认！", function (r) {
         if (r) {
             postData(URL_VIRTUAL_ITEM_UNLINK, {
-                prodcode: params.code,
+                prod_itemcode: params.prod_itemcode,
                 guid: guid
             }, function (result) {
                 if (result.msg) {
@@ -759,7 +768,7 @@ function dlgCreateCombineItemConfirm() {
     //获取cboCombineItemCode
     var type = $("#cboCombineItemType").val();
     data.type = type;
-    data.prodcode = params.code;
+    data.prod_itemcode = params.prod_itemcode;
     //选中有效，传入data参数
     $("#dlgCreateCombineItem").dialog("close");
     postData(URL_COMPOSITE_ITEM_SET, data,
@@ -797,7 +806,7 @@ function compositeItemDrop() {
         if (r) {
             //选中有效，传入bomid和itemid
             postData(URL_COMPOSITE_ITEM_DROP, {
-                prodcode: params.code,
+                prod_itemcode: params.prod_itemcode,
                 guid: guid
             }, function (result) {
                 if (result.msg) {
@@ -835,7 +844,6 @@ function compositeItemLink() {
     }
     var p_itemcode = $.trim(item[COLS.ItemCode])
     var c_itemcode = $.trim(citem[COLS.ItemCode]);
-    var parentcode = item[COLS.Code];
     var guid = citem[COLS.Guid];
     if (citem[COLS.Type] != "C") {
         AlertWin(lang.mbom.notSelectDiscreteComposite);
@@ -844,8 +852,8 @@ function compositeItemLink() {
     $.messager.confirm("提示", "您将在“" + p_itemcode + "”下引用合件“" + c_itemcode + "”，请您确认！", function (r) {
         if (r) {
             postData(URL_COMPOSITE_ITEM_LINK, {
-                prodcode: params.code,
-                parentcode: parentcode,
+                prod_itemcode: params.prod_itemcode,
+                parentcode: p_itemcode,
                 guid: guid
             }, function (result) {
                 if (result.msg) {
@@ -883,7 +891,7 @@ function compositeItemUnlink() {
     $.messager.confirm("提示", "您将取消合件“" + itemcode + "”的引用，请您确认！", function (r) {
         if (r) {
             postData(URL_COMPOSITE_ITEM_UNLINK, {
-                prodcode: params.code,
+                prod_itemcode: params.prod_itemcode,
                 guid: guid
             }, function (result) {
                 if (result.msg) {
@@ -960,7 +968,8 @@ function toggleCheckStateOnSelect() {
     checkOnSelect = !checkOnSelect;
     $("#btnToggleCheckState").toggleClass("bg-success");
 }
-function checkAllChildren() {
+//选中下级，附加条件
+function checkChildren(filter) {
     var item = tg.treegrid("getSelected");
     if (item == null) {
         AlertWin(lang.mbom.notSelectMain);
@@ -969,9 +978,24 @@ function checkAllChildren() {
     clearChecked();
     var children = item.children;
     for (var i = 0, len = children.length; i < len; i++) {
-        var id = children[i][COLS.Id];
-        tg.treegrid("checkNode", id);
+        var child = children[i];
+        var id = child[COLS.Id];
+        if (!filter || child[COLS.Type] == filter) {
+            tg.treegrid("checkNode", id);
+        }
     }
+}
+//选中所有子级
+function checkAllChildren() {
+    checkChildren();
+}
+//选中下级所有虚件
+function checkVirtualChildren() {
+    checkChildren("V");
+}
+//选中下级所有合件
+function checkCombineChildren() {
+    checkChildren("C");
 }
 //通用方法
 
@@ -1009,6 +1033,13 @@ function buildTree(options) {
                     break;
                 case "C":
                     item.iconCls = "icon-combine";
+                    break;
+                case "U":
+                    item.iconCls = "icon-number2";
+                    break;
+                case "VP":
+                case "VPC":
+                    item.iconCls = "icon-link";
                     break;
             }
             list.push(item);

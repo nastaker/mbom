@@ -28,9 +28,9 @@ namespace MBOM.Controllers
         }
         //基本信息
         [Description("查看产品基本信息")]
-        public ActionResult BaseInfoIndex(string code)
+        public ActionResult BaseInfoIndex(string prod_itemcode)
         {
-            var viewModel = db.ViewProjectProductPboms.Where(m => m.PRODUCT_CODE == code.Trim());
+            var viewModel = db.ViewProjectProductPboms.Where(m => m.PRODUCT_ITEM_CODE == prod_itemcode.Trim());
             if(viewModel.Count() == 0)
             {
                 return HttpNotFound();
@@ -39,69 +39,69 @@ namespace MBOM.Controllers
         }
         //销售件设置
         [Description("查看销售件设置页面")]
-        public ActionResult SaleSetIndex(string code)
+        public ActionResult SellIndex(string prod_itemcode)
         {
             return View();
         }
 
         //工艺BOM
         [Description("查看工艺BOM页面")]
-        public ActionResult PBOMIndex(string code)
+        public ActionResult PBOMIndex(string prod_itemcode)
         {
             return View();
         }
         //制造BOM
         [Description("查看制造BOM页面")]
-        public ActionResult MBOMIndex(string code)
+        public ActionResult MBOMIndex(string prod_itemcode)
         {
             return View();
         }
 
         [Description("查看物料父级引用页面")]
-        public ActionResult BOMParentIndex(string code)
+        public ActionResult BOMParentIndex(string prod_itemcode)
         {
-            var item = db.AppItems.SingleOrDefault(where => where.CN_CODE == code);
+            var item = db.AppItems.SingleOrDefault(where => where.CN_ITEM_CODE == prod_itemcode);
             return View(item);
         }
 
         //物料清单
         [Description("查看物料清单页面")]
-        public ActionResult BOMListIndex(string code)
+        public ActionResult BOMListIndex(string prod_itemcode)
         {
             return View();
         }
 
         //自制件清单
         [Description("查看自制件清单页面")]
-        public ActionResult SelfMadeListIndex(string code)
+        public ActionResult SelfMadeListIndex(string prod_itemcode)
         {
             return View();
         }
 
         //标准件清单
         [Description("查看标准件清单页面")]
-        public ActionResult StandardListIndex(string code)
+        public ActionResult StandardListIndex(string prod_itemcode)
         {
             return View();
         }
 
         //采购件清单
         [Description("查看采购件清单页面")]
-        public ActionResult PurchaseListIndex(string code)
+        public ActionResult PurchaseListIndex(string prod_itemcode)
         {
             return View();
         }
 
         //销售件清单
         [Description("查看销售件清单页面")]
-        public ActionResult SellListIndex(string code)
+        public ActionResult SellListIndex(string prod_itemcode)
         {
             return View();
         }
 
         //工序流程清单
         [Description("查看工序流程清单页面")]
-        public ActionResult ProcessFlowListIndex(string code)
+        public ActionResult ProcessFlowListIndex(string prod_itemcode)
         {
             return View();
         }

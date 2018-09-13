@@ -1,7 +1,6 @@
 ﻿@using Localization;
 @{
     ViewBag.Title = Lang.MBOMList;
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
     @Styles.Render("~/bundles/ztreecss")
@@ -13,13 +12,22 @@
 }
 @section scripts{
     <script type="text/javascript">
-        var param = { code: "@Request.Params["code"]" };
-        var URL_ITEMTREE = "/Item/MbomTree"
+        var param = { prod_itemcode: "@Request.Params["prod_itemcode"]" };
     </script>
     <!-- import js -->
+    @Scripts.Render("~/bundles/common")
     <!-- zTree -->
     @Scripts.Render("~/bundles/ztree")
     <!-- page js -->
-    @Scripts.Render("~/bundles/pbom")
+    @Scripts.Render("~/bundles/mbom")
 }
-<ul id="treeItems" class="ztree"></ul>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',border:false" style="width:300px">
+        <!-- MBOM版本 -->
+        <table id="dgMbomVer"></table>
+    </div>
+    <div data-options="region:'center',border:false" style="border-style: solid;border-width:0 0 0 1px;border-color:#D4D4D4;">
+        <!-- MBOM详细信息 -->
+        <ul id="treeItems" class="ztree"></ul>
+    </div>
+</div>

@@ -32,7 +32,7 @@
             };
             $scope.readonly = !!$location.search().readonly;
             $scope.loadingFiles = true;
-            $http.post(url, { code: $location.search().code, filetype: $location.search().filetype })
+            $http.post(url, { prod_itemcode: $location.search().prod_itemcode, filetype: $location.search().filetype })
             .then(
                 function (response) {
                     $scope.loadingFiles = false;

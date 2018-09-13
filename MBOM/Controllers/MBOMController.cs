@@ -9,7 +9,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using System;
-using Model;
 
 namespace MBOM.Controllers
 {
@@ -23,30 +22,51 @@ namespace MBOM.Controllers
             this.db = db;
         }
         // MBOM 维护数据列表页面
-        [Description("查看MBOM维护数据列表页面")]
+        [Description("查看MBOM产品维护列表页面")]
         public ActionResult Index()
         {
             return View();
         }
-        // MBOM 发布维护菜单列表页面
+
+        [Description("查看MBOM物料维护列表页面")]
+        public ActionResult ComponentIndex()
+        {
+            return View();
+        }
+        // MBOM 变更维护数据列表页面
+        [Description("查看MBOM产品变更维护列表页面")]
+        public ActionResult ChangeIndex()
+        {
+            return View();
+        }
+
         [Description("查看MBOM发布维护菜单列表页面")]
         public ActionResult MenuIndex()
         {
             return View();
         }
+
         [MaintenanceActionFilter]
         [Description("MBOM维护主页面")]
-        public ActionResult MaintenanceIndex(string code)
+        public ActionResult MaintenanceIndex(string prod_itemcode)
         {
             return View();
         }
+
+        [MaintenanceActionFilter]
+        [Description("MBOM维护主页面")]
+        public ActionResult ComponentMaintenanceIndex(string itemcode)
+        {
+            return View();
+        }
+
         [MaintenanceActionFilter]
         [Description("MBOM完整性核查页面")]
-        public ActionResult IntegrityCheckIndex(string code)
+        public ActionResult IntegrityCheckIndex(string prod_itemcode)
         {
             try
             {
-                var prod = Proc.ProcMbomIntegrityCheck(db, code);
+                var prod = Proc.ProcMbomIntegrityCheck(db, prod_itemcode);
                 return View(ResultInfo.Success(prod));
             }
             catch (SqlException ex)
@@ -60,35 +80,26 @@ namespace MBOM.Controllers
         {
             return View();
         }
-        [MaintenanceActionFilter]
-        [Description("产品PBOM详情页面")]
-        public ActionResult ProductPBomDetailIndex(string code)
-        {
-            return View();
-        }
-        [MaintenanceActionFilter]
-        [Description("产品MBOM详情页面")]
-        public ActionResult ProductMBomDetailIndex(string code)
-        {
-            return View();
-        }
+
         [MaintenanceActionFilter]
         [Description("产品详情页面")]
-        public ActionResult ProductDetailIndex(string code)
+        public ActionResult ProductDetailIndex(string prod_itemcode)
         {
             return View();
         }
+
         [MaintenanceActionFilter]
         [Description("产品基本详情页面")]
-        public ActionResult BaseInfoIndex(string code)
+        public ActionResult BaseInfoIndex(string prod_itemcode)
         {
-            var viewModel = db.ViewProjectProductPboms.Where(m => m.PRODUCT_CODE == code.Trim());
+            var viewModel = db.ViewProjectProductPboms.Where(m => m.PRODUCT_ITEM_CODE == prod_itemcode.Trim());
             if (viewModel.Count() == 0)
             {
                 return HttpNotFound();
             }
             return View(viewModel.First());
         }
+
         [Description("选装件列表页面")]
         public ActionResult OptionalItemsIndex()
         {
@@ -117,101 +128,22 @@ namespace MBOM.Controllers
         {
             return View();
         }
-        [Description("PBOM变更（产品）")]
-        public ActionResult PBomChangeProdIndex()
-        {
-            return View();
-        }
-        [Description("PBOM变更（部件）")]
-        public ActionResult PBomChangeItemIndex()
-        {
-            return View();
-        }
-        [Description("MBOM变更维护（部件）")]
-        public ActionResult CreatePublishIndex()
-        {
-            return View();
-        }
-        [Description("MBOM制作及发布物料详情页面")]
-        public ActionResult CreatePublishDetailIndex(string itemcode)
-        {
-            if (string.IsNullOrWhiteSpace(itemcode))
-            {
-                return HttpNotFound();
-            }
-            ViewData["itemcode"] = itemcode;
-            return View();
-        }
         //BOM 信息详情
         [Description("BOM信息详情页面")]
         public ActionResult BomDiffDetailIndex(int bomid)
         {
-            if (bomid == 0)
-            {
-                return HttpNotFound();
-            }
-            var list = (from bomhlink
-                in db.AppBomHlinks
-                        join item
-                        in db.AppItems
-                        on bomhlink.CN_COMPONENT_OBJECT_ID equals item.CN_ID
-                        where
-                        bomhlink.CN_BOM_ID == bomid
-                        select new ProcBomDiff
-                        {
-                            code = item.CN_CODE,
-                            item_code = item.CN_ITEM_CODE,
-                            hlink_id = bomhlink.CN_HLINK_ID,
-                            s_bom_type = bomhlink.CN_S_BOM_TYPE,
-                            bom_id = bomhlink.CN_BOM_ID,
-                            bom_id_pre = bomhlink.CN_BOM_ID_PRE,
-                            displayname = bomhlink.CN_STATUS_PBOM == "Y" ? bomhlink.CN_DISPLAYNAME : null,
-                            mbomname = bomhlink.CN_STATUS_MBOM == "Y" ? bomhlink.CN_DISPLAYNAME : null,
-                            order = bomhlink.CN_ORDER,
-                            quantity = bomhlink.CN_F_QUANTITY,
-                            sys_status = bomhlink.CN_SYS_STATUS,
-                            dt_create = bomhlink.CN_DT_CREATE,
-                            status_pbom = bomhlink.CN_STATUS_PBOM,
-                            status_mbom = bomhlink.CN_STATUS_MBOM,
-                            dt_ef_pbom = bomhlink.CN_DT_EF_PBOM,
-                            dt_ex_pbom = bomhlink.CN_DT_EX_PBOM,
-                            dt_ef_mbom = bomhlink.CN_DT_EF_MBOM,
-                            dt_ex_mbom = bomhlink.CN_DT_EX_MBOM
-                        }).ToList();
-            return View(list);
+            return HttpNotFound();
         }
-
-        [Description("产品变更明细页面")]
-        public ActionResult ProductChangeDetailIndex(string prodcode)
-        {
-            if (string.IsNullOrWhiteSpace(prodcode))
-            {
-                return HttpNotFound();
-            }
-            ViewData["prodcode"] = prodcode;
-            return View();
-        }
-
-        [Description("物料变更明细页面")]
-        public ActionResult ItemChangeDetailIndex(string itemcode)
-        {
-            if (string.IsNullOrWhiteSpace(itemcode))
-            {
-                return HttpNotFound();
-            }
-            ViewData["itemcode"] = itemcode;
-            return View();
-        }
-
+        
         [Description("物料分类标识设置")]
         public ActionResult ItemHlinkSetIndex()
         {
             return View();
         }
         // MBOM 标记
-        public JsonResult Mark(string code)
+        public JsonResult Mark(string prod_itemcode)
         {
-            var prod = db.AppProducts.Where(w => w.CN_CODE == code.TrimEnd()).First();
+            var prod = db.AppProducts.Where(w => w.CN_ITEM_CODE == prod_itemcode.TrimEnd()).First();
             if (prod == null)
             {
                 return Json(ResultInfo.Fail("获取产品信息失败，标记失败"));
@@ -223,20 +155,20 @@ namespace MBOM.Controllers
         }
         // MBOM 创建新版本
         [Description("MBOM 创建新版本")]
-        public JsonResult CreateVer(string prodcode, string ver, DateTime dtef, DateTime dtex, string pbom_ver_guid, string desc)
+        public JsonResult CreateVer(string prod_itemcode, string ver, DateTime dtef, DateTime dtex, string pbomver_guid, string desc)
         {
-            if (String.IsNullOrWhiteSpace(prodcode))
+            if (String.IsNullOrWhiteSpace(prod_itemcode))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
-            if (!Guid.TryParse(pbom_ver_guid, out Guid pvguid))
+            if (!Guid.TryParse(pbomver_guid, out Guid pvguid))
             {
-                pbom_ver_guid = Guid.NewGuid().ToString();
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCreateMbomVer(db, prodcode, ver, dtef, dtex ,pbom_ver_guid, desc, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCreateMbomVer(db, prod_itemcode, ver, dtef, dtex, pbomver_guid, desc, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -247,27 +179,87 @@ namespace MBOM.Controllers
         //
         [MaintenanceActionFilter]
         [Description("产品PBOM版本列表")]
-        public JsonResult ProductPbomVerList(string code)
+        public JsonResult ProductPbomVerList(string prod_itemcode)
         {
-            var list = db.AppPbomVers.Where(p => p.CN_CODE == code).ToList();
-            return Json(ResultInfo.Success(list));
+            if (String.IsNullOrWhiteSpace(prod_itemcode))
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
+            ResultInfo rt = null;
+            try
+            {
+                rt = ResultInfo.Success(Proc.ProcGetPbomVerList(db, prod_itemcode));
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
         }
         [MaintenanceActionFilter]
         [Description("产品MBOM版本列表")]
-        public JsonResult ProductMbomVerList(string code)
+        public JsonResult ProductMbomVerList(string prod_itemcode)
         {
-            var list = db.AppMbomVers.Where(p => p.CN_CODE == code).ToList();
-            return Json(ResultInfo.Success(list));
+            if (String.IsNullOrWhiteSpace(prod_itemcode))
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
+            ResultInfo rt = null;
+            try
+            {
+                rt = ResultInfo.Success(Proc.ProcGetMbomVerList(db, prod_itemcode));
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
         }
         // MBOM 数据
         [MaintenanceActionFilter]
         [Description("产品MBOM数据")]
-        public JsonResult List(string code)
+        public JsonResult List(string prod_itemcode)
         {
             ResultInfo rt = null;
             try
             {
-                var list = Proc.ProcGetMbomList(db, code);
+                var list = Proc.ProcGetMbomList(db, prod_itemcode);
+                rt = ResultInfo.Success(list);
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
+        }
+
+        // MBOM 单物料数据
+        [MaintenanceActionFilter]
+        [Description("物料MBOM单层数据")]
+        public JsonResult ItemList(string itemcode)
+        {
+            ResultInfo rt = null;
+            try
+            {
+                var list = Proc.ProcGetItemList(db, itemcode);
+                rt = ResultInfo.Success(list);
+            }
+            catch (SqlException ex)
+            {
+                rt = ResultInfo.Fail(ex.Message);
+            }
+            return Json(rt);
+        }
+
+        // MBOM 单物料数据发布
+        [MaintenanceActionFilter]
+        [Description("物料MBOM单层数据发布")]
+        public JsonResult ItemPublish(string itemcode)
+        {
+            ResultInfo rt = null;
+            try
+            {
+                var list = Proc.ProcItemPublish(db, itemcode, LoginUserInfo.GetUserInfo());
                 rt = ResultInfo.Success(list);
             }
             catch (SqlException ex)
@@ -278,16 +270,16 @@ namespace MBOM.Controllers
         }
 
         [Description("引用自定义物料")]
-        public JsonResult ItemLink(string prodcode, string parentcode, string code, float quantity)
+        public JsonResult ItemLink(string prod_itemcode, string itemcode_parent, string itemcode, float quantity)
         {
-            if (string.IsNullOrWhiteSpace(parentcode) || string.IsNullOrWhiteSpace(code) || quantity < 0f)
+            if (string.IsNullOrWhiteSpace(itemcode_parent) || string.IsNullOrWhiteSpace(itemcode) || quantity < 0f)
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcItemLink(db, prodcode, parentcode, code, quantity, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemLink(db, prod_itemcode, itemcode_parent, itemcode, quantity, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -297,12 +289,12 @@ namespace MBOM.Controllers
         }
 
         [Description("删除引用的自定义物料")]
-        public JsonResult ItemUnlink(string prodcode, string guids)
+        public JsonResult ItemUnlink(string prod_itemcode, string guids)
         {
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcItemUnLink(db, prodcode, guids, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcItemUnLink(db, prod_itemcode, guids, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -337,16 +329,16 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("设置为虚件")]
-        public JsonResult VirtualItemSet(string prodcode,string guid)
+        public JsonResult VirtualItemSet(string prod_itemcode, string guid)
         {
-            if (string.IsNullOrWhiteSpace(prodcode) || !Guid.TryParse(guid, out Guid g))
+            if (string.IsNullOrWhiteSpace(prod_itemcode) || !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemSet(db, prodcode, g, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemSet(db, prod_itemcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -362,16 +354,16 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("取消虚件设置")]
-        public JsonResult VirtualItemDrop(string prodcode, string guid)
+        public JsonResult VirtualItemDrop(string prod_itemcode, string guid)
         {
-            if (string.IsNullOrWhiteSpace(prodcode) || !Guid.TryParse(guid, out Guid g))
+            if (string.IsNullOrWhiteSpace(prod_itemcode) || !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemDrop(db, prodcode, g, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemDrop(db, prod_itemcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -384,13 +376,13 @@ namespace MBOM.Controllers
         /// 引用虚件
         /// </summary>
         /// <param name="parentcode"></param>
-        /// <param name="prodcode"></param>
+        /// <param name="prod_itemcode"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
         [Description("引用虚件")]
-        public JsonResult VirtualItemLink(string prodcode, string parentcode, string guid)
+        public JsonResult VirtualItemLink(string prod_itemcode, string parentcode, string guid)
         {
-            if (string.IsNullOrWhiteSpace(prodcode) ||
+            if (string.IsNullOrWhiteSpace(prod_itemcode) ||
                 string.IsNullOrWhiteSpace(parentcode) ||
                 !Guid.TryParse(guid, out Guid g)
                 )
@@ -400,7 +392,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemLink(db, prodcode, parentcode, g, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemLink(db, prod_itemcode, parentcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -415,9 +407,9 @@ namespace MBOM.Controllers
         /// <param name="itemid"></param>
         /// <returns></returns>
         [Description("取消引用虚件")]
-        public JsonResult VirtualItemUnlink(string prodcode, string guid)
+        public JsonResult VirtualItemUnlink(string prod_itemcode, string guid)
         {
-            if (string.IsNullOrWhiteSpace(prodcode) ||
+            if (string.IsNullOrWhiteSpace(prod_itemcode) ||
                 !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
@@ -425,7 +417,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, prodcode, g, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcVirtualItemUnlink(db, prod_itemcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -437,9 +429,9 @@ namespace MBOM.Controllers
 
         #region 合件操作
         [Description("设置合件")]
-        public JsonResult CompositeItemSet(string prodcode, string guids, string type)
+        public JsonResult CompositeItemSet(string prod_itemcode, string guids, string type)
         {
-            if (string.IsNullOrWhiteSpace(prodcode) ||
+            if (string.IsNullOrWhiteSpace(prod_itemcode) ||
                 string.IsNullOrWhiteSpace(guids))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
@@ -447,7 +439,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, prodcode, guids, type, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, prod_itemcode, guids, type, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -456,9 +448,9 @@ namespace MBOM.Controllers
             return Json(rt);
         }
         [Description("取消设置合件")]
-        public JsonResult CompositeItemDrop(string prodcode, string guid)
+        public JsonResult CompositeItemDrop(string prod_itemcode, string guid)
         {
-            if (string.IsNullOrWhiteSpace(prodcode) ||
+            if (string.IsNullOrWhiteSpace(prod_itemcode) ||
                 !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
@@ -466,7 +458,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemDrop(db, prodcode, g, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemDrop(db, prod_itemcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -476,9 +468,9 @@ namespace MBOM.Controllers
         }
 
         [Description("引用合件")]
-        public JsonResult CompositeItemLink(string prodcode, string parentcode, string guid)
+        public JsonResult CompositeItemLink(string prod_itemcode, string parentcode, string guid)
         {
-            if (string.IsNullOrWhiteSpace(prodcode) || 
+            if (string.IsNullOrWhiteSpace(prod_itemcode) ||
                 string.IsNullOrWhiteSpace(parentcode) ||
                 !Guid.TryParse(guid, out Guid g))
             {
@@ -487,7 +479,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemLink(db, prodcode, parentcode, g, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemLink(db, prod_itemcode, parentcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -497,9 +489,9 @@ namespace MBOM.Controllers
         }
 
         [Description("取消引用合件")]
-        public JsonResult CompositeItemUnlink(string prodcode, string guid)
+        public JsonResult CompositeItemUnlink(string prod_itemcode, string guid)
         {
-            if (string.IsNullOrWhiteSpace(prodcode) ||
+            if (string.IsNullOrWhiteSpace(prod_itemcode) ||
                 !Guid.TryParse(guid, out Guid g))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
@@ -507,7 +499,7 @@ namespace MBOM.Controllers
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemUnlink(db, prodcode, g, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemUnlink(db, prod_itemcode, g, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -517,38 +509,18 @@ namespace MBOM.Controllers
         }
         #endregion
 
-        //修改合件名称
-        [Description("修改合件名称")]
-        public JsonResult EditCombineName(int itemid, string name)
-        {
-            if (itemid == 0 || string.IsNullOrWhiteSpace(name))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            ResultInfo rt = null;
-            try
-            {
-                rt = ResultInfo.Parse(Proc.ProcEditCombineName(db, itemid, name));
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-
         //MBOM 发布
         [Description("MBOM发布")]
-        public JsonResult Release(string code)
+        public JsonResult Release(string prod_itemcode)
         {
-            if (string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(prod_itemcode))
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcMbomRelease(db, code, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcMbomRelease(db, prod_itemcode, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -557,114 +529,6 @@ namespace MBOM.Controllers
             return Json(rt);
         }
 
-        [Description("MBOM创建和发布，添加子件（有关联）")]
-        public JsonResult BomHlinkChildAdd(string parentitemcode, int itemid, int hlinkid, string bywhat)
-        {
-            if (itemid == 0 || hlinkid == 0 || string.IsNullOrWhiteSpace(parentitemcode) || string.IsNullOrWhiteSpace(bywhat))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            ResultInfo rt = null;
-            try
-            {
-                rt = ResultInfo.Parse(Proc.ProcBomHlinkChildAdd(db, parentitemcode, itemid, hlinkid, bywhat, LoginUserInfo.GetUserInfo()));
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-
-        [Description("MBOM创建和发布，添加子件（独立添加）")]
-        public JsonResult BomHlinkAdd(string parentitemcode, int itemid, string bywhat)
-        {
-            if (itemid == 0 || string.IsNullOrWhiteSpace(parentitemcode) || string.IsNullOrWhiteSpace(bywhat))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            ResultInfo rt = null;
-            try
-            {
-                rt = ResultInfo.Parse(Proc.ProcBomHlinkAdd(db, parentitemcode, itemid, bywhat, LoginUserInfo.GetUserInfo()));
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-
-        public JsonResult ApplyBomChange(int hlinkid, string bywhat)
-        {
-            if (hlinkid == 0 || string.IsNullOrWhiteSpace(bywhat))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            ResultInfo rt = null;
-            try
-            {
-                rt = ResultInfo.Parse(Proc.ProcApplyBomChange(db, hlinkid, bywhat, LoginUserInfo.GetUserInfo()));
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-
-        [Description("MBOM创建和发布，删除子件")]
-        public JsonResult DisableBomHlink(int hlinkid)
-        {
-            if (hlinkid == 0)
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            ResultInfo rt = null;
-            try
-            {
-                rt = ResultInfo.Parse(Proc.ProcDisableBomHlink(db, hlinkid, LoginUserInfo.GetUserInfo()));
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-
-        [Description("MBOM工序设置")]
-        public JsonResult ItemDeductionSet(string bomhids,int pvhid)
-        {
-            if (pvhid == 0 || string.IsNullOrWhiteSpace(bomhids))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            ResultInfo rt = null;
-            try
-            {
-                rt = ResultInfo.Parse(Proc.ProcItemDeductionSet(db, bomhids, pvhid, LoginUserInfo.GetUserInfo()));
-            }
-            catch (SqlException ex)
-            {
-                rt = ResultInfo.Fail(ex.Message);
-            }
-            return Json(rt);
-        }
-
-        [Description("产品BOM所有子BOM_HLINK")]
-        public JsonResult BomHlinkList(string itemcode)
-        {
-            if (string.IsNullOrWhiteSpace(itemcode))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            var list = db.AppBomHlinks
-                .Join(db.AppBoms.Where(b=>b.CN_ITEM_CODE == itemcode), a => a.CN_BOM_ID, b => b.CN_ID, (a,b) => a)
-                .Where(a => a.CN_SYS_STATUS == "" || a.CN_SYS_STATUS == "Y"
-                        && (a.CN_ISDELETE == null || a.CN_ISDELETE != true))
-                .ToList();
-            return Json(ResultInfo.Success(list));
-        }
         [Description("产品BOM看板列表（分页）")]
         public JsonResult BomPageList(AppBomView view, int page = 1, int rows = 10)
         {
@@ -730,7 +594,7 @@ namespace MBOM.Controllers
         }
         // MBOM 产品看板
         [Description("MBOM产品看板列表（分页）")]
-        public JsonResult ProductBillboardsPageList(ProductView view, int page = 1, int rows = 10)
+        public JsonResult ProductBillboardsPageList(ItemView view, int page = 1, int rows = 10)
         {
             var query = db.ViewProductBillboardses.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.Code))
@@ -752,7 +616,7 @@ namespace MBOM.Controllers
         }
         // MBOM 带有工序的物料看板
         [Description("MBOM带有工序的物料列表（分页）")]
-        public JsonResult ItemWithProcessPageList(ProductView view, int page = 1, int rows = 10)
+        public JsonResult ItemWithProcessPageList(ItemView view, int page = 1, int rows = 10)
         {
             var query = db.ViewItemWithProcesses.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.Code))
@@ -778,7 +642,7 @@ namespace MBOM.Controllers
             var query = db.ViewMbomMaintenances.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
             {
-                if(view.PRODUCT_CODE.IndexOf(",") > 0)
+                if (view.PRODUCT_CODE.IndexOf(",") > 0)
                 {
                     string[] prodcodes = view.PRODUCT_CODE.Split(',');
                     query = query.Where(obj => prodcodes.Contains(obj.PRODUCT_CODE));
@@ -796,80 +660,52 @@ namespace MBOM.Controllers
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
-        [Description("查看PBOM变更的产品列表（分页）")]
-        public JsonResult PBOMChangeProdPageList(ViewPbomChangeProduct view, int page = 1, int rows = 10)
+
+        [Description("MBOM物料维护列表（分页）")]
+        public JsonResult ComponentMaintenancePageList(ItemView view, int page = 1, int rows = 10)
         {
-            var query = db.ViewPbomChangeProducts.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(view.CN_PRODUCT_CODE))
+            var query = db.AppItems.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(view.Code))
             {
-                query = query.Where(obj => obj.CN_PRODUCT_CODE.Contains(view.CN_PRODUCT_CODE));
+                query = query.Where(obj => obj.CN_CODE.Contains(view.Code));
             }
-            if (!string.IsNullOrWhiteSpace(view.CN_NAME))
+            if (!string.IsNullOrWhiteSpace(view.ItemCode))
             {
-                query = query.Where(obj => obj.CN_NAME.Contains(view.CN_NAME));
+                query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.ItemCode));
             }
-            var projs = query.OrderBy(obj => obj.CN_PRODUCT_CODE).Skip((page - 1) * rows).Take(rows);
+            if (!string.IsNullOrWhiteSpace(view.Name))
+            {
+                query = query.Where(obj => obj.CN_NAME.Contains(view.Name));
+            }
+            var list = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = projs, total = count }));
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
 
-        [Description("查看PBOM变更的物料列表（分页）")]
-        public JsonResult PBOMChangeItemPageList(ViewPbomChangeItem view, int page = 1, int rows = 10)
+        [Description("MBOM产品变更维护列表（分页）")]
+        public JsonResult ChangeMaintenancePageList(ViewMbomMaintenance view, int page = 1, int rows = 10)
         {
-            var query = db.ViewPbomChangeItems.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(view.CN_ITEM_CODE))
+            var query = db.ViewMbomMaintenances.Where(v => v.MBOMVER == null || v.MBOMVER.Trim().Length == 0);
+            if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
             {
-                query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.CN_ITEM_CODE));
+                if (view.PRODUCT_CODE.IndexOf(",") > 0)
+                {
+                    string[] prodcodes = view.PRODUCT_CODE.Split(',');
+                    query = query.Where(obj => prodcodes.Contains(obj.PRODUCT_CODE));
+                }
+                else
+                {
+                    query = query.Where(obj => obj.PRODUCT_CODE.Contains(view.PRODUCT_CODE));
+                }
             }
-            var projs = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows);
+            if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
+            {
+                query = query.Where(obj => obj.PROJECT_NAME.Contains(view.PROJECT_NAME));
+            }
+            var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = projs, total = count }));
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
-
-        public JsonResult PBOMChangeItemAllPageList(ViewPbomChangeItemAll view, int page = 1, int rows = 10)
-        {
-            var query = db.ViewPbomChangeItemsAll.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(view.CN_ITEM_CODE))
-            {
-                query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.CN_ITEM_CODE));
-            }
-            var projs = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows);
-            var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = projs, total = count }));
-        }
-
-        [Description("查看物料的PBOM变更列表")]
-        public JsonResult ItemChangeDetailList(string itemcode)
-        {
-            if (string.IsNullOrWhiteSpace(itemcode))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            var list = db.ViewItemChangeDetails.Where(where=> where.itemcode == itemcode).ToList();
-            return Json(ResultInfo.Success(list));
-        }
-
-        [Description("查看MBOM制作及发布的物料详情列表")]
-        public JsonResult CreatePublishDetailList(string itemcode, short istoerp = -1, string changesign = null, string impactdo = null)
-        {
-            if (string.IsNullOrWhiteSpace(itemcode))
-            {
-                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
-            }
-            var query = db.ViewCreatePublishDetails.Where(where => where.pitemcode == itemcode);
-            if (istoerp > -1)
-            {
-                query = query.Where(where => where.istoerp == istoerp);
-            }
-            if (changesign != null && changesign != "null")
-            {
-                query = query.Where(where => where.changesign == changesign);
-            }
-            if (impactdo != null && impactdo != "null")
-            {
-                query = query.Where(where => where.impactdo == impactdo);
-            }
-            return Json(ResultInfo.Success(query));
-        }
+        
     }
 }

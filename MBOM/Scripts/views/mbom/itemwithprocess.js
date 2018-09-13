@@ -105,10 +105,10 @@ function openProcessWindow() {
         AlertWin(lang.mbom.notSelect);
         return;
     }
-    var code = data["CN_CODE"];
-    if (code) {
+    var prod_itemcode = data["CN_ITEM_CODE"];
+    if (prod_itemcode) {
         winProcess.window("open");
-        winProcess.window("setTitle", code);
-        dgProcessVer.datagrid("load", { code: code });
+        winProcess.window("setTitle", prod_itemcode);
+        dgProcessVer.datagrid("load", { prod_itemcode: prod_itemcode });
     }
 }

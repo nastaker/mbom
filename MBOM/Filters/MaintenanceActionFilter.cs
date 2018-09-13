@@ -8,8 +8,9 @@ namespace MBOM.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var code = filterContext.RequestContext.HttpContext.Request.Params["code"];
-            if (string.IsNullOrWhiteSpace(code))
+            var prod_itemcode = filterContext.RequestContext.HttpContext.Request.Params["prod_itemcode"];
+            var itemcode = filterContext.RequestContext.HttpContext.Request.Params["itemcode"];
+            if (string.IsNullOrWhiteSpace(prod_itemcode) && string.IsNullOrWhiteSpace(itemcode))
             {
                 filterContext.Result = new HttpNotFoundResult();
             }
