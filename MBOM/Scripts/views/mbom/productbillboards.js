@@ -5,29 +5,69 @@ $(function () {
     dg.datagrid({
         url: URL_PAGELIST,
         height: "100%",
-        fitColumns: true,
         striped: true,
         rownumbers: true,
         singleSelect: true,
         pagination: true,
         border: false,
-        idField: "CN_ID",
+        idField: "CN_ITEM_CODE",
         toolbar: '#toolbar',
         columns: [[
-            { field: "CN_CODE", title: "代号", width: 15 },
-            { field: "CN_ITEM_CODE", title: "物料编码", width: 15 },
-            { field: "CN_NAME", title: "物料名称", width: 20 },
-            { field: "CN_STATUS", title: "状态", align: "center", width: 10 },
+            { field: "CN_CODE", title: "代号", width: 150 },
+            { field: "CN_ITEM_CODE", title: "物料编码", width: 150 },
+            { field: "CN_NAME", title: "物料名称", width: 150 },
+            { field: "CN_STATUS", title: "状态", align: "center", width: 100 },
             {
-                field: "PDM_RELEASE_DATE", title: "PDM发布日期", align: "center", width: 15,
+                field: "CN_DT_PDM", title: "PDM日期", align: "center", width: 100,
                 formatter: function (value, row, index) {
-                    return ToJavaScriptDate(value);
+                    if (value) {
+                        return ToJavaScriptDate(value);
+                    }
+                    return "";
                 }
             },
             {
-                field: "TOERP_DATE", title: "ERP发布日期", align: "center", width: 15,
+                field: "CN_DT_SELL", title: "销售件日期", align: "center", width: 100,
                 formatter: function (value, row, index) {
-                    return ToJavaScriptDate(value);
+                    if (value) {
+                        return ToJavaScriptDate(value);
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "CN_DT_PRE", title: "预转批日期", align: "center", width: 100,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return ToJavaScriptDate(value);
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "CN_DT_TOERP", title: "ERP发布日期", align: "center", width: 100,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        var d = ToJavaScriptDate(value);
+                        if (d != "2100-01-01") {
+                            return d;
+                        }
+                        return "";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "CN_IS_TOERP", title: "ERP状态", align: "center", width: 80,
+                formatter: function (value, row, index) {
+                    if (value == 0) {
+                        return "未发布";
+                    } else if (value == 1) {
+                        return "发布中";
+                    } else if (value == 2) {
+                        return "已发布";
+                    }
+                    return "";
                 }
             }
         ]],
@@ -44,6 +84,18 @@ $(function () {
 function query() {
     var param = $("#queryFrm").serializeJSON();
     dg.datagrid("load", param);
+}
+
+
+function clearDate() {
+    $("#txtDtBeginPDM").datebox("setText", "2000-01-01");
+    $("#txtDtBeginPRE").datebox("setText", "2000-01-01");
+    $("#txtDtEndPDM").datebox("setText", "2100-01-01");
+    $("#txtDtEndPRE").datebox("setText", "2100-01-01");
+    $("#txtDtBeginPDM").datebox("setValue", "2000-01-01");
+    $("#txtDtBeginPRE").datebox("setValue", "2000-01-01");
+    $("#txtDtEndPDM").datebox("setValue", "2100-01-01");
+    $("#txtDtEndPRE").datebox("setValue", "2100-01-01");
 }
 
 function productinfo() {

@@ -27,7 +27,6 @@ namespace MBOM
             CreateMap<AppItem, ProcProcessItem>()
                 .ForMember("ITEMID", opts => opts.MapFrom("CN_ID"));
             CreateMap<AppProcessVer, AppProcessVerView>();
-            CreateMap<AppBom, AppBomView>();
             CreateMap<AppProcessVerHlink, ProcItemProcess>();
             RecognizePrefixes("CN_");
         }
@@ -51,9 +50,6 @@ namespace MBOM
             CreateMap<SysRoleRight, SysRoleRightView>().ReverseMap();
             CreateMap<SysUserRole, SysUserRoleView>().ReverseMap();
             CreateMap<UserProductLibrary, UserProductLibraryView>().ReverseMap();
-            CreateMap<AppItem, ViewItemMaintenance>()
-                .ForMember(dest => dest.CN_DT_CREATE, opt => opt.Ignore())
-                .ReverseMap();
             CreateMap<SysAttachment, FileResponse>()
                 .ForMember("id", m => m.MapFrom("ItemId"))
                 .ForMember("name", m => m.MapFrom("FileName"))

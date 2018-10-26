@@ -12,10 +12,14 @@
             <td>@Model.PROJECT_NAME</td>
         </tr>
         <tr>
+            <th>@Lang.ProductName：</th>
+            <td colspan="3">@Model.PRODUCT_NAME</td>
+        </tr>
+        <tr>
             <th>@Lang.ProductCode：</th>
             <td>@Model.PRODUCT_CODE</td>
-            <th>@Lang.ProductName：</th>
-            <td>@Model.PRODUCT_CODE</td>
+            <th>@Lang.ItemCode：</th>
+            <td>@Model.PRODUCT_ITEM_CODE</td>
         </tr>
         <tr>
             <th>@Lang.CurrentTableDate3：</th>
@@ -29,14 +33,14 @@
             <th>@Lang.TableDesigner3：</th>
             <td>@Model.PBOMVER_CREATE_NAME</td>
         </tr>
-        <tr class="active">
+        <tr>
             <td colspan="4"></td>
         </tr>
         <tr>
             <th>@Lang.IsSaleSet：</th>
             <td colspan="3">@Model.SALE_SET</td>
         </tr>
-        <tr class="active">
+        <tr>
             <td colspan="4"></td>
         </tr>
         <tr>
@@ -44,102 +48,74 @@
                 节点日志：
             </th>
         </tr>
-        <tr
-        @if (string.IsNullOrWhiteSpace(Model.PDM_PUB_NAME))
-        {
-            <text>
-            class="active" 
-            </text>
-        }>
+        <tr @if (Model.DT_PDM == null) { <text>
+            class="active"
+            </text> }>
             <th>
-                PDM发布日期：
+                PDM接口日期：
             </th>
-            <td>@Model.PDM_PUB_DATE</td>
-            <th>
-                发布者：
-            </th>
-            <td>@Model.PDM_PUB_NAME</td>
+            <td colspan="3">@Model.DT_PDM</td>
         </tr>
-        <tr
-        @if (string.IsNullOrWhiteSpace(Model.SALESET_NAME))
-        {
-            <text>
-            class="active" 
-            </text>
-        }>
+        <tr @if (Model.DT_SELL == null) { <text>
+            class="active"
+            </text> }>
             <th>
                 销售件设置日期：
             </th>
-            <td>@Model.SALESET_DATE</td>
+            <td>@Model.DT_SELL</td>
             <th>
                 设置者：
             </th>
-            <td>@Model.SALESET_NAME</td>
+            <td>@Model.USER_SELL</td>
         </tr>
-        <tr
-        @if (string.IsNullOrWhiteSpace(Model.TRANSFERING_NAME))
-        {
-            <text>
-            class="active" 
-            </text>
-        }>
+        <tr @if (Model.DT_PRE == null) { <text>
+            class="active"
+            </text> }>
             <th>
-                转批发起日期：
+                预转批发起日期：
             </th>
-            <td>@Model.TRANSFERING_DATE</td>
+            <td>@Model.DT_PRE</td>
             <th>
                 发起者：
             </th>
-            <td>@Model.TRANSFERING_NAME</td>
+            <td>@Model.USER_PRE</td>
         </tr>
-        <tr
-        @if (string.IsNullOrWhiteSpace(Model.MBOM_PUBING_NAME))
-        {
-            <text>
-            class="active" 
-            </text>
-        }>
+        <tr @if (Model.DT_MBOM == null) { <text>
+            class="active"
+            </text> }>
             <th>
-                MBOM转批发布日期：
+                MBOM发布日期：
             </th>
-            <td>@Model.MBOM_PUBING_DATE</td>
+            <td>@Model.DT_MBOM</td>
             <th>
                 发布者：
             </th>
-            <td>@Model.MBOM_PUBING_NAME</td>
+            <td>@Model.USER_MBOM</td>
         </tr>
-        <tr
-        @if (string.IsNullOrWhiteSpace(Model.MBOM_PUBED_NAME))
-        {
-            <text>
-            class="active" 
-            </text>
-        }>
+        <tr @if (Model.DT_DATA_INTE == null) { <text>
+            class="active"
+            </text> }>
             <th>
-                MBOM转批发布完成日期：
+                转批中间表日期：
             </th>
-            <td>@Model.MBOM_PUBED_DATE</td>
-            <th>
-                发布者：
-            </th>
-            <td>@Model.MBOM_PUBED_NAME</td>
+            <td colspan="3">@Model.DT_DATA_INTE</td>
         </tr>
-        <tr
-        @if (string.IsNullOrWhiteSpace(Model.MBOM_TRANED_NAME))
-        {
-            <text>
-            class="active" 
-            </text>
-        }>
+        <tr @if (Model.DT_DATA_MDM == null) { <text>
+            class="active"
+            </text> }>
             <th>
-                已转批日期：
+                转批MDM日期：
             </th>
-            <td>@Model.MBOM_TRANED_DATE</td>
-        <th>
-            设置者：
-        </th>
-        <td>@Model.MBOM_TRANED_NAME</td>
-    </tr>
+            <td colspan="3">@Model.DT_DATA_MDM</td>
+        </tr>
+        <tr @if (Model.DT_DATA_ERP == null) { <text>
+            class="active"
+            </text> }>
+            <th>
+                转批ERP日期：
+            </th>
+            <td colspan="3">@Model.DT_DATA_ERP</td>
+        </tr>
     </table>
 </div>
 

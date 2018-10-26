@@ -32,7 +32,7 @@ namespace MBOM.Controllers
         public JsonResult List()
         {
             var userinfo = LoginUserInfo.GetUserInfo();
-            List<UserProductLibrary> list = db.UserProductLibraries.ToList();
+            List<UserProductLibrary> list = db.UserProductLibraries.Where(a=> a.ParentId == null).ToList();
             if (list.Count == 0)
             {
                 list.Add(new UserProductLibrary

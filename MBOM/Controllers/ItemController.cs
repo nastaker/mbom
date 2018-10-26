@@ -20,7 +20,6 @@ namespace MBOM.Controllers
     public class ItemController : Controller
     {
         const string PATH_ATTACHMENTS_FOLDER = "~/Upload/Attachments/";
-
         private BaseDbContext db;
 
         public ItemController(BaseDbContext db)
@@ -28,147 +27,13 @@ namespace MBOM.Controllers
             this.db = db;
         }
 
-        [Description("查看产品基本信息")]
-        public JsonResult BaseInfo(string prod_itemcode)
-        {
-            var viewModel = db.ViewProjectProductPboms.Where(m => m.PRODUCT_ITEM_CODE == prod_itemcode.Trim());
-            if (viewModel.Count() == 0)
-            {
-                return Json(ResultInfo.Fail("未查询到产品信息。"));
-            }
-            return Json(ResultInfo.Success(viewModel.First()));
-        }
-
-        [Description("添加或修改自定义物料")]
-        public ActionResult Edit(ViewItemMaintenance view, int[] CN_TYPE)
-        {
-            var msg = string.Empty;
-            var user = LoginUserInfo.GetUserInfo();
-            var now = DateTime.Now;
-            AppItem item = null;
-            if (view.CN_ID == 0)
-            {
-                item = Mapper.Map<AppItem>(view);
-                if (string.IsNullOrWhiteSpace(view.CN_ITEM_CODE))
-                {
-                    return Json(ResultInfo.Fail("物料编码不能为空！"));
-                }
-                //添加
-                item.CN_CODE = view.CN_ITEM_CODE;
-                item.CN_DESIGN_PHASE = "";
-                item.CN_PRODUCT_BASE = "";
-                item.CN_SYS_STATUS = "Y";
-                item.CN_IS_TOERP = 0;
-                item.CN_CREATE_BY = user.UserId;
-                item.CN_CREATE_LOGIN = user.Login;
-                item.CN_CREATE_NAME = user.Name;
-
-                var bom = new AppBom
-                {
-                    CN_CODE = item.CN_CODE,
-                    CN_NAME = item.CN_NAME,
-                    CN_ITEM_CODE = item.CN_ITEM_CODE,
-                    CN_TYPE = "",
-                    CN_DT_CREATE = now,
-                    CN_CREATE_BY = user.UserId,
-                    CN_CREATE_LOGIN = user.Login,
-                    CN_CREATE_NAME = user.Name,
-                    CN_SYS_STATUS = "Y"
-                };
-
-                db.AppItems.Add(item);
-                db.AppBoms.Add(bom);
-
-                db.SaveChanges();
-                msg = "添加成功";
-            }
-            else
-            {
-                //修改
-                item = db.AppItems.SingleOrDefault(where => where.CN_ID == view.CN_ID);
-                if (item == null)
-                {
-                    return Json(ResultInfo.Fail("未查询到物料信息，请联系管理员。"));
-                }
-                var bomh = db.AppBomHlinks.Where(w => w.CN_COMPONENT_OBJECT_ID == view.CN_ID).ToList();
-                if (bomh != null && bomh.Count > 0)
-                {
-                    return Json(ResultInfo.Fail("物料已经被引用，无法进行修改。"));
-                }
-                if (item.CN_IS_TOERP > 0)
-                {
-                    return Json(ResultInfo.Fail("物料已发布，无法进行修改。"));
-                }
-                item.CN_NAME = view.CN_NAME;
-                item.CN_UNIT = view.CN_UNIT;
-                item.CN_WEIGHT = view.CN_WEIGHT;
-                var list = db.AppItemHLinks.Where(w => w.CN_ID == item.CN_ID && (w.CN_COMPONENT_OBJECT_ID == 2 || w.CN_COMPONENT_OBJECT_ID == 3 || w.CN_COMPONENT_OBJECT_ID == 13)).ToList();
-                if(list != null && list.Count > 0)
-                {
-                    db.AppItemHLinks.RemoveRange(list);
-                }
-                msg = "修改成功";
-            }
-            List<AppItemHLink> typelist = new List<AppItemHLink>();
-            foreach (int type in CN_TYPE)
-            {
-                typelist.Add(new AppItemHLink
-                {
-                    CN_ID = item.CN_ID,
-                    CN_COMPONENT_CLASS_ID = 105,
-                    CN_COMPONENT_OBJECT_ID = type,
-                    CN_DT_CREATE = now,
-                    CN_DT_EFFECTIVE = now,
-                    CN_DT_EXPIRY = DateTime.Parse("2100-01-01"),
-                    CN_DT_TOERP = DateTime.Parse("2100-01-01"),
-                    CN_UNIT = item.CN_UNIT,
-                    CN_DISPLAYNAME = "",
-                    CN_SYS_STATUS = "Y",
-                    CN_CREATE_BY = user.UserId,
-                    CN_CREATE_LOGIN = user.Login,
-                    CN_CREATE_NAME = user.Name
-                });
-            }
-            db.AppItemHLinks.AddRange(typelist);
-            db.SaveChanges();
-            return Json(ResultInfo.Success(msg));
-        }
-
-        [Description("删除手工添加的自定义物料")]
-        public ActionResult Delete(int id)
-        {
-            var item = db.AppItems.SingleOrDefault(where => where.CN_ID == id);
-            if (item == null)
-            {
-                return Json(ResultInfo.Fail("物料不存在，或已经被删除，请刷新后重试。"));
-            }
-            // TODO：检测是否被引用
-            if (item == null)
-            {
-                return Json(ResultInfo.Fail("物料已经被引用，无法进行删除。"));
-            }
-
-            if (item.CN_PDM_CLS_ID != 0)
-            {
-                return Json(ResultInfo.Fail("物料非自定义添加的物料，无法删除！"));
-            }
-            if (item.CN_IS_TOERP == 1)
-            {
-                return Json(ResultInfo.Fail("物料已发布到ERP系统，无法删除！"));
-            }
-            db.AppItemHLinks.RemoveRange(db.AppItemHLinks.Where(where => where.CN_ID == item.CN_ID));
-            db.AppBoms.RemoveRange(db.AppBoms.Where(where => where.CN_CODE == item.CN_CODE));
-            db.AppItems.Remove(item);
-            db.SaveChanges();
-            return Json(ResultInfo.Success("已成功删除自定义物料"));
-        }
-
-        // GET: Item
         [Description("查看[ITEM基本信息页面]")]
         public ActionResult BaseInfoIndex(string prod_itemcode)
         {
 
             var item = db.AppItems.SingleOrDefault(where => where.CN_ITEM_CODE == prod_itemcode);
+            var itemh = db.AppItemHLinks.Where(w => item.CN_ID == w.CN_ID).ToList();
+            ViewData["ItemHlinks"] = itemh;
             return View(item);
         }
 
@@ -198,6 +63,72 @@ namespace MBOM.Controllers
         public ActionResult MaintenanceIndex()
         {
             return View();
+        }
+
+        [Description("查看产品基本信息")]
+        public JsonResult BaseInfo(string prod_itemcode)
+        {
+            var model = db.ViewProjectProductPboms.SingleOrDefault(m => m.PRODUCT_ITEM_CODE == prod_itemcode.Trim());
+            if (model == null)
+            {
+                return Json(ResultInfo.Fail("未查询到产品信息。"));
+            }
+            return Json(ResultInfo.Success(model));
+        }
+
+        [Description("添加或修改自定义物料")]
+        public ActionResult Edit(ViewItemMaintenance view)
+        {
+            var userinfo = LoginUserInfo.GetUserInfo();
+            ResultInfo resultInfo;
+            try
+            {
+                resultInfo = ResultInfo.Parse(
+                    Proc.ProcUpdateItem(
+                        db, 
+                        view.CN_ITEM_CODE, 
+                        view.CN_NAME, 
+                        view.CN_WEIGHT, 
+                        view.CN_UNIT, 
+                        view.CN_PRODUCTLINECODE, 
+                        view.CN_TYPEIDS, 
+                        userinfo)
+                    );
+            }
+            catch (Exception ex)
+            {
+                resultInfo = ResultInfo.Fail(ex.Message);
+            }
+            return Json(resultInfo);
+        }
+
+        [Description("删除手工添加的自定义物料")]
+        public ActionResult Delete(int id)
+        {
+            var item = db.AppItems.SingleOrDefault(where => where.CN_ID == id);
+            if (item == null)
+            {
+                return Json(ResultInfo.Fail("物料不存在，或已经被删除，请刷新后重试。"));
+            }
+            // TODO：检测是否被引用
+            if (item == null)
+            {
+                return Json(ResultInfo.Fail("物料已经被引用，无法进行删除。"));
+            }
+
+            if (item.CN_PDM_CLS_ID != 0)
+            {
+                return Json(ResultInfo.Fail("物料非自定义添加的物料，无法删除！"));
+            }
+            if (item.CN_IS_TOERP > 0)
+            {
+                return Json(ResultInfo.Fail("物料已发布到ERP系统，无法删除！"));
+            }
+            db.AppItemHLinks.RemoveRange(db.AppItemHLinks.Where(where => where.CN_ID == item.CN_ID));
+            db.AppBoms.RemoveRange(db.AppBoms.Where(where => where.CN_CODE == item.CN_CODE));
+            db.AppItems.Remove(item);
+            db.SaveChanges();
+            return Json(ResultInfo.Success("已成功删除自定义物料"));
         }
 
         [HttpPost]
@@ -252,6 +183,13 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success());
         }
 
+        [Description("获取产品VER列表")]
+        public JsonResult ProductVerList(string prod_itemcode)
+        {
+            var list = db.AppProductVers.Where(pv => pv.CN_PRODUCT_ITEMCODE == prod_itemcode);
+            return Json(ResultInfo.Success(list));
+        }
+
         [Description("获取物料计量单位列表")]
         public JsonResult UnitList()
         {
@@ -259,13 +197,25 @@ namespace MBOM.Controllers
             return Json(ResultInfo.Success(list));
         }
 
-        [Description("获取物料类型列表表")]
-        public JsonResult TypeList()
+        [Description("获取物料类型列表")]
+        public JsonResult TypeList(string[] names)
         {
-            var list = db.DictItemTypes.Where(where =>
-            where.CN_NAME.Contains("自制") ||
-            where.CN_NAME.Contains("MBOM合件") ||
-            where.CN_NAME.Contains("采购"));
+            List<DictItemType> itemTypes = null;
+            if(names != null && names.Length > 0)
+            {
+                itemTypes = db.DictItemTypes.Where(where => names.Contains(where.CN_NAME)).ToList();
+            }
+            else
+            {
+                itemTypes = db.DictItemTypes.ToList();
+            }
+            return Json(ResultInfo.Success(itemTypes));
+        }
+
+        [Description("获取生产线信息列表")]
+        public JsonResult ProductLineList()
+        {
+            var list = db.DictProductLines.ToList();
             return Json(ResultInfo.Success(list));
         }
 
@@ -273,6 +223,13 @@ namespace MBOM.Controllers
         public JsonResult SellList(string prod_itemcode)
         {
             var list = Proc.ProcGetProductSellInfo(db, prod_itemcode);
+            return Json(ResultInfo.Success(list));
+        }
+
+        [Description("按版本查看销售件")]
+        public JsonResult SellListByVer(string prod_itemcode, Guid guid)
+        {
+            var list = Proc.ProcGetProductSellInfo(db, prod_itemcode, guid);
             return Json(ResultInfo.Success(list));
         }
 
@@ -581,7 +538,19 @@ namespace MBOM.Controllers
             {
                 query = query.Where(obj => obj.CN_NAME.Contains(view.CN_NAME));
             }
-            var list = query.OrderByDescending(obj => obj.CN_DT_CREATE).Skip((page - 1) * rows).Take(rows).ToList();
+            if (!string.IsNullOrWhiteSpace(view.CN_TYPENAMES) && view.CN_TYPENAMES != "无")
+            {
+                query = query.Where(obj => obj.CN_TYPENAMES.Contains(view.CN_TYPENAMES));
+            }
+            if (view.CN_TYPENAMES == "无")
+            {
+                query = query.Where(obj => obj.CN_TYPENAMES == null || obj.CN_TYPENAMES.Trim() == string.Empty);
+            }
+            if(view.CN_IS_TOERP > -1)
+            {
+                query = query.Where(obj => obj.CN_IS_TOERP == view.CN_IS_TOERP);
+            }
+            var list = query.OrderByDescending(obj => obj.CN_DT_TOERP).Skip((page - 1) * rows).Take(rows).ToList();
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = list, total = count }));
         }

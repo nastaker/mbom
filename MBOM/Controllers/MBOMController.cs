@@ -33,12 +33,6 @@ namespace MBOM.Controllers
         {
             return View();
         }
-        // MBOM 变更维护数据列表页面
-        [Description("查看MBOM产品变更维护列表页面")]
-        public ActionResult ChangeIndex()
-        {
-            return View();
-        }
 
         [Description("查看MBOM发布维护菜单列表页面")]
         public ActionResult MenuIndex()
@@ -130,9 +124,10 @@ namespace MBOM.Controllers
         }
         //BOM 信息详情
         [Description("BOM信息详情页面")]
-        public ActionResult BomDiffDetailIndex(int bomid)
+        public ActionResult BomDiffDetailIndex(string itemcode)
         {
-            return HttpNotFound();
+            var list = db.AppMbomHlinks.Where(mh => mh.CN_ITEMCODE_PARENT == itemcode).ToList();
+            return View(list);
         }
         
         [Description("物料分类标识设置")]
@@ -429,17 +424,18 @@ namespace MBOM.Controllers
 
         #region 合件操作
         [Description("设置合件")]
-        public JsonResult CompositeItemSet(string prod_itemcode, string guids, string type)
+        public JsonResult CompositeItemSet(string prod_itemcode, string guids, string type, string itemtype)
         {
             if (string.IsNullOrWhiteSpace(prod_itemcode) ||
-                string.IsNullOrWhiteSpace(guids))
+                string.IsNullOrWhiteSpace(guids) ||
+                string.IsNullOrWhiteSpace(itemtype) )
             {
                 return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
             }
             ResultInfo rt = null;
             try
             {
-                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, prod_itemcode, guids, type, LoginUserInfo.GetUserInfo()));
+                rt = ResultInfo.Parse(Proc.ProcCompositeItemSet(db, prod_itemcode, guids, type, itemtype, LoginUserInfo.GetUserInfo()));
             }
             catch (SqlException ex)
             {
@@ -530,73 +526,104 @@ namespace MBOM.Controllers
         }
 
         [Description("产品BOM看板列表（分页）")]
-        public JsonResult BomPageList(AppBomView view, int page = 1, int rows = 10)
+        public JsonResult BomPageList(AppBom view, int page = 1, int rows = 10)
         {
             var query = db.AppBoms.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(view.code))
+            if (!string.IsNullOrWhiteSpace(view.CN_CODE))
             {
-                query = query.Where(obj => obj.CN_CODE.Contains(view.code));
+                query = query.Where(obj => obj.CN_CODE.Contains(view.CN_CODE));
             }
-            if (!string.IsNullOrWhiteSpace(view.item_code))
+            if (!string.IsNullOrWhiteSpace(view.CN_ITEM_CODE))
             {
-                query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.item_code));
+                query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.CN_ITEM_CODE));
             }
-            if (!string.IsNullOrWhiteSpace(view.name))
+            if (!string.IsNullOrWhiteSpace(view.CN_NAME))
             {
-                query = query.Where(obj => obj.CN_NAME.Contains(view.name));
+                query = query.Where(obj => obj.CN_NAME.Contains(view.CN_NAME));
             }
-            var list = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            var dtoModels = Mapper.Map<List<AppBomView>>(list);
+            var list = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows).ToList();
             var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = dtoModels, total = count }));
+            return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
         // MBOM 物料看板
         [Description("MBOM物料看板列表（分页）")]
-        public JsonResult MaterialBillboardsPageList(MaterialView view, int page = 1, int rows = 10)
+        public JsonResult MaterialBillboardsPageList(ViewMaterialBillboards view, int page = 1, int rows = 10)
         {
-            var query = db.ViewMaterialBillboardses.AsQueryable();
+            var query = db.ViewMaterialBillboards.AsQueryable();
+            if(view.ErpStatus > -1)
+            {
+                query = query.Where(obj => obj.ErpStatus == view.ErpStatus);
+            }
             if (!string.IsNullOrWhiteSpace(view.Code))
             {
-                query = query.Where(obj => obj.CN_CODE.Contains(view.Code));
+                query = query.Where(obj => obj.Code.Contains(view.Code));
             }
             if (!string.IsNullOrWhiteSpace(view.ItemCode))
             {
-                query = query.Where(obj => obj.CN_ITEM_CODE.Contains(view.ItemCode));
+                query = query.Where(obj => obj.ItemCode.Contains(view.ItemCode));
             }
             if (!string.IsNullOrWhiteSpace(view.ItemName))
             {
-                query = query.Where(obj => obj.CN_NAME.Contains(view.ItemName));
+                query = query.Where(obj => obj.ItemName.Contains(view.ItemName));
             }
-            if (view.ItemSale)
+            if (view.Sell)
             {
-                query = query.Where(obj => obj.销售件 != null);
+                query = query.Where(obj => obj.Sell);
             }
-            if (view.ItemPurchase)
+            if (view.Purchase)
             {
-                query = query.Where(obj => obj.采购件 != null);
+                query = query.Where(obj => obj.Purchase);
             }
-            if (view.ItemSelfmade)
+            if (view.SelfMade)
             {
-                query = query.Where(obj => obj.自制件 != null);
+                query = query.Where(obj => obj.SelfMade);
             }
-            if (view.ItemCombine)
+            if (view.Standard)
             {
-                query = query.Where(obj => obj.MBOM合件 != null);
+                query = query.Where(obj => obj.Standard);
             }
-            if (view.ItemVirtual)
+            if (view.RawMaterial)
             {
-                query = query.Where(obj => obj.MBOM虚拟件 != null);
+                query = query.Where(obj => obj.RawMaterial);
             }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
+            if (view.Package)
+            {
+                query = query.Where(obj => obj.Package);
+            }
+            if (view.Process)
+            {
+                query = query.Where(obj => obj.Process);
+            }
+            if (view.Assembly)
+            {
+                query = query.Where(obj => obj.Assembly);
+            }
+            if (view.DEOptional)
+            {
+                query = query.Where(obj => obj.DEOptional);
+            }
+            if (view.PBOMOptional)
+            {
+                query = query.Where(obj => obj.PBOMOptional);
+            }
+            if (view.MBOMOptional)
+            {
+                query = query.Where(obj => obj.MBOMOptional);
+            }
+            var projs = query.OrderBy(obj => obj.ItemCode).Skip((page - 1) * rows).Take(rows);
             //var list = Mapper.Map<List<MaterialView>>(projs);
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
         // MBOM 产品看板
         [Description("MBOM产品看板列表（分页）")]
-        public JsonResult ProductBillboardsPageList(ItemView view, int page = 1, int rows = 10)
+        public JsonResult ProductBillboardsPageList(
+            ItemView view,
+            DateTime? PdmBeginDate, DateTime? PdmEndDate,
+            DateTime? PreBeginDate, DateTime? PreEndDate,
+            int page = 1, int rows = 10)
         {
-            var query = db.ViewProductBillboardses.AsQueryable();
+            var query = db.AppProducts.AsQueryable();
             if (!string.IsNullOrWhiteSpace(view.Code))
             {
                 query = query.Where(obj => obj.CN_CODE.Contains(view.Code));
@@ -609,8 +636,27 @@ namespace MBOM.Controllers
             {
                 query = query.Where(obj => obj.CN_NAME.Contains(view.Name));
             }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
-            //var list = Mapper.Map<List<MaterialView>>(projs);
+            if(view.IsToErp > -1)
+            {
+                query = query.Where(obj => obj.CN_IS_TOERP == view.IsToErp);
+            }
+            if (PdmBeginDate != null && PdmBeginDate.Value.Year > 2000)
+            {
+                query = query.Where(obj => obj.CN_DT_PDM >= PdmBeginDate);
+            }
+            if (PdmEndDate != null && PdmEndDate.Value.Year < 2100)
+            {
+                query = query.Where(obj => obj.CN_DT_PDM <= PdmEndDate);
+            }
+            if (PreBeginDate != null && PreBeginDate.Value.Year > 2000)
+            {
+                query = query.Where(obj => obj.CN_DT_PRE >= PreBeginDate);
+            }
+            if (PreEndDate != null && PreEndDate.Value.Year < 2100)
+            {
+                query = query.Where(obj => obj.CN_DT_PRE <= PreEndDate);
+            }
+            var projs = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows).ToList();
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
         }
@@ -631,7 +677,7 @@ namespace MBOM.Controllers
             {
                 query = query.Where(obj => obj.CN_NAME.Contains(view.Name));
             }
-            var projs = query.OrderBy(obj => obj.CN_CODE).Skip((page - 1) * rows).Take(rows);
+            var projs = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows);
             //var list = Mapper.Map<List<MaterialView>>(projs);
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = projs, total = count }));
@@ -652,11 +698,15 @@ namespace MBOM.Controllers
                     query = query.Where(obj => obj.PRODUCT_CODE.Contains(view.PRODUCT_CODE));
                 }
             }
+            if(view.MBOMVER_IS_TOERP != -1)
+            {
+                query = query.Where(obj => obj.MBOMVER_IS_TOERP == view.MBOMVER_IS_TOERP);
+            }
             if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
             {
                 query = query.Where(obj => obj.PROJECT_NAME.Contains(view.PROJECT_NAME));
             }
-            var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
+            var list = query.OrderBy(obj => obj.PRODUCT_ITEM_CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = list, total = count }));
         }
@@ -678,31 +728,6 @@ namespace MBOM.Controllers
                 query = query.Where(obj => obj.CN_NAME.Contains(view.Name));
             }
             var list = query.OrderBy(obj => obj.CN_ITEM_CODE).Skip((page - 1) * rows).Take(rows);
-            var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
-        }
-
-        [Description("MBOM产品变更维护列表（分页）")]
-        public JsonResult ChangeMaintenancePageList(ViewMbomMaintenance view, int page = 1, int rows = 10)
-        {
-            var query = db.ViewMbomMaintenances.Where(v => v.MBOMVER == null || v.MBOMVER.Trim().Length == 0);
-            if (!string.IsNullOrWhiteSpace(view.PRODUCT_CODE))
-            {
-                if (view.PRODUCT_CODE.IndexOf(",") > 0)
-                {
-                    string[] prodcodes = view.PRODUCT_CODE.Split(',');
-                    query = query.Where(obj => prodcodes.Contains(obj.PRODUCT_CODE));
-                }
-                else
-                {
-                    query = query.Where(obj => obj.PRODUCT_CODE.Contains(view.PRODUCT_CODE));
-                }
-            }
-            if (!string.IsNullOrWhiteSpace(view.PROJECT_NAME))
-            {
-                query = query.Where(obj => obj.PROJECT_NAME.Contains(view.PROJECT_NAME));
-            }
-            var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();
             return Json(ResultInfo.Success(new { rows = list, total = count }));
         }

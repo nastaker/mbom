@@ -36,21 +36,19 @@ namespace MBOM
             bundles.Add(new ScriptBundle("~/bundles/pbom")
 				.Include("~/Scripts/views/maintenance/pbom.js"));
             bundles.Add(new ScriptBundle("~/bundles/mbom")
-				.Include("~/Scripts/views/maintenance/mbom.js"));
+                .Include("~/Scripts/views/maintenance/mbom.js"));
+            bundles.Add(new ScriptBundle("~/bundles/bom")
+                .Include("~/Scripts/views/maintenance/bom.js"));
             bundles.Add(new ScriptBundle("~/bundles/bomlist")
 				.Include("~/Scripts/views/maintenance/bomlist.js"));
+            bundles.Add(new ScriptBundle("~/bundles/bomlist2")
+                .Include("~/Scripts/views/maintenance/bomlist2.js"));
             bundles.Add(new ScriptBundle("~/bundles/processflow")
 				.Include("~/Scripts/views/maintenance/processflow.js"));
-            bundles.Add(new ScriptBundle("~/bundles/purchase")
-				.Include("~/Scripts/views/maintenance/purchase.js"));
             bundles.Add(new ScriptBundle("~/bundles/saleset")
 				.Include("~/Scripts/views/maintenance/saleset.js"));
-            bundles.Add(new ScriptBundle("~/bundles/selfmade")
-				.Include("~/Scripts/views/maintenance/selfmade.js"));
             bundles.Add(new ScriptBundle("~/bundles/sell")
 				.Include("~/Scripts/views/maintenance/sell.js"));
-            bundles.Add(new ScriptBundle("~/bundles/standard")
-				.Include("~/Scripts/views/maintenance/standard.js"));
             bundles.Add(new ScriptBundle("~/bundles/menudata1")
                 .Include("~/Scripts/views/maintenance/menuData.js"));
             //

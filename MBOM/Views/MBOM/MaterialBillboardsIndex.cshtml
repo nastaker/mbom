@@ -4,9 +4,6 @@
 }
 @section styles{
     <style type="text/css">
-        input[type="radio"], input[type="checkbox"] {
-            margin: 2px 0 0;
-        }
     </style>
 }
 @section scripts{
@@ -17,32 +14,46 @@
 <div class="easyui-layout" data-options="fit:true">
     <div id="toolbar" style="padding:5px;">
         <form id="queryFrm">
-            <div>
-                <span>@Lang.Code：</span>
-                <input type="text" name="Code" class="easyui-textbox" />
-                <span>@Lang.ItemCode：</span>
-                <input type="text" name="ItemCode" class="easyui-textbox" />
-                <span>@Lang.ItemName：</span>
-                <input type="text" name="ItemName" class="easyui-textbox" />
-            </div>
-            <div style="margin-top: 5px">
+            <span>@Lang.Code：</span>
+            <input type="text" name="Code" class="easyui-textbox" style="width: 120px;" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="ItemCode" class="easyui-textbox" style="width: 120px;" />
+            <span>@Lang.ItemName：</span>
+            <input type="text" name="ItemName" class="easyui-textbox" style="width: 120px;" />
+            <span>@Lang.ItemErpStatus</span>
+            <select name="ErpStatus" class="easyui-combobox" data-options="editable:false">
+                <option value="-1" selected>-请选择-</option>
+                <option value="0">未发布</option>
+                <option value="1">发布中</option>
+                <option value="2">已发布</option>
+            </select>
+            <div style="margin-top:5px;">
                 <label class="checkbox-inline">
-                    <input type="checkbox" name="ItemSale" value="true" />@Lang.ItemSale
+                    <input type="checkbox" name="Sell" value="true" />@Lang.ItemSale
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" name="ItemPurchase" value="true" />@Lang.ItemPurchase
+                    <input type="checkbox" name="Pruchase" value="true" />@Lang.ItemPurchase
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" name="ItemSelfmade" value="true" />@Lang.ItemSelfmade
+                    <input type="checkbox" name="SelfMade" value="true" />@Lang.ItemSelfmade
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" name="ItemVirtual" value="true" />@Lang.ItemVirtual
+                    <input type="checkbox" name="Standard" value="true" />@Lang.ItemStandard
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" name="ItemCombine" value="true" />@Lang.ItemCombine
+                    <input type="checkbox" name="RawMaterial" value="true" />@Lang.ItemRawMaterial
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="Package" value="true" />@Lang.ItemPackage
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="Process" value="true" />@Lang.ItemProcess
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="Assembly" value="true" />@Lang.ItemAssembly
                 </label>
                 <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
-                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="showDetail()" data-options="iconCls:'icon-search'">@Lang.ItemBomDetail</a>
+                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="showDetail()" data-options="iconCls:'icon-search'">@Lang.ItemDetail</a>
             </div>
         </form>
     </div>

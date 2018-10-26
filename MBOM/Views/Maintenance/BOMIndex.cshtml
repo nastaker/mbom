@@ -1,0 +1,58 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.BOMList;
+}
+@section styles{
+    @Styles.Render("~/bundles/ztreecss")
+    <style type="text/css">
+        .tree-icon, .tree-file .tree-icon.tree-file {
+            display: none;
+        }
+        .tree-icon, .tree-folder .tree-icon.tree-folder.tree-folder-open.tree-folder-closed {
+            display: none;
+        }
+    </style>
+}
+@section scripts{
+    <script type="text/javascript">
+        var param = { prod_itemcode: "@Request.Params["prod_itemcode"]" };
+    @if (ViewBag.IsPbom)
+    {
+        <text>
+        var ISPBOM = true;
+        var URL_PRODUCT_BOMVER_LIST = "/MBOM/ProductPbomVerList";
+        var URL_ITEMTREE = "/Item/PbomTree";
+        var bomVer = "PBOM版本";
+        var bomDtVer = "PBOM版本日期";
+        </text>
+    }
+    else
+    {
+        <text>
+        var ISPBOM = false;
+        var URL_PRODUCT_BOMVER_LIST = "/MBOM/ProductMbomVerList";
+        var URL_ITEMTREE = "/Item/MbomTree";
+        var bomVer = "MBOM版本";
+        var bomDtVer = "MBOM版本日期";
+        </text>
+    }
+    </script>
+    <!-- import js -->
+    @Scripts.Render("~/bundles/common")
+    <!-- page js -->
+    @Scripts.Render("~/bundles/bom")
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',border:false" style="width:200px">
+        <!-- BOM版本 -->
+        <div id="dgBomVerToolbar" style="padding:5px">
+            <input class="easyui-datebox" id="txtEfDate" data-options="width:100,value:'new Date().format(\'yyyy-MM-dd\')',validType:'validDate',required:true" >
+            <a href="javascript:;" class="easyui-linkbutton" onclick="viewByDate()" data-options="iconCls:'icon-search'">查看</a>
+        </div>
+        <table id="dgBomVer"></table>
+    </div>
+    <div data-options="region:'center',border:false" style="border-style: solid;border-width:0 0 0 1px;border-color:#D4D4D4;">
+        <!-- BOM详细信息 -->
+        <table id="tgItems"></table>
+    </div>
+</div>

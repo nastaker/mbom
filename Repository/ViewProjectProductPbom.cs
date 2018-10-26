@@ -23,22 +23,23 @@ namespace Repository
         public string CHECK_STATUS { get; set; }
         public string SALE_SET { get; set; }
         public string PBOMVER { get; set; }
-        public DateTime PBOMVER_DT { get; set; }
+        public DateTime? PBOMVER_DT { get; set; }
         public string PBOMVER_CREATE_NAME { get; set; }
         public string PRODVER_NAME { get; set; }
         public short? PRODVER_STATUS { get; set; }
-        public DateTime? PDM_PUB_DATE { get; set; }
-        public string PDM_PUB_NAME { get; set; }
-        public DateTime? MBOM_PUBED_DATE { get; set; }
-        public string MBOM_PUBED_NAME { get; set; }
-        public DateTime? MBOM_PUBING_DATE { get; set; }
-        public string MBOM_PUBING_NAME { get; set; }
-        public DateTime? MBOM_TRANED_DATE { get; set; }
-        public string MBOM_TRANED_NAME { get; set; }
-        public DateTime? TRANSFERING_DATE { get; set; }
-        public string TRANSFERING_NAME { get; set; }
-        public DateTime? SALESET_DATE { get; set; }
-        public string SALESET_NAME { get; set; }
+
+        public DateTime? DT_PDM { get; set; }
+        public string USER_SELL { get; set; }
+        public DateTime? DT_SELL { get; set; }
+        public string USER_PRE { get; set; }
+        public DateTime? DT_PRE { get; set; }
+        public string USER_MAINTAIN { get; set; }
+        public DateTime? DT_MAINTAIN { get; set; }
+        public string USER_MBOM { get; set; }
+        public DateTime? DT_MBOM { get; set; }
+        public DateTime? DT_DATA_INTE { get; set; }
+        public DateTime? DT_DATA_MDM { get; set; }
+        public DateTime? DT_DATA_ERP { get; set; }
 
     }
 }

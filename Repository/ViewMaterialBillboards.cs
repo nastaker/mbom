@@ -1,76 +1,28 @@
 namespace Repository
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("VIEW_MATERIALBILLBOARDS")]
     public partial class ViewMaterialBillboards
     {
+        public string Code { get; set; }
         [Key]
-        [Column(Order = 0)]
-        [StringLength(24)]
-        public string CN_CODE { get; set; }
-
-        [StringLength(18)]
-        public string CN_ITEM_CODE { get; set; }
-
-        [Key]
-        [Column(Order = 1)]
-        [StringLength(24)]
-        public string CN_NAME { get; set; }
-
-        public short? CN_IS_TOERP { get; set; }
-
-        [Key]
-        [Column(Order = 2)]
-        public DateTime CN_DT_EFFECTIVE_ERP { get; set; }
-
-        [StringLength(10)]
-        public string 销售件 { get; set; }
-
-        [StringLength(10)]
-        public string 采购件 { get; set; }
-
-        [StringLength(10)]
-        public string 自制件 { get; set; }
-
-        [StringLength(10)]
-        public string 标准件 { get; set; }
-
-        [StringLength(10)]
-        public string 原材料 { get; set; }
-
-        [StringLength(10)]
-        public string 包装件 { get; set; }
-
-        [StringLength(10)]
-        public string 工艺件 { get; set; }
-
-        [StringLength(10)]
-        public string PBOM虚拟件 { get; set; }
-
-        [StringLength(10)]
-        public string PBOM合件 { get; set; }
-
-        [StringLength(10)]
-        public string DE选装件 { get; set; }
-
-        [StringLength(10)]
-        public string PBOM选装件 { get; set; }
-
-        [StringLength(10)]
-        public string MBOM虚拟件 { get; set; }
-
-        [StringLength(10)]
-        public string MBOM合件 { get; set; }
-
-        [StringLength(10)]
-        public string MBOM选装件 { get; set; }
-
-        [StringLength(10)]
-        public string 装配件 { get; set; }
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
+        public short? ErpStatus { get; set; }
+        public DateTime ErpDate { get; set; }
+        public bool Sell { get; set; }
+        public bool Purchase { get; set; }
+        public bool SelfMade { get; set; }
+        public bool Standard { get; set; }
+        public bool RawMaterial { get; set; }
+        public bool Package { get; set; }
+        public bool Process { get; set; }
+        public bool Assembly { get; set; }
+        public bool DEOptional { get; set; }
+        public bool PBOMOptional { get; set; }
+        public bool MBOMOptional { get; set; }
     }
 }

@@ -766,18 +766,14 @@
     <Content Include="Scripts\views\item\menuData.js" />
     <Content Include="Scripts\views\lang.js" />
     <Content Include="Scripts\views\maintenance\bomparent.js" />
-    <Content Include="Scripts\views\maintenance\mbom.js" />
-    <Content Include="Scripts\views\maintenance\pbom.js" />
-    <Content Include="Scripts\views\maintenance\purchase.js" />
+    <Content Include="Scripts\views\maintenance\bom.js" />
+    <Content Include="Scripts\views\maintenance\bomlist2.js" />
     <Content Include="Scripts\views\maintenance\processflow.js" />
     <Content Include="Scripts\views\maintenance\sell.js" />
-    <Content Include="Scripts\views\maintenance\standard.js" />
-    <Content Include="Scripts\views\maintenance\selfmade.js" />
     <Content Include="Scripts\views\maintenance\bomlist.js" />
     <Content Include="Scripts\views\maintenance\menuData.js" />
     <Content Include="Scripts\views\maintenance\saleset.js" />
     <Content Include="Scripts\views\mbom\bomdiff.js" />
-    <Content Include="Scripts\views\mbom\changeindex.js" />
     <Content Include="Scripts\views\mbom\ComponentIndex.js" />
     <Content Include="Scripts\views\mbom\itemhlinksetindex.js" />
     <Content Include="Scripts\views\mbom\itemwithprocess.js" />
@@ -793,7 +789,7 @@
     <Content Include="Scripts\views\menu.js" />
     <Content Include="Scripts\views\mbom\menuData.js" />
     <Content Include="Scripts\views\roleright.js" />
-    <Content Include="Scripts\views\transfer\index.js" />
+    <Content Include="Scripts\views\maintenance\transfer.js" />
     <Content Include="Scripts\ztree\jquery.ztree.all.js" />
     <Content Include="Scripts\ztree\jquery.ztree.all.min.js" />
     <Content Include="Scripts\ztree\jquery.ztree.core.js" />
@@ -820,18 +816,14 @@
     <Content Include="Scripts\easyui\themes\material\images\Thumbs.db" />
     <Content Include="Views\RoleRight\Index.cshtml" />
     <Content Include="Views\UserRole\Index.cshtml" />
-    <Content Include="Views\Transfer\InitiateIndex.cshtml" />
+    <Content Include="Views\Maintenance\TransferIndex.cshtml" />
     <None Include="Properties\PublishProfiles\FILE_SYSTEM.pubxml" />
     <Content Include="Views\Maintenance\Index.cshtml" />
     <Content Include="Views\Maintenance\BaseInfoIndex.cshtml" />
     <Content Include="Views\Maintenance\SellIndex.cshtml" />
     <Content Include="Views\Maintenance\IntegrityCheckIndex.cshtml" />
-    <Content Include="Views\Maintenance\PBOMIndex.cshtml" />
     <Content Include="Views\Maintenance\BOMListIndex.cshtml" />
-    <Content Include="Views\Maintenance\SelfMadeListIndex.cshtml" />
-    <Content Include="Views\Maintenance\StandardListIndex.cshtml" />
-    <Content Include="Views\Maintenance\PurchaseListIndex.cshtml" />
-    <Content Include="Views\Maintenance\SellListIndex.cshtml" />
+    <Content Include="Views\Maintenance\BomList2Index.cshtml" />
     <Content Include="Views\Maintenance\ProcessFlowListIndex.cshtml" />
     <Content Include="Views\MBOM\Index.cshtml" />
     <Content Include="Views\MBOM\MenuIndex.cshtml" />
@@ -844,10 +836,7 @@
     <Content Include="Views\Menu\Index.cshtml" />
     <Content Include="Views\MBOM\ProductBillboardsIndex.cshtml" />
     <Content Include="Views\MBOM\ItemWithProcessIndex.cshtml" />
-    <Content Include="Views\Transfer\WorkingIndex.cshtml" />
-    <Content Include="Views\Transfer\DoneIndex.cshtml" />
     <Content Include="Views\Shared\_EasyUILayout.cshtml" />
-    <Content Include="Views\Maintenance\MBOMIndex.cshtml" />
     <Content Include="Views\MBOM\ChangeMaintenanceIndex.cshtml" />
     <Content Include="Views\MBOM\BaseInfoIndex.cshtml" />
     <Content Include="Views\Item\AttachmentsIndex.cshtml" />
@@ -862,7 +851,6 @@
     <Content Include="Views\MBOM\OptionalItemsIndex.cshtml" />
     <Content Include="Views\MBOM\OptionalItemSetIndex.cshtml" />
     <Content Include="Views\MBOM\ItemHlinkSetIndex.cshtml" />
-    <Content Include="Views\MBOM\ChangeIndex.cshtml" />
     <Content Include="Views\UserProductLibrary\Index.cshtml" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
@@ -878,6 +866,8 @@
     <Content Include="Views\MBOM\ProductDetailIndex.cshtml" />
     <Content Include="Views\MBOM\ComponentIndex.cshtml" />
     <Content Include="Views\MBOM\ComponentMaintenanceIndex.cshtml" />
+    <Content Include="Views\Maintenance\BOMIndex.cshtml" />
+    <Content Include="Views\Maintenance\SellListIndex.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -926,12 +916,10 @@
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\FileResponse.cs" />
     <Compile Include="Models\LoginView.cs" />
-    <Compile Include="Models\MBOM\MaterialView.cs" />
+    <Compile Include="Models\ItemView.cs" />
     <Compile Include="Models\MenuView.cs" />
     <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Models\SysView.cs" />
-    <Compile Include="Models\Transfer\AppBom.cs" />
-    <Compile Include="Models\Transfer\ProcItemView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unity\ApplicationInit.cs" />
     <Compile Include="Unity\CacheHelper.cs" />

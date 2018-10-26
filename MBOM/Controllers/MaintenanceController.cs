@@ -48,13 +48,15 @@ namespace MBOM.Controllers
         [Description("查看工艺BOM页面")]
         public ActionResult PBOMIndex(string prod_itemcode)
         {
-            return View();
+            ViewBag.IsPbom = true;
+            return View("~/Views/Maintenance/BOMIndex.cshtml");
         }
         //制造BOM
         [Description("查看制造BOM页面")]
         public ActionResult MBOMIndex(string prod_itemcode)
         {
-            return View();
+            ViewBag.IsPbom = false;
+            return View("~/Views/Maintenance/BOMIndex.cshtml");
         }
 
         [Description("查看物料父级引用页面")]
@@ -75,21 +77,24 @@ namespace MBOM.Controllers
         [Description("查看自制件清单页面")]
         public ActionResult SelfMadeListIndex(string prod_itemcode)
         {
-            return View();
+            ViewData["Type"] = "自制件";
+            return View("~/Views/Maintenance/BomList2Index.cshtml");
         }
 
         //标准件清单
         [Description("查看标准件清单页面")]
         public ActionResult StandardListIndex(string prod_itemcode)
         {
-            return View();
+            ViewData["Type"] = "标准件";
+            return View("~/Views/Maintenance/BomList2Index.cshtml");
         }
 
         //采购件清单
         [Description("查看采购件清单页面")]
         public ActionResult PurchaseListIndex(string prod_itemcode)
         {
-            return View();
+            ViewData["Type"] = "采购件";
+            return View("~/Views/Maintenance/BomList2Index.cshtml");
         }
 
         //销售件清单

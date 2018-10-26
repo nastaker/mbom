@@ -30,6 +30,13 @@ namespace Repository
         public string CN_CREATE_NAME { get; set; }
         public string CN_CREATE_LOGIN { get; set; }
         public string CN_SYS_STATUS { get; set; }
+        public string CN_ITEM_PROLINE { get; set; }
+        public string CN_BZW_PRO { get; set; }
+        public string CN_TEC_DESC { get; set; }
+        public string CN_STANDARD_CODE { get; set; }
+        public string CN_MESS_CLASS { get; set; }
+        public string CN_FACE_DO { get; set; }
+
         public DateTime CN_DT_CREATE
         {
             get
@@ -46,9 +53,9 @@ namespace Repository
             }
             set { _createTime = value; }
         }
-        public DateTime CN_DT_EFFECTIVE_ERP { get; set; }
-        public DateTime CN_DT_EXPIRY_ERP {get;set;}
-        public DateTime CN_DT_TOERP { get; set; }
+        public DateTime CN_DT_EFFECTIVE_ERP { get; set; } = DateTime.Parse("2000-01-01");
+        public DateTime CN_DT_EXPIRY_ERP { get; set; } = DateTime.Parse("2100-01-01");
+        public DateTime CN_DT_TOERP { get; set; } = DateTime.Parse("2100-01-01");
         private DateTime? _createTime;
     }
 }

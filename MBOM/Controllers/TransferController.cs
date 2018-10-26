@@ -1,13 +1,12 @@
-﻿using AutoMapper;
-using Repository;
+﻿using Repository;
 using MBOM.Filters;
 using MBOM.Models;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
 using MBOM.Unity;
 using System;
+using Localization;
 
 namespace MBOM.Controllers
 {
@@ -19,27 +18,34 @@ namespace MBOM.Controllers
         {
             this.db = db;
         }
-        [Description("转批发起页面")]
+        [Description("待发起项目页面")]
         public ActionResult InitiateIndex()
         {
-            return View();
+            ViewBag.Param = "待发起";
+            return View("~/Views/Maintenance/TransferIndex.cshtml");
         }
 
-        [Description("转批中页面")]
+        [Description("已发起项目页面")]
         public ActionResult WorkingIndex()
         {
-            return View();
+            ViewBag.Param = "已发起";
+            return View("~/Views/Maintenance/TransferIndex.cshtml");
         }
 
-        [Description("已转批页面")]
+        [Description("已转批项目页面")]
         public ActionResult DoneIndex()
         {
-            return View();
+            ViewBag.Param = "已转批";
+            return View("~/Views/Maintenance/TransferIndex.cshtml");
         }
 
         [Description("创建产品版本")]
         public JsonResult CreateProductVer(string prod_itemcode, string name, string desc)
         {
+            if(string.IsNullOrWhiteSpace(prod_itemcode) || string.IsNullOrWhiteSpace(name))
+            {
+                return Json(ResultInfo.Fail(Lang.ParamIsEmpty));
+            }
             var userinfo = LoginUserInfo.GetUserInfo();
             try
             {
@@ -56,64 +62,95 @@ namespace MBOM.Controllers
         public JsonResult Initiate(string prod_itemcode)
         {
             var userinfo = LoginUserInfo.GetUserInfo();
-            var proc = Proc.ProcProductTransferInitiate(db, prod_itemcode, userinfo);
-            return Json(ResultInfo.Success(proc));
+            ResultInfo resultInfo;
+            try
+            {
+                resultInfo = ResultInfo.Success(Proc.ProcProductTransferInitiate(db, prod_itemcode, userinfo));
+            }
+            catch(Exception ex)
+            {
+                resultInfo = ResultInfo.Fail(ex.Message);
+            }
+            return Json(resultInfo);
         }
 
-        [Description("转批待发布列表（分页）")]
-        public JsonResult WaitPageList(ViewProjectProductPbom prod, int page = 1, int rows = 10)
+        [Description("转批发起操作")]
+        public JsonResult Publish(string prod_itemcode)
+        {
+            var userinfo = LoginUserInfo.GetUserInfo();
+            ResultInfo resultInfo;
+            try
+            {
+                resultInfo = ResultInfo.Parse(Proc.ProcProductTransferPublish(db, prod_itemcode, userinfo));
+            }
+            catch (Exception ex)
+            {
+                resultInfo = ResultInfo.Fail(ex.Message);
+            }
+            return Json(resultInfo);
+        }
+
+        [Description("预转批列表（分页）")]
+        public JsonResult PageList(
+            ViewProjectProductPbom prod,
+            DateTime? PdmBeginDate, DateTime? PdmEndDate,
+            DateTime? PreBeginDate, DateTime? PreEndDate,
+            int page = 1, int rows = 10)
         {
             var query = db.ViewProjectProductPboms.AsQueryable();
             query = Common.GetQueryFilter(query);
-            //query = Common.GetQueryFilterUserId(query);
-            query = query.Where(obj => obj.PRODUCT_STATUS == "待发布");
+            query = Common.GetQueryFilterUserId(query);
+            if (PdmBeginDate != null && PdmBeginDate.Value.Year > 2000)
+            {
+                query = query.Where(obj => obj.DT_PDM >= PdmBeginDate);
+            }
+            if (PdmEndDate != null && PdmEndDate.Value.Year < 2100)
+            {
+                query = query.Where(obj => obj.DT_PDM <= PdmEndDate);
+            }
+            if (PreBeginDate != null && PreBeginDate.Value.Year > 2000)
+            {
+                query = query.Where(obj => obj.DT_PRE >= PreBeginDate);
+            }
+            if (PreEndDate != null && PreEndDate.Value.Year < 2100)
+            {
+                query = query.Where(obj => obj.DT_PRE <= PreEndDate);
+            }
+            if (prod.PRODUCT_STATUS == "待发起")
+            {
+                var inStatus = new string[]
+                {
+                    "待发起预转批","销售件已设置"
+                };
+                query = query.Where(obj => inStatus.Contains(obj.PRODUCT_STATUS));
+            }
+            else if (prod.PRODUCT_STATUS == "已发起")
+            {
+                var inStatus = new string[]
+                {
+                    "MBOM维护中","MBOM发布中","MBOM发布完成","转批中"
+                };
+                query = query.Where(obj => inStatus.Contains(obj.PRODUCT_STATUS));
+            }
+            else if (prod.PRODUCT_STATUS == "已转批")
+            {
+                var inStatus = new string[]
+                {
+                    "已转批"
+                };
+                query = query.Where(obj => inStatus.Contains(obj.PRODUCT_STATUS));
+            }
             if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
             {
                 query = query.Where(obj => obj.PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
             }
-            if (!string.IsNullOrWhiteSpace(prod.PROJECT_NAME))
+            if (!string.IsNullOrWhiteSpace(prod.PRODUCT_ITEM_CODE))
             {
-                query = query.Where(obj => obj.PROJECT_NAME.Contains(prod.PROJECT_NAME));
+                query = query.Where(obj => obj.PRODUCT_ITEM_CODE.Contains(prod.PRODUCT_ITEM_CODE));
             }
-            var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
-            var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
-        }
-
-        [Description("转批中列表（分页）")]
-        public JsonResult WorkingPageList(ViewProjectProductPbom prod, int page = 1, int rows = 10)
-        {
-            var query = db.ViewProjectProductPboms.AsQueryable();
-            query = Common.GetQueryFilter(query);
-            //query = Common.GetQueryFilterUserId(query);
-            query = query.Where(obj => obj.PRODUCT_STATUS == "转批中");
-            if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
+            if (!string.IsNullOrWhiteSpace(prod.PRODUCT_NAME))
             {
-                query = query.Where(obj => obj.PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
-            }
-            if (!string.IsNullOrWhiteSpace(prod.PROJECT_NAME))
-            {
-                query = query.Where(obj => obj.PROJECT_NAME.Contains(prod.PROJECT_NAME));
-            }
-            var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
-            var count = query.Count();
-            return Json(ResultInfo.Success(new { rows = list, total = count }));
-        }
-
-        [Description("已转批列表（分页）")]
-        public JsonResult DonePageList(ViewProjectProductPbom prod, int page = 1, int rows = 10)
-        {
-            var query = db.ViewProjectProductPboms.AsQueryable();
-            query = Common.GetQueryFilter(query);
-            //query = Common.GetQueryFilterUserId(query);
-            query = query.Where(obj => obj.PRODUCT_STATUS == "已转批");
-            if (!string.IsNullOrWhiteSpace(prod.PRODUCT_CODE))
-            {
-                query = query.Where(obj => obj.PRODUCT_CODE.Contains(prod.PRODUCT_CODE));
-            }
-            if (!string.IsNullOrWhiteSpace(prod.PROJECT_NAME))
-            {
-                query = query.Where(obj => obj.PROJECT_NAME.Contains(prod.PROJECT_NAME));
+                query = query.Where(obj => obj.PRODUCT_NAME.Contains(prod.PRODUCT_NAME));
             }
             var list = query.OrderBy(obj => obj.CODE).Skip((page - 1) * rows).Take(rows);
             var count = query.Count();

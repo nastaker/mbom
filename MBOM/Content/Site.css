@@ -31,3 +31,6 @@ ul.myMenu li:hover{
 ul.myMenu li.active{
     background-color: #dfdfdf;
 }
+.active{
+    background-color: #dfdfdf;
+}

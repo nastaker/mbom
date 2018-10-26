@@ -1,7 +1,8 @@
 ﻿$(function () {
     var dgItems = $("#dgItems");
     var columns = [[
-        { field: 'CODE', title: lang.saleSet.productCode, width: 150 },
+        { field: 'ITEM_CODE', title: lang.selfmade.itemcode, width: 120 },
+        { field: 'CODE', title: lang.selfmade.code, width: 150 },
         { field: 'NAME', title: lang.saleSet.productName, width: 150 },
         { field: '部件', title: lang.bomlist.child, width: 100 },
         { field: '自制件', title: lang.bomlist.selfmade, align: "center", width: 70 },
@@ -10,8 +11,7 @@
         { field: '销售件', title: lang.bomlist.sell, align: "center", width: 70 },
         { field: '工艺件', title: lang.bomlist.process, align: "center", width: 70 },
         { field: '包装件', title: lang.bomlist.pack, align: "center", width: 70 },
-        { field: '原材料', title: lang.bomlist.origin, align: "center", width: 70 },
-        { field: '借用', title: lang.bomlist.borrow, align: "center", width: 70 }
+        { field: '原材料', title: lang.bomlist.origin, align: "center", width: 70 }
     ]];
     //本页面基础datagrid属性
     var commonOptions = {

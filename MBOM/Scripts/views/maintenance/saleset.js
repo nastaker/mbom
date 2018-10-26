@@ -75,7 +75,7 @@ $(function () {
             },
             editor: {
                 type: 'textbox',
-                options: { validType: 'maxlength[18]', tipPosition: "top" }
+                options: { validType: 'maxlength[100]', tipPosition: "top" }
             }
         },
         {
@@ -87,7 +87,7 @@ $(function () {
             },
             editor: {
                 type: 'textbox',
-                options: { validType: 'maxlength[20]', tipPosition: "top" }
+                options: { validType: 'maxlength[100]', tipPosition: "top" }
             }
         },
         {

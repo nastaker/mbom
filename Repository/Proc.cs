@@ -23,19 +23,23 @@ namespace Repository
 
         const string PROC_OPTIONALITEM_MAP_REMOVE = "PROC_OPTIONALITEM_MAP_REMOVE @hlinkids";
         //产品数据操作
+        const string PROC_MBOM_VER_CREATE = "PROC_MBOM_VER_CREATE @prod_itemcode,@ver,@dt_effective,@dt_expiry,@desc,@pbomver_guid,@userid,@name,@login";
         const string PROC_PRODUCT_VER_CREATE = "PROC_PRODUCT_VER_CREATE @prod_itemcode,@vername,@desc,@userid,@name,@login";
         const string PROC_PRODUCT_TRANSFER_INITIATTE = "PROC_PRODUCT_TRANSFER_INITIATTE @prod_itemcode,@userid,@name,@login";
-        const string PROC_MBOM_VER_CREATE = "PROC_MBOM_VER_CREATE @prod_itemcode,@ver,@dt_effective,@dt_expiry,@desc,@pbomver_guid,@userid,@name,@login";
+        const string PROC_PRODUCT_TRANSFER_PUBLISH = "PROC_PRODUCT_TRANSFER_PUBLISH @prod_itemcode,@userid,@name,@login";
         const string PROC_MBOM_RELEASE = "PROC_MBOM_RELEASE @prod_itemcode,@userid,@name,@login";
         //物料数据获取
         const string PROC_GET_ITEM_PARENTS = "PROC_GET_ITEM_PARENTS @prod_itemcode";
         const string PROC_GET_ITEM_TREE = "PROC_GET_ITEM_TREE @itemcode";
+        const string PROC_UPDATE_ITEM = "PROC_UPDATE_ITEM @itemcode,@itemname,@weight,@unit,@productlinecode,@typeids,@userid,@name,@login";
         //产品数据获取
         const string PROC_GET_PRODUCT_PBOM = "PROC_GET_PRODUCT_PBOM @prod_itemcode,@date";
         const string PROC_GET_PRODUCT_MBOM = "PROC_GET_PRODUCT_MBOM @prod_itemcode,@date";
         const string PROC_GET_PRODUCT_PBOM_VER_LIST = "PROC_GET_PRODUCT_PBOM_VER_LIST @prod_itemcode";
         const string PROC_GET_PRODUCT_MBOM_VER_LIST = "PROC_GET_PRODUCT_MBOM_VER_LIST @prod_itemcode";
+
         const string PROC_GET_PRODUCT_SELLITEM_LATEST = "PROC_GET_PRODUCT_SELLITEM_LATEST @prod_itemcode";
+        const string PROC_GET_PRODUCT_SELLITEM = "PROC_GET_PRODUCT_SELLITEM @prod_itemcode,@guid_ver";
         const string PROC_GET_PRODUCT_ITEM_WITH_CATEGORY = "PROC_GET_PRODUCT_ITEM_WITH_CATEGORY @prod_itemcode";
         const string PROC_GET_PRODUCT_ITEM_BY_CATEGORYNAME = "PROC_GET_PRODUCT_ITEM_BY_CATEGORYNAME @prod_itemcode,@categoryname";
         const string PROC_GET_PRODUCT_MBOM_LATEST = "PROC_GET_PRODUCT_MBOM_LATEST @prod_itemcode";
@@ -45,7 +49,7 @@ namespace Repository
         const string PROC_VIRTUAL_ITEM_LINK = "PROC_VIRTUAL_ITEM_LINK @prod_itemcode,@itemcode_parent,@guid,@userid,@name,@login";
         const string PROC_VIRTUAL_ITEM_UNLINK = "PROC_VIRTUAL_ITEM_UNLINK @prod_itemcode,@guid,@userid,@name,@login";
         //合件
-        const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @prod_itemcode,@guids,@type,@userid,@name,@login";
+        const string PROC_COMPOSITE_ITEM_SET = "PROC_COMPOSITE_ITEM_SET @prod_itemcode,@guids,@type,@itemtype,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @prod_itemcode,@guid,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @prod_itemcode,@itemcode_parent,@guid,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @prod_itemcode,@guid,@userid,@name,@login";
@@ -86,6 +90,36 @@ namespace Repository
             var result = db.Database.SqlQuery<ProcItemSetInfo>(PROC_GET_PRODUCT_SELLITEM_LATEST, param).ToList();
             return result;
         }
+
+        public static List<ProcCateItem> ProcGetProductSellInfo(BaseDbContext db, string prod_itemcode, Guid guid)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@prod_itemcode", prod_itemcode),
+                new SqlParameter("@guid_ver", guid)
+            };
+            var result = db.Database.SqlQuery<ProcCateItem>(PROC_GET_PRODUCT_SELLITEM, param).ToList();
+            return result;
+        }
+
+        public static ProcReturnMsg ProcUpdateItem(BaseDbContext db, string itemcode, string itemname, double weight, string unit, string productlinecode, string typeids, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@itemcode", itemcode),
+                new SqlParameter("@itemname", itemname),
+                new SqlParameter("@weight", weight),
+                new SqlParameter("@unit", unit),
+                new SqlParameter("@productlinecode", productlinecode),
+                new SqlParameter("@typeids", typeids),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_UPDATE_ITEM, param).SingleOrDefault();
+            return result;
+        }
+
 
         public static ProcReturnMsg ProcCreateProductVer(BaseDbContext db, string prod_itemcode, string name, string desc, UserInfo userinfo)
         {
@@ -345,6 +379,19 @@ namespace Repository
             return result;
         }
 
+        public static ProcReturnMsg ProcProductTransferPublish(BaseDbContext db, string prod_itemcode, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@prod_itemcode", prod_itemcode),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_PRODUCT_TRANSFER_PUBLISH, param).First();
+            return result;
+        }
+
         //MBOM
         //MBOM创建新版本
         public static ProcReturnMsg ProcCreateMbomVer(BaseDbContext db, string prod_itemcode, string ver, DateTime dtef, DateTime dtex, string pbomver_guid, string desc, UserInfo userinfo)
@@ -471,13 +518,14 @@ namespace Repository
         #endregion
         #region 合件
         //设置合件
-        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db,string prod_itemcode, string guids, string type, UserInfo userinfo)
+        public static ProcReturnMsg ProcCompositeItemSet(BaseDbContext db,string prod_itemcode, string guids, string type, string itemtype, UserInfo userinfo)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@prod_itemcode", prod_itemcode),
                 new SqlParameter("@guids", guids),
                 new SqlParameter("@type", type),
+                new SqlParameter("@itemtype", itemtype),
                 new SqlParameter("@userid", userinfo.UserId),
                 new SqlParameter("@name", userinfo.Name),
                 new SqlParameter("@login", userinfo.Login)

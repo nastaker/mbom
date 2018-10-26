@@ -4,41 +4,122 @@ var dg = $("#dgProducts");
 $(function () {
     dg.datagrid({
         height: "100%",
-        fitColumns: true,
         striped: true,
         rownumbers: true,
         singleSelect: true,
         pagination: true,
         border: false,
-        idField: "PROJECT_ID",
+        idField: "ItemCode",
         toolbar: '#toolbar',
         columns: [[
-            { field: "CN_CODE", title: "代号", width: 15 },
-            { field: "CN_ITEM_CODE", title: "物料编码", width: 15 },
-            { field: "CN_NAME", title: "物料名称", width: 15 },
+            { field: "Code", title: "代号", width: 150 },
+            { field: "ItemCode", title: "物料编码", width: 150 },
+            { field: "ItemName", title: "物料名称", width: 150 },
             {
-                field: "CN_IS_TOERP", title: "是否发布", align: "center", width: 6,
+                field: "ErpStatus", title: "发布状态", align: "center", width: 60,
                 formatter: function (value, row, index) {
-                    if (value == 0) {
-                        return "";
+                    switch (value) {
+                        case 0:
+                            return "未发布";
+                        case 1:
+                            return "发布中";
+                        case 2:
+                            return "已发布";
+                        default:
+                            return "未知状态";
                     }
-                    return "已发";
                 }
             },
             {
-                field: "CN_DT_EFFECTIVE_ERP", title: "发布日期", align: "center", width: 10,
+                field: "ErpDate", title: "发布日期", align: "center", width: 70,
                 formatter: function (value, row, index) {
-                    if (row["CN_IS_TOERP"] == 1) {
+                    if (row["ErpDate"]) {
                         return ToJavaScriptDate(value);
                     }
                     return "";
                 }
             },
-            { field:"销售件", title:"销售件", align: "center", width: 8 },
-            { field: "采购件", title: "采购件", align: "center", width: 8 },
-            { field: "自制件", title: "自制件", align: "center", width: 8 },
-            { field: "MBOM虚拟件", title: "MBOM虚拟件", align: "center", width: 8 },
-            { field: "MBOM合件", title: "MBOM合件", align: "center", width: 8 }
+            {
+                field: "Sell", title: "销售件", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "Purchase", title: "采购件", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "SelfMade", title: "自制件", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "Standard", title: "标准件", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "RawMaterial", title: "原材料", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "Package", title: "包装件", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "Process", title: "工艺件", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "Assembly", title: "装配件", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            },
+            {
+                field: "MBOMOptional", title: "MBOM选装件", align: "center", width: 60,
+                formatter: function (value, row, index) {
+                    if (value) {
+                        return "Y";
+                    }
+                    return "";
+                }
+            }
         ]],
         loadFilter: loadFilter
     });
@@ -54,7 +135,7 @@ function query() {
 function showDetail() {
     var item = dg.datagrid("getSelected");
     if (!item) { return; }
-    var title = "物料详情" + item.CN_ITEM_CODE + " " + item.CN_NAME;
-    var prod_itemcode = item.CN_ITEM_CODE
+    var title = "物料详情" + item.ItemCode + " " + item.ItemName;
+    var prod_itemcode = item.ItemCode
     window.parent.openTab(title, URL_ITEMDETAIL + "?prod_itemcode=" + prod_itemcode);
 }

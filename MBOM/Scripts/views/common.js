@@ -6,19 +6,29 @@ function InfoWin(msg, callback) {
     $.messager.alert(lang.infoTitle, msg, 'info', callback);
 }
 
-function postData(url, data, callback) {
+function Loading() {
     $.messager.progress({ title: lang.infoTitle, msg: lang.loading });
+}
+
+function Loaded(timeout) {
+    setTimeout(function () {
+        $.messager.progress('close');
+    }, timeout);
+}
+
+function postData(url, data, callback) {
+    Loading();
     $.ajax({
         url: url,
         type: "post",
         dataType: "json",
         data: data,
         success: function (data) {
-            $.messager.progress('close');
+            Loaded();
             callback(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $.messager.progress('close');
+            Loaded();
             AlertWin(XMLHttpRequest.responseJSON.msg);
         }
     })
@@ -46,7 +56,10 @@ function ToJavaScriptDate(value, fmt) {
     if (!fmt) {
         fmt = "yyyy-MM-dd";
     }
-    return new Date(parseFloat(results[1])).format(fmt);
+    if (!results) {
+        return "";
+    }
+    return new Date(parseInt(results[1])).format(fmt);
 }
 
 function loadFilter(result) {
@@ -118,6 +131,12 @@ $.extend($.fn.validatebox.defaults.rules, {
             return d2 > d1;
         },
         message: '日期不得小于 {0}'
+    },
+    itemType: {
+        validator: function (value, param) {
+            return (value.indexOf("采购件") > -1) !== (value.indexOf("自制件") > -1);
+        },
+        message: '必选项必须选择一项'
     }
 });
 

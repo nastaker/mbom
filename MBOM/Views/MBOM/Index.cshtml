@@ -10,19 +10,27 @@
 <div class="easyui-layout" data-options="fit:true">
     <div id="toolbar" style="padding:5px;">
         <form id="queryFrm">
-            <span>@Lang.ProjectName：</span>
-            <input type="text" name="Project_Name" class="easyui-textbox" />
-            <span>@Lang.ProductCode：</span>
-            <input type="text" name="Product_Code" class="easyui-textbox" />
+            <span>@Lang.Name：</span>
+            <input type="text" name="Product_Name" class="easyui-textbox" style="width:120px" />
+            <span>@Lang.Code：</span>
+            <input type="text" name="Product_Code" class="easyui-textbox" style="width:120px" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="Product_Item_Code" class="easyui-textbox" style="width:120px" />
+            <span>@Lang.MBOMPublishStatus：</span>
+            <select type="text" name="MBOMVER_IS_TOERP" class="easyui-combobox" data-options="editable:false,panelHeight:'auto'">
+                <option value="-1">-请选择-</option>
+                <option value="0" selected>未发布</option>
+                <option value="1">发布中</option>
+                <option value="2">已发布</option>
+                <option value="">无对应版本</option>
+            </select>
             <label>
-                <input type="checkbox" checked="checked" name="singleSelect" onchange="multiSelectSwitch(this.checked)" style="vertical-align:middle"/>
+                <input type="checkbox" checked="checked" name="singleSelect" onchange="multiSelectSwitch(this.checked)" style="vertical-align:middle" />
                 <span style="vertical-align:middle">单选</span>
             </label>
             <a href="#" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
-            <a href="#" class="easyui-linkbutton" onclick="createMbomVer()" data-options="iconCls:'icon-add'">@Lang.CreateVer</a>
-            <a href="#" class="easyui-linkbutton" onclick="publishMaintenance()" data-options="iconCls:'icon-edit'">@Lang.MBOMMaintenance</a>
+            <a href="#" class="easyui-linkbutton" onclick="publishMaintenance()" data-options="iconCls:'icon-edit'">@Lang.MbomMaintenance</a>
             <a href="#" class="easyui-linkbutton" onclick="publish()" data-options="iconCls:'icon-ok'">@Lang.MBOMPublish</a>
-            <a href="#" class="easyui-linkbutton" onclick="mark()" data-options="iconCls:'icon-checklist'">标记/取消标记</a>
         </form>
     </div>
     <table id="dgProducts"></table>
@@ -32,27 +40,27 @@
 <div id="dlgCreateMBOMVer">
     <table class="table table-striped">
         <tr>
-            <th>版本号：</th>
-            <td>
+            <th width="100">版本号：</th>
+            <td width="250">
                 <input type="text" id="txtVer" class="easyui-textbox" required />
             </td>
         </tr>
         <tr>
             <th>生效日期：</th>
             <td>
-                <input class="easyui-datebox" id="txtEfDate" data-options="value:'new Date().format(\'yyyy-MM-dd\')',required:true" required>
+                <input class="easyui-datebox" id="txtEfDate" data-options="value:'new Date().format(\'yyyy-MM-dd\')',required:true">
             </td>
         </tr>
         <tr>
             <th>失效日期：</th>
             <td>
-                <input class="easyui-datebox" id="txtExDate" data-options="value:'2100-01-01',required:true" required>
+                <input class="easyui-datebox" id="txtExDate" data-options="value:'2100-01-01',required:true">
             </td>
         </tr>
         <tr>
             <th>版本描述：</th>
             <td>
-                <input type="text" id="txtDesc" class="easyui-textbox" required />
+                <input type="text" id="txtDesc" class="easyui-textbox" data-options="multiline:true,height:100" />
             </td>
         </tr>
     </table>

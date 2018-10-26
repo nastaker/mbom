@@ -4,17 +4,47 @@ var URL_EDITITEM = "/Item/Edit"
 var URL_DELETEITEM = "/Item/Delete"
 var URL_ITEMUNITLIST = "/Item/UnitList"
 var URL_ITEMTYPELIST = "/Item/TypeList"
+var URL_PRODUCTLIST = "/Item/ProductLineList"
 
 var dg = $("#dgItems");
-var winItem = $("#winItem");
-var frmItem = $("#frmItem");
-var cboUnit = $("#cboItemUnit");
-var cboType = $("#cboItemType");
+var vWinItem = $("#winItem");
+var vFrmItem = $("#frmItem");
+var vItemCode = $("#txtItemCode");
+var vItemUnit = $("#cboItemUnit");
+var vItemType = $("#cboItemType");
+var vSearchItemType = $("#cboSearchItemType");
+var vProductLine = $("#cboProductLine")
+var dataProductLine = null;
+var dataItemTypeList = null;
+var dataFilteredProductLine = null;
 $(function () {
+    var loadSuccess = true;
+    postDataSync(URL_PRODUCTLIST, null, function (result) {
+        if (!result.success) {
+            loadSuccess = false;
+            AlertWin(result.msg);
+        }
+        dataProductLine = result.data;
+    });
+    if (!loadSuccess) {
+        return;
+    }
+    postDataSync(URL_ITEMTYPELIST, {
+        names: ["自制件", "采购件", "MBOM合件"]
+    }, function (result) {
+        if (!result.success) {
+            loadSuccess = false;
+            AlertWin(result.msg);
+        }
+        dataItemTypeList = result.data;
+    });
+    if (!loadSuccess) {
+        return;
+    }
     dg.datagrid({
         height: "100%",
-        fitColumns: true,
         striped: true,
+        pageSize: 20,
         rownumbers: true,
         singleSelect: true,
         pagination: true,
@@ -22,29 +52,39 @@ $(function () {
         idField: "CN_CODE",
         toolbar: '#toolbar',
         columns: [[
-            { field: "CN_CODE", title: "代号", width: 20 },
-            { field: "CN_ITEM_CODE", title: "物料编码", width: 20 },
-            { field: "CN_NAME", title: "物料名称", width: 20 },
-            { field: "CN_UNIT", title: "单位", align: "center", width: 5 },
-            { field: "CN_WEIGHT", title: "重量", align: "center", width: 5 },
+            { field: "CN_CODE", title: "代号", width: 150 },
+            { field: "CN_ITEM_CODE", title: "物料编码", width: 150 },
+            { field: "CN_NAME", title: "物料名称", width: 150 },
+            { field: "CN_UNIT", title: "单位", align: "center", width: 60 },
+            { field: "CN_WEIGHT", title: "重量", align: "center", width: 60 },
+            { field: "CN_PRODUCTLINECODE", title: "产品线", align: "center", width: 60 },
             {
-                field: "Desc", title: "类型", align: "center", width: 15,
+                field: "CN_IS_PDM", title: "是否PDM", align: "center", width: 60,
                 formatter: function (value, row, index) {
-                    var str = "";
-                    if (row["自制件"]) {
-                        str += "," + row["自制件"];
+                    if (value) {
+                        return "PDM";
                     }
-                    if (row["采购件"]) {
-                        str += "," + row["采购件"];
+                    return "";
+                }
+            },
+            { field: "CN_TYPENAMES", title: "类型", width: 200 },
+            {
+                field: "CN_IS_TOERP", title: "发布状态", align: "center", width: 80,
+                formatter: function (value, row, index) {
+                    switch (value) {
+                        case 0:
+                            return "未发布";
+                        case 1:
+                            return "发布中";
+                        case 2:
+                            return "已发布";
+                        default:
+                            return "";
                     }
-                    if (row["MBOM合件"]) {
-                        str += "," + row["MBOM合件"];
-                    }
-                    return str.substr(1, str.length);
                 }
             },
             {
-                field: "CN_DT_CREATE", title: "发布日期", align: "center", width: 15,
+                field: "CN_DT_TOERP", title: "发布日期", align: "center", width: 90,
                 formatter: function (value, row, index) {
                     if (value && $.trim(value) != "") {
                         return ToJavaScriptDate(value);
@@ -56,17 +96,18 @@ $(function () {
         loadFilter: loadFilter
     });
 
-    frmItem.form({
+    vFrmItem.form({
         url: URL_EDITITEM,
         onSubmit: function (param) {
-            if (!frmItem.form("validate")) {
+            if (!vFrmItem.form("validate")) {
                 return false;
             }
-            $.messager.progress({ title: lang.infoTitle, msg: lang.loading });
+            param.CN_TYPEIDS = vItemType.combobox("getValues").toString();
+            Loading();
         },
         success: function (data) {
-            $.messager.progress('close');
-            winItem.window({
+            Loaded();
+            vWinItem.window({
                 closed: true
             });
             dg.datagrid("clearSelections");
@@ -84,42 +125,151 @@ $(function () {
         }
     });
 
-    cboUnit.combobox({
+    vItemCode.textbox({
+        width: 185,
+        required: true,
+        onChange: function (newValue, oldValue) {
+            dataFilteredProductLine = [];
+            vProductLine.combobox('clear')
+            var opts = vProductLine.combobox('options');
+            for (var i = 0, j = dataProductLine.length; i < j; i++) {
+                var pl = dataProductLine[i];
+                if (newValue.toUpperCase().indexOf(pl[opts.groupField]) > - 1) {
+                    dataFilteredProductLine.push(pl);
+                }
+            }
+            if (newValue.toUpperCase().indexOf("U") > -1) {
+                for (var i = 0, j = dataFilteredProductLine.length; i < j; i++) {
+                    var fpll = dataFilteredProductLine[i];
+                    if (fpll[opts.groupField].indexOf("U") > -1) {
+                        dataFilteredProductLine = [];
+                        dataFilteredProductLine.push(fpll);
+                        break;
+                    }
+                }
+            }
+            if (dataFilteredProductLine.length == 0) {
+                for (var i = 0, j = dataProductLine.length; i < j; i++) {
+                    var pll = dataProductLine[i];
+                    if (pll[opts.groupField].indexOf("ZZZ") > -1) {
+                        dataFilteredProductLine.push(pll);
+                    }
+                }
+            }
+            vProductLine.combobox('loadData', dataFilteredProductLine);
+        }
+    })
+
+    vItemUnit.combobox({
         url: URL_ITEMUNITLIST,
         valueField: 'CN_NAME',
         textField: 'CN_NAME',
         editable: false,
         required: true,
+        width: 185,
         loadFilter: loadFilter
     });
 
-    cboType.combobox({
-        url: URL_ITEMTYPELIST,
+    vSearchItemType.combobox({
+        data: dataItemTypeList,
+        width: 90,
+        panelWidth: 90,
         valueField: 'CN_ID',
         textField: 'CN_NAME',
         editable: false,
-        required: true,
-        multiple: true,
-        loadFilter: function (result) {
-            if (result.success) {
-                for (var i = 0, len = result.data.length; i < len; i++) {
-                    result.data[i]["CN_NAME"] = $.trim(result.data[i]["CN_NAME"]);
-                }
-                return result.data;
-            } else {
-                InfoWin(result.msg);
-                return [];
+        multiple: false,
+        loadFilter: function (originData) {
+            var data = JSON.parse(JSON.stringify(originData));
+            for (var i = 0, j = data.length; i < j; i++) {
+                data[i]["CN_ID"] = $.trim(data[i]["CN_NAME"]);
             }
+            data.unshift({
+                'CN_ID': '',
+                'CN_NAME': '-请选择-'
+            }, {
+                'CN_ID': '无',
+                'CN_NAME': '无类型'
+            });
+            return data;
         }
     });
 
-    winItem.window({
+    vItemType.combobox({
+        data: dataItemTypeList,
+        width: 185,
+        panelWidth: 185,
+        valueField: 'CN_ID',
+        textField: 'CN_NAME',
+        groupField: 'group',
+        validType: 'itemType',
+        editable: false,
+        required: true,
+        multiple: true,
+        onSelect: function (record) {
+            var cbo = $(this);
+            var selections = cbo.combobox('getValues');
+            if ((record["CN_ID"] == 2 || record["CN_ID"] == 3)) {
+                if (selections.indexOf('2') > -1) {
+                    setTimeout(function () {
+                        cbo.combobox('unselect', 2);
+                    }, 0);
+                } else if (selections.indexOf('3') > -1) {
+                    setTimeout(function () {
+                        cbo.combobox('unselect', 3);
+                    }, 0);
+                }
+            }
+        },
+        loadFilter: function (originData) {
+            var data = JSON.parse(JSON.stringify(originData));
+            for (var i = 0, len = data.length; i < len; i++) {
+                data[i]["CN_NAME"] = $.trim(data[i]["CN_NAME"]);
+                data[i]["group"] = "必选项";
+                if (data[i]["CN_ID"] > 3) {
+                    data[i]["group"] = "可选项";
+                }
+            }
+            return data;
+        }
+    });
+
+    vProductLine.combobox({
+        data: dataProductLine,
+        width: 185,
+        panelWidth: 185,
+        required: true,
+        editable: false,
+        valueField: 'CN_ID',
+        textField: 'CN_NAME',
+        groupField: 'CN_CODE',
+        groupPosition: 'sticky',
+        onSelect: function (record) {
+            $("#hiddenProductLineCode").val(record["CN_NUMBER"]);
+        },
+        filter: function (q, row) {
+            var opts = $(this).combobox('options');
+            return (row[opts.textField].indexOf(q) > -1 || row['CN_NUMBER'].toString().indexOf(q) > -1);
+        },
+        formatter: function (data) {
+            return '<span style="font-weight:bold">' + data["CN_NAME"] + '</span><br/>' +
+                '<span>' + data["CN_NUMBER"] + '</span>';
+        },
+        onLoadSuccess: function () {
+            if (!dataProductLine) {
+                dataProductLine = $(this).combobox("getData");
+            }
+        }
+    });
+    
+    vWinItem.window({
         closed: true,
         minimizable: false,
+        maximizable: false,
         collapsible: false,
+        resizable: false,
         modal: true,
-        width: 450,
-        height: 350,
+        width: 400,
+        height: 330,
         footer: "#winFooter"
     });
 
@@ -128,15 +278,13 @@ $(function () {
 });
 
 function itemAdd() {
-    $("#txtItemCode").textbox({
-        readonly: false
-    });
-    winItem.window({
+    readonlyForm(false);
+    vWinItem.window({
         title: "添加物料",
         closed: false
     });
-    frmItem.form("clear");
-    winItem.window("center");
+    vFrmItem.form("clear");
+    vWinItem.window("center");
 }
 
 function itemEdit() {
@@ -145,32 +293,64 @@ function itemEdit() {
         AlertWin("请选择需要修改的物料");
         return;
     }
-    if (item["CN_IS_TOERP"] == "1") {
-        AlertWin("物料已发布，无法修改");
-        return;
+    vFrmItem.form("clear");
+
+    //判断是否为PDM，若为PDM则不允许修改除分类外所有属性，若不为PDM，则可以修改除ITEMCODE、NAME外的属性
+    if (item["CN_IS_PDM"]) {
+        readonlyForm(true);
+        $("#cboItemType").combobox('readonly', false);
+        $("#cboItemType").combobox('enableValidation');
+    } else {
+        readonlyForm(false);
+        $("#txtItemCode").textbox('readonly', true);
     }
-    $("#txtItemCode").textbox({
-        readonly: true
-    });
-    cboType.combobox("clear");
-    var mbomtypeid = item["MBOM合件ID"];
-    var purchaseid = item["采购件ID"];
-    var selfmadeid = item["自制件ID"];
-    if (mbomtypeid) {
-        cboType.combobox("select", mbomtypeid)
+
+    var typeids = item["CN_TYPEIDS"];
+    var prodlinenumber = $.trim(item["CN_PRODUCTLINECODE"])
+    if (typeids) {
+        vItemType.combobox("setValues", typeids.split(','))
     }
-    if (purchaseid) {
-        cboType.combobox("select", purchaseid)
+    var prodlineId;
+    for (var i = 0, j = dataProductLine.length; i < j; i++) {
+        var prodline = dataProductLine[i];
+        if (prodline["CN_NUMBER"] == prodlinenumber) {
+            prodlineId = prodline["CN_ID"];
+        }
     }
-    if (selfmadeid) {
-        cboType.combobox("select", selfmadeid)
+    if (prodlineId) {
+        setTimeout(function () {
+            vProductLine.combobox("setValue", prodlineId);
+        }, 0);
     }
-    frmItem.form("load", item);
-    winItem.window({
+    vFrmItem.form("load", item);
+    vWinItem.window({
         title: "编辑物料",
         closed: false
     });
-    winItem.window("center");
+    vWinItem.window("center");
+}
+
+function readonlyForm(readonly) {
+    $("#txtItemCode").textbox('readonly', readonly);
+    $("#txtItemName").textbox('readonly', readonly);
+    $("#txtItemWeight").textbox('readonly', readonly);
+    $("#cboItemUnit").combobox('readonly', readonly);
+    $("#cboProductLine").combobox('readonly', readonly);
+    $("#cboItemType").combobox('readonly', readonly);
+
+    if (readonly) {
+        $("#txtItemName").textbox('disableValidation');
+        $("#txtItemWeight").textbox('disableValidation');
+        $("#cboItemUnit").combobox('disableValidation');
+        $("#cboProductLine").combobox('disableValidation');
+        $("#cboItemType").combobox('disableValidation');
+    } else {
+        $("#txtItemName").textbox('enableValidation');
+        $("#txtItemWeight").textbox('enableValidation');
+        $("#cboItemUnit").combobox('enableValidation');
+        $("#cboProductLine").combobox('enableValidation');
+        $("#cboItemType").combobox('enableValidation');
+    }
 }
 
 function itemDelete() {
@@ -179,7 +359,7 @@ function itemDelete() {
         AlertWin("请选择要删除的物料");
         return;
     }
-    if (item["CN_IS_TOERP"] == "1") {
+    if (item["CN_IS_TOERP"] != 0) {
         AlertWin("物料已发布，无法删除");
         return;
     }

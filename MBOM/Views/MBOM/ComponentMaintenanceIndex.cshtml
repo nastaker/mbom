@@ -7,6 +7,7 @@
     @Styles.Render("~/bundles/mbomcss")
 }
 @section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
     <script type="text/javascript">
         var params = { itemcode: "@Request.Params["itemcode"]" };
     </script>
@@ -24,8 +25,7 @@
                 <button id="btnPublish" type="button" onclick="publish()" class="btn btn-warning">@Lang.MBOMPublish</button>
             </div>
         </div>
-        <table id="treegrid">
-        </table>
+        <table id="treegrid"></table>
     </div>
 </div>
 
@@ -34,11 +34,11 @@
         <form id="queryFrm">
             <div>
                 <span>@Lang.ItemCode：</span>
-                <input type="text" name="CN_ITEM_CODE" class="easyui-textbox" style="width:120px;"/>
+                <input type="text" name="CN_ITEM_CODE" class="easyui-textbox" style="width:120px;" />
                 <span>@Lang.ItemName：</span>
                 <input type="text" name="CN_NAME" class="easyui-textbox" style="width:120px;" />
                 <a href="javascript:;" class="easyui-linkbutton" onclick="queryItem()" data-options="iconCls:'icon-search'">@Lang.Find</a>
-                <a href="javascript:;" class="easyui-linkbutton" onclick="showItemDetail()" data-options="iconCls:'icon-search'">@Lang.ItemBomDetail</a>
+                <a href="javascript:;" class="easyui-linkbutton" onclick="showItemDetail()" data-options="iconCls:'icon-search'">@Lang.ItemDetail</a>
             </div>
         </form>
     </div>

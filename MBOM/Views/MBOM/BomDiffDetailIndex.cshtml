@@ -1,22 +1,18 @@
 ﻿@using Repository;
-@model List<ProcBomDiff>
+@model List<AppMbomHlink>
 @{ 
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="text-white bg-info">注：不显示时间的都是默认值。生效时间默认值：2000-01-01，失效时间默认值：2100-01-01</div>
 <table class="table table-bordered">
     <thead>
         <tr>
+            <th></th>
             <th>
                 物料号
             </th>
             <th>
-                代号
-            </th>
-            <th>
-                PBOM物料名称
-            </th>
-            <th>
-                MBOM对应物料
+                物料名称
             </th>
             <th>
                 数量
@@ -25,13 +21,57 @@
                 PBOM生效时间
             </th>
             <th>
+                PBOM失效时间
+            </th>
+            <th>
                 MBOM生效时间
+            </th>
+            <th>
+                MBOM失效时间
+            </th>
+            <th colspan="2">
+                失效状态
             </th>
         </tr>
     </thead>
     <tbody>
+        @for (int i = 0, j = Model.Count; i < j; i++)
+        {
+            var mbomhlink = Model[i];
         <tr>
-            <td></td>
+            <td>@(i + 1)</td>
+            <td>@mbomhlink.CN_ITEMCODE</td>
+            <td>@mbomhlink.CN_DISPLAYNAME</td>
+            <td>@mbomhlink.CN_QUANTITY</td>
+            <td>
+                @if (mbomhlink.CN_DT_EFFECTIVE_PBOM.Year > 2000)
+                {
+                    @mbomhlink.CN_DT_EFFECTIVE_PBOM
+                }
+            </td>
+            <td>
+                @if (mbomhlink.CN_DT_EXPIRY_PBOM.Year < 2100)
+                {
+                    @mbomhlink.CN_DT_EXPIRY_PBOM
+                }
+            </td>
+            <td>
+                @if (mbomhlink.CN_DT_EFFECTIVE.Year > 2000)
+                {
+                    @mbomhlink.CN_DT_EFFECTIVE
+                }
+            </td>
+            <td>
+                @if (mbomhlink.CN_DT_EXPIRY.Year < 2100)
+                {
+                    @mbomhlink.CN_DT_EXPIRY
+                }
+            </td>
+            <td>
+                @(mbomhlink.CN_DT_EXPIRY_PBOM.CompareTo(DateTime.Now) < 0 ? "PBOM已失效" : "")<br />
+                @(mbomhlink.CN_DT_EXPIRY.CompareTo(DateTime.Now) < 0 ? "MBOM已失效" : "")
+            </td>
         </tr>
+        }
     </tbody>
 </table>

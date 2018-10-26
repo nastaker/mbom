@@ -33,6 +33,7 @@ var URL_ITEMPAGELIST = "/Item/MaintenancePageList"
 var URL_ITEM_LINK = "/MBOM/ItemLink"
 var URL_ITEM_UNLINK = "/MBOM/ItemUnlink"
 var URL_ITEM_EDITQUANTITY = "/MBOM/ItemEditQuantity"
+var URL_ITEMTYPELIST = "/Item/TypeList"
 
 var tg = $("#treegrid");
 var tgvi = $("#tgvi");
@@ -246,9 +247,60 @@ function InitPage() {
     tg.treegrid(treegridOption);
     tgvi.treegrid(tgviOption);
     dgItem.datagrid(dgItemOption);
+    initControls();
     initDialogs();
     initEvents();
     reloadAllTables();
+}
+
+function initControls() {
+    postData(URL_ITEMTYPELIST, {
+        names: ["自制件", "采购件", "MBOM合件"]
+    }, function (result) {
+        if (!result.success) {
+            AlertWin(result.msg);
+            return;
+        }
+        $("#cboItemType").combobox({
+            data: result.data,
+            width: 185,
+            panelWidth: 185,
+            valueField: 'CN_ID',
+            textField: 'CN_NAME',
+            groupField: 'group',
+            validType: 'itemType',
+            editable: false,
+            required: true,
+            multiple: true,
+            onSelect: function (record) {
+                var cbo = $(this);
+                var selections = cbo.combobox('getValues');
+                if ((record["CN_ID"] == 2 || record["CN_ID"] == 3)) {
+                    if (selections.indexOf('2') > -1) {
+                        setTimeout(function () {
+                            cbo.combobox('unselect', 2);
+                        }, 0);
+                    } else if (selections.indexOf('3') > -1) {
+                        setTimeout(function () {
+                            cbo.combobox('unselect', 3);
+                        }, 0);
+                    }
+                }
+            },
+            loadFilter: function (originData) {
+                var data = JSON.parse(JSON.stringify(originData));
+                for (var i = 0, len = data.length; i < len; i++) {
+                    data[i]["CN_NAME"] = $.trim(data[i]["CN_NAME"]);
+                    data[i]["group"] = "必选项";
+                    if (data[i]["CN_ID"] > 3) {
+                        data[i]["group"] = "可选项";
+                    }
+                }
+                return data;
+            }
+        });
+    });
+
 }
 
 //过滤离散件
@@ -580,7 +632,7 @@ function virtualItemDrop() {
         return false;
     }
     if (item[COLS.Type] != "V") {
-        AlertWin(lang.mbom.notSelectVirtualRoot);
+        AlertWin(lang.mbom.notSelectVirtual);
         return false;
     }
     var itemcode = $.trim(item[COLS.ItemCode]);
@@ -765,9 +817,12 @@ function dlgCreateCombineItemConfirm() {
         AlertWin("参数获取失败，请联系管理员");
         return false;
     }
+    if (!$("#cboItemType").combobox("validate")) {
+        return false;
+    }
     //获取cboCombineItemCode
-    var type = $("#cboCombineItemType").val();
-    data.type = type;
+    data.itemtype = $("#cboItemType").combobox("getValues").toString();
+    data.type = $("#cboCombineItemType").val();
     data.prod_itemcode = params.prod_itemcode;
     //选中有效，传入data参数
     $("#dlgCreateCombineItem").dialog("close");

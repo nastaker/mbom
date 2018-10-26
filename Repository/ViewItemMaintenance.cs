@@ -16,13 +16,11 @@ namespace Repository
         public double CN_WEIGHT { get; set; }
         public string CN_GG { get; set; }
         public string CN_SYS_NOTE { get; set; }
-	    public short? CN_IS_TOERP { get; set; }
-        public DateTime? CN_DT_CREATE { get; set; }
-        public string 自制件 { get; set; }
-        public string 采购件 { get; set; }
-        public string MBOM合件 { get; set; }
-        public int? 自制件ID { get; set; }
-        public int? 采购件ID { get; set; }
-        public int? MBOM合件ID { get; set; }
+        public string CN_PRODUCTLINECODE { get; set; }
+        public short CN_IS_TOERP { get; set; }
+        public bool CN_IS_PDM { get; set; }
+        public DateTime CN_DT_TOERP { get; set; }
+        public string CN_TYPEIDS { get; set; }
+        public string CN_TYPENAMES { get; set; }
     }
 }

@@ -1,25 +1,85 @@
-﻿@model Repository.AppItem
+﻿@using Localization;
+@using Repository;
+@model AppItem
 @{
     Layout = null;
+    int[] cls = { 2, 3 };
+    var itemhlinks = ViewData["ItemHlinks"] as List<AppItemHLink>;
+    AppItemHLink type = itemhlinks.Where(a => a.CN_SYS_STATUS.Trim() == "Y" && cls.Contains(a.CN_COMPONENT_OBJECT_ID)).FirstOrDefault();
 }
-<div id="panelbox" class="easyui-layout" style="padding:5px;font-size:14px;">
+<div style="padding:5px;font-size:14px;">
     <table class="table table-bordered">
         <tr>
-            <th>物料名称</th>
+            <th>@Lang.Name</th>
             <td colspan="3">@Model.CN_NAME</td>
         </tr>
         <tr>
-            <th>物料号</th>
+            <th>@Lang.ItemCode</th>
             <td>@Model.CN_ITEM_CODE</td>
-            <th>编码</th>
+            <th>@Lang.Code</th>
             <td>@Model.CN_CODE</td>
         </tr>
         <tr>
-            <th>单位</th>
+            <th>@Lang.Unit</th>
             <td>@Model.CN_UNIT</td>
-            <th>重量</th>
+            <th>@Lang.Weight</th>
             <td>@Model.CN_WEIGHT</td>
         </tr>
+        <tr>
+            <th>型号</th>
+            <td>@Model.CN_XH</td>
+            <th>规格</th>
+            <td>@Model.CN_GG</td>
+        </tr>
+        <tr>
+            <th>@Lang.PackBelongProduct</th>
+            <td>@Model.CN_BZW_PRO</td>
+            <th>@Lang.ProductLineCode</th>
+            <td>@Model.CN_ITEM_PROLINE</td>
+        </tr>
+        <tr>
+            <th>@Lang.TechnicalParameters</th>
+            <td>@Model.CN_TEC_DESC</td>
+            <th>@Lang.GB</th>
+            <td>@Model.CN_STANDARD_CODE</td>
+        </tr>
+        <tr>
+            <th>@Lang.SurfaceTreatment</th>
+            <td>@Model.CN_FACE_DO</td>
+            <th>@Lang.StrengthLevel</th>
+            <td>@Model.CN_MESS_CLASS</td>
+        </tr>
+        <tr>
+            <th>自制/采购</th>
+            <td colspan="3">
+                @(type==null?"":type.CN_DISPLAYNAME)
+            </td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>类型</th>
+            <th>创建日期</th>
+            <th>发布日期</th>
+            <th>失效日期</th>
+            <th width="60">状态</th>
+            <th>创建者</th>
+        </tr>
+        @if (itemhlinks != null && itemhlinks.Count > 0)
+        {
+            foreach (var itemh in itemhlinks)
+            {
+        <tr>
+            <td>@itemh.CN_DISPLAYNAME</td>
+            <td>@itemh.CN_DT_CREATE</td>
+            <td>@itemh.CN_DT_TOERP</td>
+            <td>@itemh.CN_DT_EXPIRY</td>
+            <td>@itemh.CN_SYS_STATUS</td>
+            <td>@itemh.CN_CREATE_NAME</td>
+        </tr>
+            }
+        }
     </table>
 </div>
 

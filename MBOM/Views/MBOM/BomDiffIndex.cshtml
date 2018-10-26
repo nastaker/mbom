@@ -14,12 +14,12 @@
 <div class="easyui-layout" data-options="fit:true">
     <div id="toolbar" style="padding:5px;">
         <form id="queryFrm">
-            <span>@Lang.ProductCode：</span>
-            <input type="text" name="code" class="easyui-textbox" />
+            <span>@Lang.Code：</span>
+            <input type="text" name="CN_CODE" class="easyui-textbox" style="width:120px" />
             <span>@Lang.ItemCode：</span>
-            <input type="text" name="item_code" class="easyui-textbox" />
+            <input type="text" name="CN_ITEM_CODE" class="easyui-textbox" style="width:120px" />
             <span>@Lang.ItemName：</span>
-            <input type="text" name="name" class="easyui-textbox" />
+            <input type="text" name="CN_NAME" class="easyui-textbox" style="width:120px" />
             <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
             <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="showDetail()" data-options="iconCls:'icon-search'">@Lang.BomDiffDetail</a>
         </form>

@@ -26,6 +26,7 @@ namespace Repository
         public DateTime DT_PBOMVER { get; set; }
         public string PBOM_CREATE_NAME { get; set; }
         public string MBOMVER { get; set; }
+        public short? MBOMVER_IS_TOERP { get; set; }
         public DateTime? DT_MBOMVER { get; set; }
         public string MBOM_CREATE_NAME { get; set; }
         public int OWNER_ID { get; set; }

@@ -1,0 +1,104 @@
+IF EXISTS ( SELECT 1 FROM SYSOBJECTS WHERE TYPE = 'U' AND NAME = 'TN_80_APP_0040_MBOM_VER' )
+BEGIN
+	DROP TABLE TN_80_APP_0040_MBOM_VER
+END
+-- 记录MBOM版本，实际上每条数据都是一个批次号
+CREATE TABLE [dbo].[TN_80_APP_0040_MBOM_VER](
+	[CN_ID] [INT] IDENTITY(1,1) NOT NULL,					--表自增ID
+	[CN_GUID] [uniqueidentifier] NOT NULL,					--版本批次GUID
+	[CN_GUID_PBOM] [uniqueidentifier] not null,				--对应PBOM批次GUID，不可为空
+	[CN_STATUS] [varchar](1) NOT NULL,						--生效标识（Y：生效，N：失效，）
+	[CN_VER] [varchar](10) NOT NULL,						--版本号
+	[CN_NAME] [varchar](48) NOT NULL,						--物料名称
+	[CN_CODE] [varchar](24) NOT NULL,						--物料代号
+	[CN_ITEM_CODE] [varchar](18) NOT NULL,					--物料编码
+	[CN_DESC] [varchar](128),								--版本备注说明
+	[CN_IS_TOERP] [SMALLINT] NOT NULL DEFAULT(0),			--版本是否已经发布ERP
+	[CN_DT_TOERP] [DATETIME] NOT NULL DEFAULT('2100-01-01'),--版本发布ERP时间
+	[CN_DT_CREATE] [datetime] NOT NULL DEFAULT(GETDATE()),	--创建时间
+	[CN_DT_EFFECTIVE] [date] NOT NULL DEFAULT('2000-01-01'),--版本生效日期
+	[CN_DT_EXPIRY] [date] NOT NULL DEFAULT('2100-01-01'),	--版本失效日期
+	[CN_CREATE_BY] [int] NOT NULL,							--创建人ID
+	[CN_CREATE_NAME] [nvarchar](32),						--创建人姓名
+	[CN_CREATE_LOGIN] [nvarchar](32)						--创建人登录名
+	
+)
+GO
+IF EXISTS ( SELECT 1 FROM SYSOBJECTS WHERE TYPE = 'U' AND NAME = 'TN_80_APP_0040_MBOM_VER_HLINK' )
+BEGIN
+	DROP TABLE TN_80_APP_0040_MBOM_VER_HLINK
+END
+-- 记录MBOM版本对应的BOM数据，当创建MBOM版本时将确定的数据拉取过来
+CREATE TABLE [dbo].[TN_80_APP_0040_MBOM_VER_HLINK](
+	[CN_ID] [INT] IDENTITY(1,1) NOT NULL,					--表自增ID
+	[CN_GUID_VER] [uniqueidentifier] NOT NULL,				--MBOM版本GUID
+	[CN_GUID] [uniqueidentifier] NOT NULL,					--父子关系GUID
+	[CN_STATUS] [VARCHAR](10) NOT NULL DEFAULT('Y'),		--连接状态（Y：已引用，N：未引用）
+	[CN_TYPE] [varchar](10) NOT NULL DEFAULT(''),			--数据类型（V：虚件，C：合件，U：自定义引用）
+	[CN_DT_CREATE] [datetime] NOT NULL DEFAULT(GETDATE()),	--创建时间
+	[CN_DESC] [varchar](128),								--版本备注说明
+	[CN_CREATE_BY] [int] NOT NULL,							--创建人ID
+	[CN_CREATE_NAME] [nvarchar](32),						--创建人姓名
+	[CN_CREATE_LOGIN] [nvarchar](32)						--创建人登录名
+)
+GO
+IF EXISTS ( SELECT 1 FROM SYSOBJECTS WHERE TYPE = 'U' AND NAME = 'TN_80_APP_0040_MBOM_HLINK' )
+BEGIN
+	DROP TABLE TN_80_APP_0040_MBOM_HLINK
+END
+CREATE TABLE [dbo].[TN_80_APP_0040_MBOM_HLINK](
+	[CN_ID] [int] IDENTITY(1,1) NOT NULL,					--表自增ID
+	[CN_GUID] [uniqueidentifier] NOT NULL,					--父子关系GUID，由PBOM继承或于MBOM中生成。[父级物料CODE]、[物料CODE]、[数量]、[关联关系GUID]四个字段相同时，此GUID唯一
+	[CN_GUID_LINK] [uniqueidentifier],						--关联关系GUID，当与MBOMHLINK表中其他数据有关联时，此字段记录[关联记录]的[父子关系GUID]
+	[CN_GUID_EF] [uniqueidentifier],						--生效版本GUID，创建此条记录时的MBOM_VER.CN_GUID
+	[CN_GUID_EX] [uniqueidentifier],						--失效版本GUID，失效词条记录时的MBOM_VER.CN_GUID
+	[CN_ITEMCODE_PARENT] [varchar](24) NOT NULL,			--父级物料CODE
+	[CN_ITEMCODE] [varchar](24) NOT NULL,					--物料CODE
+	[CN_QUANTITY] [float] NOT NULL,							--数量
+	[CN_DISPLAYNAME] [varchar](80) NOT NULL,				--显示名称
+	[CN_ORDER] [int] NOT NULL,								--排序
+	[CN_UNIT] [nvarchar](10),								--单位
+	[CN_ISASSEMBLY] [bit],									--是否拥有子级，同时作为前端是否显示子级的判断
+	[CN_ISBORROW] [bit],									--是否借用
+	[CN_ISMBOM] [bit] DEFAULT(1) NOT NULL,					--是否为MBOM创建的数据
+	[CN_DT_CREATE] [datetime] NOT NULL DEFAULT(GETDATE()),	--创建日期，默认值GETDATE()
+	[CN_DT_EFFECTIVE_PBOM] [date] NOT NULL DEFAULT('2000-01-01'),--生效日期，来自PBOM的生效日期
+	[CN_DT_EXPIRY_PBOM] [date] NOT NULL DEFAULT('2100-01-01'),	--失效日期，来自PBOM的失效日期
+	[CN_DT_EFFECTIVE] [date] NOT NULL DEFAULT('2000-01-01'),--生效日期，来自MBOM_VER的生效日期
+	[CN_DT_EXPIRY] [date] NOT NULL DEFAULT('2100-01-01'),	--失效日期，来自MBOM_VER的失效日期
+	[CN_DT_TOERP] [datetime] NOT NULL DEFAULT('2100-01-01'),--ERP发布日期
+	[CN_IS_TOERP] [smallint] NOT NULL DEFAULT(0),			--发布状态
+	[CN_DESC] [nvarchar](128),								--备注信息
+	[CN_CREATE_BY] [int] NOT NULL,							--创建人ID
+	[CN_CREATE_NAME] [nvarchar](32),						--创建人姓名
+	[CN_CREATE_LOGIN] [nvarchar](32)						--创建人登录名
+)
+
+IF EXISTS ( SELECT 1 FROM SYSOBJECTS WHERE TYPE = 'U' AND NAME = 'TN_80_APP_0040_MBOM_RELEASE' )
+BEGIN
+	DROP TABLE TN_80_APP_0040_MBOM_RELEASE
+END
+GO
+CREATE TABLE TN_80_APP_0040_MBOM_RELEASE
+(
+	CN_ID INT IDENTITY(1,1) PRIMARY KEY,		--自增长ID
+	CN_BATCHID INT NOT NULL,					--批次ID	
+	CN_SIGN_SYS VARCHAR(10) NOT NULL,			--标识
+	CN_ITEMCODE_PARENT VARCHAR(32) NOT NULL,	--父级物料号
+	CN_PRODUCT_ITEMCODE VARCHAR(32) NOT NULL,	--产品物料号
+	CN_IS_TOERP SMALLINT NOT NULL,				--是否已发布
+	CN_DT_TOERP DATETIME NOT NULL,				--发布日期
+	CN_DESC VARCHAR(256),						--备注
+	CN_DT_CREATE DATETIME NOT NULL,				--创建日期，默认GETDATE()
+	CN_CREATE_BY INT NOT NULL,					--创建人ID
+	CN_CREATE_NAME VARCHAR(32) NOT NULL,		--创建人姓名
+	CN_CREATE_LOGIN VARCHAR(32) NOT NULL		--创建人登录名
+)
+ALTER TABLE TN_80_APP_0040_MBOM_RELEASE
+ADD CONSTRAINT DF_TN_80_APP_0040_MBOM_RELEASE_CN_SIGN_SYS  DEFAULT('') FOR CN_SIGN_SYS
+ALTER TABLE TN_80_APP_0040_MBOM_RELEASE
+ADD CONSTRAINT DF_TN_80_APP_0040_MBOM_RELEASE_CN_DT_TOERP  DEFAULT('2100-01-01') FOR CN_DT_TOERP
+ALTER TABLE TN_80_APP_0040_MBOM_RELEASE
+ADD CONSTRAINT DF_TN_80_APP_0040_MBOM_RELEASE_CN_IS_TOERP DEFAULT(0) FOR CN_IS_TOERP
+ALTER TABLE TN_80_APP_0040_MBOM_RELEASE
+ADD CONSTRAINT DF_TN_80_APP_0040_MBOM_RELEASE_CN_DT_CREATE DEFAULT(GETDATE()) FOR CN_DT_CREATE

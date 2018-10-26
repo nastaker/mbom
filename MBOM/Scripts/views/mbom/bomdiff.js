@@ -4,17 +4,18 @@ var dg = $("#dgProducts");
 $(function () {
     dg.datagrid({
         height: "100%",
+        pageSize: 30,
         striped: true,
         rownumbers: true,
         singleSelect: true,
         pagination: true,
         border: false,
-        idField: "id",
+        idField: "CN_ITEM_CODE",
         toolbar: '#toolbar',
         columns: [[
-            { field: "code", title: "代号", width: 220 },
-            { field: "item_code", title: "物料编码", width: 220 },
-            { field: "name", title: "物料名称", width: 250 }
+            { field: "CN_CODE", title: "代号", width: 220 },
+            { field: "CN_ITEM_CODE", title: "物料编码", width: 220 },
+            { field: "CN_NAME", title: "物料名称", width: 250 }
         ]],
         loadFilter: loadFilter
     });
@@ -30,6 +31,6 @@ function query() {
 function showDetail() {
     var item = dg.datagrid("getSelected");
     if (!item) { return; }
-    var title = "物料详情" + item.item_code + " " + item.name;
-    window.parent.openTab(title, URL_ITEMDETAIL + "?bomid=" + item.id);
+    var title = "【BOM差异查看】【" + item.CN_ITEM_CODE + "】" + item.CN_NAME;
+    window.parent.openTab(title, URL_ITEMDETAIL + "?itemcode=" + item.CN_ITEM_CODE);
 }

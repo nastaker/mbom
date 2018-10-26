@@ -7,11 +7,13 @@ namespace Repository
         public string Ver { get; set; }
         public string DateTimeCreate { get; set; }
         public string Desc { get; set; }
-    } 
+    }
+
     public class ProcItemTree
     {
         public int Level { get; set; }
         public string ParentId { get; set; }
+        public string ItemCodeParent { get; set; }
         public string Id { get; set; }
         public int ItemId { get; set; }
         public string Name { get; set; }
@@ -21,10 +23,17 @@ namespace Repository
         public double Quantity { get; set; }
         public string Unit { get; set; }
         public bool? IsBorrow { get; set; }
-        public bool? IsAssembly { get; set; }
+        public string DtPbomEf { get; set; }
+        public string DtPbomEx { get; set; }
+        public string DtMbomEf { get; set; }
+        public string DtMbomEx { get; set; }
+        public int? PbomVer { get; set; }
+        public string PbomVerCode { get; set; }
+        public int IsMbom { get; set; }
         public int IsToErp { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
+        public string Desc { get; set; }
         public int Order { get; set; }
     }
 
@@ -38,7 +47,6 @@ namespace Repository
         public int? ORDER { get; set; }
         public bool? ISBORROW { get; set; }
         public string 部件 { get; set; }
-        public string 借用 { get; set; }
         public string 销售件 { get; set; }
         public string 采购件 { get; set; }
         public string 自制件 { get; set; }
@@ -54,33 +62,29 @@ namespace Repository
         public string ITEM_CODE { get; set; }
         public string CODE { get; set; }
         public string NAME { get; set; }
-        public bool? B_IS_ASSEMBLY { get; set; }
         public int? ORDER { get; set; }
         public bool? ISBORROW { get; set; }
         public string ISBORROWSTR { get; set; }
         public string PDATE { get; set; }
+        public string CUS_CODE { get; set; }
+        public string CUS_NAME { get; set; }
+        public string CUS_ITEMCODE { get; set; }
+        public string CUS_ITEMNAME { get; set; }
+        public string CUS_SHIPPINGADDR { get; set; }
     }
 
     public class ProcBomDiff
     {
-        public string code { get; set; }
-        public string item_code { get; set; }
-        public int hlink_id { get; set; }
-        public string s_bom_type { get; set; }
-        public int bom_id { get; set; }
-        public int bom_id_pre { get; set; }
-        public string displayname { get; set; }
-        public string mbomname { get; set; }
-        public double? quantity { get; set; }
-        public int order { get; set; }
-        public string sys_status { get; set; }
-        public DateTime dt_create { get; set; }
-        public string status_pbom { get; set; }
-        public string status_mbom { get; set; }
-        public DateTime dt_ef_pbom { get; set; }
-        public DateTime dt_ex_pbom { get; set; }
-        public DateTime dt_ef_mbom { get; set; }
-        public DateTime dt_ex_mbom { get; set; }
+        public string Code { get; set; }
+        public string ItemCode { get; set; }
+        public float? Quantity { get; set; }
+        public int Order { get; set; }
+        public string Status { get; set; }
+        public DateTime DtCreate { get; set; }
+        public DateTime DtEfPbom { get; set; }
+        public DateTime DtExPbom { get; set; }
+        public DateTime DtEfMbom { get; set; }
+        public DateTime DtExMbom { get; set; }
     }
 
     public class ProcItemSetInfo

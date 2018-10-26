@@ -69,6 +69,8 @@
     <Compile Include="AppWorkgroupUser.cs" />
     <Compile Include="BaseDbContext.cs" />
     <Compile Include="BaseDbInitializer.cs" />
+    <Compile Include="DictStatus.cs" />
+    <Compile Include="DictProductLine.cs" />
     <Compile Include="DicItemUnit.cs" />
     <Compile Include="DictCustomer.cs" />
     <Compile Include="DictItemType.cs" />
@@ -82,6 +84,8 @@
     <Compile Include="AppProcess.cs" />
     <Compile Include="AppMbomHlink.cs" />
     <Compile Include="AppMbomVer.cs" />
+    <Compile Include="AppPbomHlink.cs" />
+    <Compile Include="AppProductVer.cs" />
     <Compile Include="ViewCreatePublishDetail.cs" />
     <Compile Include="ViewItemByType.cs" />
     <Compile Include="ViewItemMaintenance.cs" />

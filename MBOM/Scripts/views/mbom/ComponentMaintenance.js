@@ -26,6 +26,7 @@ var COLS = {
     Quantity: "Quantity",
     Unit: "Unit",
     IsBorrow: "IsBorrow",
+    IsMbom: "IsMbom",
     IsToErp: "IsToErp",
     IsAssembly: "IsAssembly",
     Type: "Type",
@@ -61,6 +62,15 @@ var treegridOption = {
                 if (value) {
                     return "借用";
                 }
+            }
+        },
+        {
+            field: COLS.IsMbom, title: "是否MBOM", align: "center", width: "55",
+            formatter: function (value, row, index) {
+                if (value) {
+                    return "MBOM";
+                }
+                return "PBOM";
             }
         },
         {

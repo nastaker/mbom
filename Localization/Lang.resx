@@ -222,12 +222,6 @@
   <data name="LoginName" xml:space="preserve">
     <value>登录名</value>
   </data>
-  <data name="LogoLarge" xml:space="preserve">
-    <value>&lt;b&gt;Admin&lt;/b&gt;LTE</value>
-  </data>
-  <data name="LogoMini" xml:space="preserve">
-    <value>&lt;b&gt;A&lt;/b&gt;LT</value>
-  </data>
   <data name="MinLength" xml:space="preserve">
     <value>{0} 至少为 {1} 位长度</value>
   </data>
@@ -258,20 +252,14 @@
   <data name="ProcessFlowList" xml:space="preserve">
     <value>工序流程清单</value>
   </data>
-  <data name="ProductCode" xml:space="preserve">
-    <value>产品编码</value>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
   </data>
-  <data name="ProductName" xml:space="preserve">
-    <value>产品名称</value>
-  </data>
-  <data name="ProductReleaseMaintenance" xml:space="preserve">
-    <value>产品发布维护</value>
+  <data name="ProductMaintenance" xml:space="preserve">
+    <value>产品维护</value>
   </data>
   <data name="Profile" xml:space="preserve">
     <value>个人资料</value>
-  </data>
-  <data name="ProjectCode" xml:space="preserve">
-    <value>项目编号</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
     <value>项目名称</value>
@@ -367,7 +355,7 @@
     <value>设置为零部件</value>
   </data>
   <data name="ParamIsEmpty" xml:space="preserve">
-    <value>参数为空</value>
+    <value>传递的参数为空，无法获取到值。请联系管理员。</value>
   </data>
   <data name="IntegrityCheckStatus" xml:space="preserve">
     <value>当前产品完整性核查状态</value>
@@ -378,20 +366,11 @@
   <data name="ProductStatus" xml:space="preserve">
     <value>状态</value>
   </data>
-  <data name="TransferInitiate" xml:space="preserve">
-    <value>转批发起</value>
-  </data>
   <data name="MBOMIndex" xml:space="preserve">
-    <value>MBOM维护</value>
+    <value>MBOM维护页面</value>
   </data>
   <data name="MBOMPublish" xml:space="preserve">
     <value>MBOM发布</value>
-  </data>
-  <data name="MBOMMaintenance" xml:space="preserve">
-    <value>MBOM维护</value>
-  </data>
-  <data name="MaintenanceIndex" xml:space="preserve">
-    <value>MBOM发布维护</value>
   </data>
   <data name="ClearCheckedAll" xml:space="preserve">
     <value>清空所有选中项</value>
@@ -451,13 +430,10 @@
     <value>转换失败</value>
   </data>
   <data name="ItemCode" xml:space="preserve">
-    <value>物料编码</value>
+    <value>编码</value>
   </data>
   <data name="ItemCombine" xml:space="preserve">
     <value>MBOM合件</value>
-  </data>
-  <data name="ItemName" xml:space="preserve">
-    <value>物料名称</value>
   </data>
   <data name="ItemPurchase" xml:space="preserve">
     <value>采购件</value>
@@ -495,8 +471,8 @@
   <data name="AttachmentsUpload" xml:space="preserve">
     <value>附件上传</value>
   </data>
-  <data name="ItemBomDetail" xml:space="preserve">
-    <value>物料BOM详情</value>
+  <data name="ItemDetail" xml:space="preserve">
+    <value>物料详情</value>
   </data>
   <data name="BomDiffDetail" xml:space="preserve">
     <value>物料BOM差异</value>
@@ -539,9 +515,6 @@
   </data>
   <data name="OptionalItemsIndex" xml:space="preserve">
     <value>产品选装关系设置</value>
-  </data>
-  <data name="MBOMCreatePublish" xml:space="preserve">
-    <value>MBOM版本创建修改</value>
   </data>
   <data name="PBomChangeItemIndex" xml:space="preserve">
     <value>PBOM变更（部件）</value>
@@ -606,12 +579,6 @@
   <data name="CheckAllChildren" xml:space="preserve">
     <value>选中所有下级</value>
   </data>
-  <data name="MBOMChangeMaintenance" xml:space="preserve">
-    <value>MBOM变更维护</value>
-  </data>
-  <data name="MBOMProductChangeIndex" xml:space="preserve">
-    <value>MBOM产品变更维护</value>
-  </data>
   <data name="RefreshMbom" xml:space="preserve">
     <value>刷新MBOM数据</value>
   </data>
@@ -626,5 +593,77 @@
   </data>
   <data name="ItemMaintenance" xml:space="preserve">
     <value>物料维护</value>
+  </data>
+  <data name="ItemType" xml:space="preserve">
+    <value>物料类型</value>
+  </data>
+  <data name="ItemErpStatus" xml:space="preserve">
+    <value>发布状态</value>
+  </data>
+  <data name="Unit" xml:space="preserve">
+    <value>单位</value>
+  </data>
+  <data name="Weight" xml:space="preserve">
+    <value>重量</value>
+  </data>
+  <data name="ProductCode" xml:space="preserve">
+    <value>产品代号</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>产品名称</value>
+  </data>
+  <data name="ProjectCode" xml:space="preserve">
+    <value>项目代号</value>
+  </data>
+  <data name="ProductPrePublish" xml:space="preserve">
+    <value>产品预转批</value>
+  </data>
+  <data name="MbomMaintenance" xml:space="preserve">
+    <value>MBOM维护</value>
+  </data>
+  <data name="ItemName" xml:space="preserve">
+    <value>物料名称</value>
+  </data>
+  <data name="MBOMPublishStatus" xml:space="preserve">
+    <value>MBOM发布状态</value>
+  </data>
+  <data name="GB" xml:space="preserve">
+    <value>国标号</value>
+  </data>
+  <data name="PackBelongProduct" xml:space="preserve">
+    <value>包装件所属产品</value>
+  </data>
+  <data name="ProductLineCode" xml:space="preserve">
+    <value>产品线分类码</value>
+  </data>
+  <data name="StrengthLevel" xml:space="preserve">
+    <value>强度等级</value>
+  </data>
+  <data name="SurfaceTreatment" xml:space="preserve">
+    <value>表面处理</value>
+  </data>
+  <data name="TechnicalParameters" xml:space="preserve">
+    <value>技术条件</value>
+  </data>
+  <data name="ProductSellMaintenance" xml:space="preserve">
+    <value>产品销售件维护</value>
+  </data>
+  <data name="BeginEndDate" xml:space="preserve">
+    <value>起止日期</value>
+  </data>
+  <data name="ItemAssembly" xml:space="preserve">
+    <value>装配件</value>
+  </data>
+  <data name="ItemPackage" xml:space="preserve">
+    <value>包装件</value>
+  </data>
+  <data name="ItemProcess" xml:space="preserve">
+    <value>工艺件</value>
+  </data>
+  <data name="ItemRawMaterial" xml:space="preserve">
+    <value>原材料</value>
+  </data>
+  <data name="ItemStandard" xml:space="preserve">
+    <value>标准件</value>
   </data>
 </root>

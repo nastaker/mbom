@@ -97,7 +97,7 @@
                 <span>@Lang.ItemName：</span>
                 <input type="text" name="CN_NAME" class="easyui-textbox" style="width:120px;" />
                 <a href="javascript:;" class="easyui-linkbutton" onclick="queryItem()" data-options="iconCls:'icon-search'">@Lang.Find</a>
-                <a href="javascript:;" class="easyui-linkbutton" onclick="showItemDetail()" data-options="iconCls:'icon-search'">@Lang.ItemBomDetail</a>
+                <a href="javascript:;" class="easyui-linkbutton" onclick="showItemDetail()" data-options="iconCls:'icon-search'">@Lang.ItemDetail</a>
             </div>
         </form>
     </div>
@@ -130,7 +130,7 @@
 <div id="dlgCreateCombineItem">
     <table class="table table-striped">
         <tr>
-            <th>合件类型：</th>
+            <th width="100">合件类型：</th>
             <td colspan="2">
                 <select id="cboCombineItemType">
                     <option value="K">烤漆件</option>
@@ -141,17 +141,15 @@
             </td>
         </tr>
         <tr>
-            <th>名称预览：</th>
+            <th>物料分类：</th>
             <td colspan="2">
-                <span id="txtCombineItemName" style="color:blue;font-weight:bold;"></span>
+                <input id="cboItemType"/>
             </td>
         </tr>
         <tr>
-            <th>
-                说明：
-            </th>
+            <th>名称预览：</th>
             <td colspan="2">
-                单个子件默认为烤漆件；多个子件默认为普通合件。
+                <span id="txtCombineItemName" style="color:blue;font-weight:bold;"></span>
             </td>
         </tr>
         <tr>

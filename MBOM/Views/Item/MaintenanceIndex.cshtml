@@ -15,14 +15,25 @@
     <div id="toolbar" style="padding:5px;">
         <form id="queryFrm">
             <div>
+                <span>@Lang.Name：</span>
+                <input type="text" name="CN_NAME" style="width:150px;" class="easyui-textbox" />
+                <span>@Lang.Code：</span>
+                <input type="text" name="CN_CODE" style="width:150px;" class="easyui-textbox" />
                 <span>@Lang.ItemCode：</span>
-                <input type="text" name="CN_ITEM_CODE" class="easyui-textbox" />
-                <span>@Lang.ItemName：</span>
-                <input type="text" name="CN_NAME" class="easyui-textbox" />
+                <input type="text" name="CN_ITEM_CODE" style="width:150px;" class="easyui-textbox" />
+                <span>@Lang.ItemType：</span>
+                <input id="cboSearchItemType" name="CN_TYPENAMES" />
+                <span>@Lang.ItemErpStatus：</span>
+                <select id="cboItemErpStatus" class="easyui-combobox" name="CN_IS_TOERP" style="width:90px;" data-options="editable:false">
+                    <option value="-1">-请选择-</option>
+                    <option value="0">未发布</option>
+                    <option value="1">发布中</option>
+                    <option value="2">已发布</option>
+                </select>
                 <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
-                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="showDetail()" data-options="iconCls:'icon-search'">@Lang.ItemBomDetail</a>
+                <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="showDetail()" data-options="iconCls:'icon-search'">@Lang.ItemDetail</a>
             </div>
-            <div>
+            <div style="margin-top:5px;">
                 <a href="javascript:;" class="easyui-linkbutton" onclick="itemAdd()" data-options="iconCls:'icon-add'">@Lang.ItemAdd</a>
                 <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="itemEdit()" data-options="iconCls:'icon-edit'">@Lang.ItemEdit</a>
                 <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="itemDelete()" data-options="iconCls:'icon-cancel'">@Lang.ItemDelete</a>
@@ -35,13 +46,14 @@
 <div id="winItem" class="easyui-window">
     <form id="frmItem" method="post">
         <input type="hidden" name="CN_ID" />
-        <table class="table table-striped">
+        <input type="hidden" id="hiddenProductLineCode" name="CN_PRODUCTLINECODE" />
+        <table class="table table-sm table-striped">
             <tr>
-                <th>
+                <th width="100">
                     物料编码：
                 </th>
                 <td>
-                    <input id="txtItemCode" class="easyui-textbox" required name="CN_ITEM_CODE" />
+                    <input id="txtItemCode" name="CN_ITEM_CODE" />
                 </td>
             </tr>
             <tr>
@@ -49,7 +61,7 @@
                     物料名称：
                 </th>
                 <td>
-                    <input class="easyui-textbox" required name="CN_NAME" />
+                    <input id="txtItemName" class="easyui-textbox" required name="CN_NAME" />
                 </td>
             </tr>
             <tr>
@@ -57,7 +69,7 @@
                     重量：
                 </th>
                 <td>
-                    <input class="easyui-textbox" required name="CN_WEIGHT" validType="number" />
+                    <input id="txtItemWeight" class="easyui-textbox" name="CN_WEIGHT" validType="number" required />
                 </td>
             </tr>
             <tr>
@@ -66,6 +78,14 @@
                 </th>
                 <td>
                     <input id="cboItemUnit" name="CN_UNIT" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    产品线分类码：
+                </th>
+                <td>
+                    <input id="cboProductLine" name="CN_PRODUCTLIST" />
                 </td>
             </tr>
             <tr>
@@ -79,9 +99,9 @@
         </table>
     </form>
     <div id="winFooter">
-        <div class="text-right">
-            <a href="javascript:frmItem.submit();" class="easyui-linkbutton" data-options="iconCls:'icon-save'">@Lang.Save</a>
-            <a href="javascript:winItem.window('close');" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">@Lang.Cancel</a>
+        <div class="text-right p-sm-2">
+            <a href="javascript:vFrmItem.submit();" class="easyui-linkbutton" data-options="iconCls:'icon-save'">@Lang.Save</a>
+            <a href="javascript:vWinItem.window('close');" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">@Lang.Cancel</a>
         </div>
     </div>
 </div>

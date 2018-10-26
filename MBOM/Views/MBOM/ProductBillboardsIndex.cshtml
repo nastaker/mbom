@@ -11,13 +11,30 @@
     <div id="toolbar" style="padding:5px;">
         <form id="queryFrm">
             <span>@Lang.ProductCode：</span>
-            <input type="text" name="Code" class="easyui-textbox" />
+            <input type="text" name="Code" class="easyui-textbox" style="width:120px" />
             <span>@Lang.ItemCode：</span>
-            <input type="text" name="ItemCode" class="easyui-textbox" />
+            <input type="text" name="ItemCode" class="easyui-textbox" style="width:120px" />
             <span>@Lang.ProductName：</span>
-            <input type="text" name="Name" class="easyui-textbox" />
+            <input type="text" name="Name" class="easyui-textbox" style="width:120px" />
+            <span>@Lang.ItemErpStatus：</span>
+            <select name="IsToErp" class="easyui-combobox" style="width:100px" data-options="editable:false">
+                <option value="-1">-请选择-</option>
+                <option value="0">未发布</option>
+                <option value="1">发布中</option>
+                <option value="2">已发布</option>
+            </select>
             <a href="javascript:;" style="margin-left:10px" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
             <a href="javascript:;" class="easyui-linkbutton" onclick="productinfo()" data-options="iconCls:'icon-search'">@Lang.ProductDetail</a>
+
+            <div style="margin-top:5px;">
+                <span>PDM @Lang.BeginEndDate：</span>
+                <input type="text" id="txtDtBeginPDM" name="PdmBeginDate" value="2000-01-01" class="easyui-datebox" style="width:90px" />-
+                <input type="text" id="txtDtEndPDM" name="PdmEndDate" value="2100-01-01" class="easyui-datebox" style="width:90px" />
+                <span>预转批 @Lang.BeginEndDate：</span>
+                <input type="text" id="txtDtBeginPRE" name="PreBeginDate" value="2000-01-01" class="easyui-datebox" style="width:90px" />-
+                <input type="text" id="txtDtEndPRE" name="PreEndDate" value="2100-01-01" class="easyui-datebox" style="width:90px" />
+                <a href="#" class="easyui-linkbutton" onclick="clearDate()">清空日期</a>
+            </div>
         </form>
     </div>
     <table id="dgProducts"></table>

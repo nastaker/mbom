@@ -21,7 +21,6 @@ namespace MBOM.Unity
             InitLogins();
         }
 
-
         internal static void InitActions()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies(); // currently loaded assemblies

@@ -106,6 +106,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 起止日期 的本地化字符串。
+        /// </summary>
+        public static string BeginEndDate {
+            get {
+                return ResourceManager.GetString("BeginEndDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 物料BOM差异 的本地化字符串。
         /// </summary>
         public static string BomDiffDetail {
@@ -511,6 +520,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 国标号 的本地化字符串。
+        /// </summary>
+        public static string GB {
+            get {
+                return ResourceManager.GetString("GB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 域 的本地化字符串。
         /// </summary>
         public static string Group {
@@ -673,11 +691,11 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 物料BOM详情 的本地化字符串。
+        ///   查找类似 装配件 的本地化字符串。
         /// </summary>
-        public static string ItemBomDetail {
+        public static string ItemAssembly {
             get {
-                return ResourceManager.GetString("ItemBomDetail", resourceCulture);
+                return ResourceManager.GetString("ItemAssembly", resourceCulture);
             }
         }
         
@@ -700,7 +718,7 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 物料编码 的本地化字符串。
+        ///   查找类似 编码 的本地化字符串。
         /// </summary>
         public static string ItemCode {
             get {
@@ -727,6 +745,15 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 物料详情 的本地化字符串。
+        /// </summary>
+        public static string ItemDetail {
+            get {
+                return ResourceManager.GetString("ItemDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 修改物料信息 的本地化字符串。
         /// </summary>
         public static string ItemEdit {
@@ -741,6 +768,15 @@ namespace Localization {
         public static string ItemEditQuantity {
             get {
                 return ResourceManager.GetString("ItemEditQuantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 发布状态 的本地化字符串。
+        /// </summary>
+        public static string ItemErpStatus {
+            get {
+                return ResourceManager.GetString("ItemErpStatus", resourceCulture);
             }
         }
         
@@ -790,11 +826,38 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 包装件 的本地化字符串。
+        /// </summary>
+        public static string ItemPackage {
+            get {
+                return ResourceManager.GetString("ItemPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 工艺件 的本地化字符串。
+        /// </summary>
+        public static string ItemProcess {
+            get {
+                return ResourceManager.GetString("ItemProcess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 采购件 的本地化字符串。
         /// </summary>
         public static string ItemPurchase {
             get {
                 return ResourceManager.GetString("ItemPurchase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 原材料 的本地化字符串。
+        /// </summary>
+        public static string ItemRawMaterial {
+            get {
+                return ResourceManager.GetString("ItemRawMaterial", resourceCulture);
             }
         }
         
@@ -813,6 +876,24 @@ namespace Localization {
         public static string ItemSelfmade {
             get {
                 return ResourceManager.GetString("ItemSelfmade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 标准件 的本地化字符串。
+        /// </summary>
+        public static string ItemStandard {
+            get {
+                return ResourceManager.GetString("ItemStandard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 物料类型 的本地化字符串。
+        /// </summary>
+        public static string ItemType {
+            get {
+                return ResourceManager.GetString("ItemType", resourceCulture);
             }
         }
         
@@ -871,52 +952,7 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 &lt;b&gt;Admin&lt;/b&gt;LTE 的本地化字符串。
-        /// </summary>
-        public static string LogoLarge {
-            get {
-                return ResourceManager.GetString("LogoLarge", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 &lt;b&gt;A&lt;/b&gt;LT 的本地化字符串。
-        /// </summary>
-        public static string LogoMini {
-            get {
-                return ResourceManager.GetString("LogoMini", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 MBOM发布维护 的本地化字符串。
-        /// </summary>
-        public static string MaintenanceIndex {
-            get {
-                return ResourceManager.GetString("MaintenanceIndex", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 MBOM变更维护 的本地化字符串。
-        /// </summary>
-        public static string MBOMChangeMaintenance {
-            get {
-                return ResourceManager.GetString("MBOMChangeMaintenance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 MBOM版本创建修改 的本地化字符串。
-        /// </summary>
-        public static string MBOMCreatePublish {
-            get {
-                return ResourceManager.GetString("MBOMCreatePublish", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 MBOM维护 的本地化字符串。
+        ///   查找类似 MBOM维护页面 的本地化字符串。
         /// </summary>
         public static string MBOMIndex {
             get {
@@ -936,18 +972,9 @@ namespace Localization {
         /// <summary>
         ///   查找类似 MBOM维护 的本地化字符串。
         /// </summary>
-        public static string MBOMMaintenance {
+        public static string MbomMaintenance {
             get {
-                return ResourceManager.GetString("MBOMMaintenance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 MBOM产品变更维护 的本地化字符串。
-        /// </summary>
-        public static string MBOMProductChangeIndex {
-            get {
-                return ResourceManager.GetString("MBOMProductChangeIndex", resourceCulture);
+                return ResourceManager.GetString("MbomMaintenance", resourceCulture);
             }
         }
         
@@ -957,6 +984,15 @@ namespace Localization {
         public static string MBOMPublish {
             get {
                 return ResourceManager.GetString("MBOMPublish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MBOM发布状态 的本地化字符串。
+        /// </summary>
+        public static string MBOMPublishStatus {
+            get {
+                return ResourceManager.GetString("MBOMPublishStatus", resourceCulture);
             }
         }
         
@@ -993,6 +1029,15 @@ namespace Localization {
         public static string ModuleName {
             get {
                 return ResourceManager.GetString("ModuleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 名称 的本地化字符串。
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -1060,7 +1105,16 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 参数为空 的本地化字符串。
+        ///   查找类似 包装件所属产品 的本地化字符串。
+        /// </summary>
+        public static string PackBelongProduct {
+            get {
+                return ResourceManager.GetString("PackBelongProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 传递的参数为空，无法获取到值。请联系管理员。 的本地化字符串。
         /// </summary>
         public static string ParamIsEmpty {
             get {
@@ -1123,7 +1177,7 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 产品编码 的本地化字符串。
+        ///   查找类似 产品代号 的本地化字符串。
         /// </summary>
         public static string ProductCode {
             get {
@@ -1137,6 +1191,24 @@ namespace Localization {
         public static string ProductDetail {
             get {
                 return ResourceManager.GetString("ProductDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 产品线分类码 的本地化字符串。
+        /// </summary>
+        public static string ProductLineCode {
+            get {
+                return ResourceManager.GetString("ProductLineCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 产品维护 的本地化字符串。
+        /// </summary>
+        public static string ProductMaintenance {
+            get {
+                return ResourceManager.GetString("ProductMaintenance", resourceCulture);
             }
         }
         
@@ -1168,11 +1240,20 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 产品发布维护 的本地化字符串。
+        ///   查找类似 产品预转批 的本地化字符串。
         /// </summary>
-        public static string ProductReleaseMaintenance {
+        public static string ProductPrePublish {
             get {
-                return ResourceManager.GetString("ProductReleaseMaintenance", resourceCulture);
+                return ResourceManager.GetString("ProductPrePublish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 产品销售件维护 的本地化字符串。
+        /// </summary>
+        public static string ProductSellMaintenance {
+            get {
+                return ResourceManager.GetString("ProductSellMaintenance", resourceCulture);
             }
         }
         
@@ -1195,7 +1276,7 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 项目编号 的本地化字符串。
+        ///   查找类似 项目代号 的本地化字符串。
         /// </summary>
         public static string ProjectCode {
             get {
@@ -1465,6 +1546,24 @@ namespace Localization {
         }
         
         /// <summary>
+        ///   查找类似 强度等级 的本地化字符串。
+        /// </summary>
+        public static string StrengthLevel {
+            get {
+                return ResourceManager.GetString("StrengthLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 表面处理 的本地化字符串。
+        /// </summary>
+        public static string SurfaceTreatment {
+            get {
+                return ResourceManager.GetString("SurfaceTreatment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 三表设计者 的本地化字符串。
         /// </summary>
         public static string TableDesigner3 {
@@ -1479,6 +1578,15 @@ namespace Localization {
         public static string TableOperation {
             get {
                 return ResourceManager.GetString("TableOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 技术条件 的本地化字符串。
+        /// </summary>
+        public static string TechnicalParameters {
+            get {
+                return ResourceManager.GetString("TechnicalParameters", resourceCulture);
             }
         }
         
@@ -1501,11 +1609,11 @@ namespace Localization {
         }
         
         /// <summary>
-        ///   查找类似 转批发起 的本地化字符串。
+        ///   查找类似 单位 的本地化字符串。
         /// </summary>
-        public static string TransferInitiate {
+        public static string Unit {
             get {
-                return ResourceManager.GetString("TransferInitiate", resourceCulture);
+                return ResourceManager.GetString("Unit", resourceCulture);
             }
         }
         
@@ -1587,6 +1695,15 @@ namespace Localization {
         public static string VirtualPiecesSet {
             get {
                 return ResourceManager.GetString("VirtualPiecesSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 重量 的本地化字符串。
+        /// </summary>
+        public static string Weight {
+            get {
+                return ResourceManager.GetString("Weight", resourceCulture);
             }
         }
     }

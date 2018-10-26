@@ -1,0 +1,92 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = Lang.ProductPrePublish;
+}
+@section styles{
+    <style type="text/css">
+    </style>
+}
+@section scripts{
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    <script type="text/javascript">
+        var param = {
+            product_status: "@ViewBag.Param"
+        };
+    </script>
+    <script src="~/Scripts/views/maintenance/transfer.js"></script>
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div id="toolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <input type="hidden" name="Product_Status" value="@ViewBag.Param" />
+            <span>@Lang.Name：</span>
+            <input type="text" name="Product_Name" class="easyui-textbox" style="width:120px" />
+            <span>@Lang.Code：</span>
+            <input type="text" name="Product_Code" class="easyui-textbox" style="width:120px" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="Product_Item_Code" class="easyui-textbox" style="width:120px" />
+            @if (ViewBag.Param == "待发起")
+            {
+                <label>
+                    <input type="checkbox" checked="checked" onchange="multiSelectSwitch(this.checked)" style="vertical-align:middle" />
+                    <span style="vertical-align:middle">单选</span>
+                </label>
+            }
+            <a href="#" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+            @if (ViewBag.Param == "待发起")
+            {
+                <a href="#" class="easyui-linkbutton" onclick="productMaintenance()" data-options="iconCls:'icon-edit'">@Lang.ProductSellMaintenance</a>
+                <a href="#" class="easyui-linkbutton" onclick="transferPrePublish()" data-options="iconCls:'icon-ok'">@Lang.ProductPrePublish</a>
+            }
+            else
+            {
+                <a href="#" class="easyui-linkbutton" onclick="productMaintenance()" data-options="iconCls:'icon-edit'">@Lang.ProductSellMaintenance</a>
+                <a href="#" class="easyui-linkbutton" onclick="transferPublish()" data-options="iconCls:'icon-ok'">发布新版本销售件清单</a>
+            }
+            <a href="#" class="easyui-linkbutton" onclick="productinfo()" data-options="iconCls:'icon-search'">产品详情</a>
+            <div style="margin-top:5px;">
+                <span>PDM @Lang.BeginEndDate：</span>
+                <input type="text" id="txtDtBeginPDM" name="PdmBeginDate" value="2000-01-01" class="easyui-datebox" style="width:90px" />
+                -
+                <input type="text" id="txtDtEndPDM" name="PdmEndDate" value="2100-01-01" class="easyui-datebox" style="width:90px" />
+                @if (ViewBag.Param != "待发起")
+                {
+                    <span>预转批 @Lang.BeginEndDate：</span>
+                    <input type="text" id="txtDtBeginPRE" name="PreBeginDate" value="2000-01-01" class="easyui-datebox" style="width:90px" />
+                    <text>-</text>
+                    <input type="text" id="txtDtEndPRE" name="PreEndDate" value="2100-01-01" class="easyui-datebox" style="width:90px" />
+                }
+                <a href="#" class="easyui-linkbutton" onclick="clearDate()">清空日期</a>
+            </div>
+        </form>
+    </div>
+    <table id="dgProducts"></table>
+</div>
+<div id="dlgProdVerCreate">
+    <form id="frmProdVerCreate">
+        <table class="table table-striped">
+            <tr>
+                <th colspan="2">
+                    产品销售件清单尚未创建新版本，请先创建
+                </th>
+            </tr>
+            <tr>
+                <th>版本号：</th>
+                <td>
+                    <input type="text" id="txtName" name="name" class="easyui-textbox" data-options="editable:false"/>
+                </td>
+            </tr>
+            <tr>
+                <th>版本描述：</th>
+                <td>
+                    <input type="text" id="txtDesc" name="desc" class="easyui-textbox" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div id="dlgCreateProdVerFooter" class="text-right">
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="createProdVerConfirm()">新建</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgProdVerCreate').dialog('close')">关闭</a>
+    </div>
+</div>

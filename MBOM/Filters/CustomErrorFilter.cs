@@ -1,4 +1,5 @@
 ﻿using MBOM.Models;
+using System.Text;
 using System.Web.Mvc;
 
 namespace MBOM.Filters
@@ -19,6 +20,11 @@ namespace MBOM.Filters
             //
             log.ErrorFormat("{0}.{1}；{2}{3}。", controllerName, actionName, errMsg, innerErrMsg);
             //
+            filterContext.ExceptionHandled = true;
+#if DEBUG
+                // 调试用代码
+                filterContext.ExceptionHandled = false;
+#endif
             if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
                 switch (filterContext.HttpContext.Response.StatusCode)
@@ -29,18 +35,21 @@ namespace MBOM.Filters
                     case 404:
                         filterContext.Result = new JsonResult { Data = ResultInfo.Fail("404——资源未找到"), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
                         break;
+                    default:
+                        filterContext.Result = new ContentResult
+                        {
+                            Content = "<p>" + errMsg + "</p><p>" + innerErrMsg + "</p>",
+                            ContentEncoding = Encoding.UTF8,
+                            ContentType = "html/text"
+                        };
+                        break;
                 }
             }
             else
             {
-                filterContext.ExceptionHandled = true;
-#if DEBUG
-                // 调试用代码
-                filterContext.ExceptionHandled = false;
-
-#endif
                 var viewData = new ViewDataDictionary();
                 viewData["Message"] = errMsg;
+                viewData["InnerMessage"] = innerErrMsg;
                 filterContext.Result = new ViewResult
                 {
                     ViewName = "~/Views/Shared/Error.cshtml",

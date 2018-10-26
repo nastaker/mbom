@@ -1,0 +1,67 @@
+ALTER PROCEDURE PROC_ITEM_PUBLISH
+(
+@ITEMCODE VARCHAR(32),
+@USERID INT,
+@NAME NVARCHAR(30),
+@LOGIN NVARCHAR(30)
+)
+AS
+BEGIN
+	DECLARE @DATE DATETIME = GETDATE()
+	DECLARE @MSG VARCHAR(200) = '已完成发布'
+	DECLARE @SUCCESS BIT = 1
+	DECLARE @BATCHID INT
+	DECLARE @ROWCOUNT INT
+	BEGIN TRANSACTION
+
+	-- 删除重复记录
+	DELETE TN_80_APP_0040_MBOM_RELEASE
+	WHERE CN_ITEMCODE_PARENT = @ITEMCODE 
+	AND CN_PRODUCT_ITEMCODE = ''
+	AND CN_IS_TOERP = 0
+	SET @ROWCOUNT = @@ROWCOUNT
+
+	IF @ROWCOUNT > 1
+	BEGIN
+		ROLLBACK TRANSACTION
+		RAISERROR('删除重复记录时，删除的数据超过1条，请联系管理员。',15,1)
+		RETURN
+	END
+
+	INSERT INTO [dbo].[TN_90_BUS_0005_BATCH]
+           ([CN_MODUEL_CODE]
+           ,[CN_INFO_TYPE]
+           ,[CN_CREATE_BY]
+           ,[CN_CREATE_NAME]
+           ,[CN_DT_CREATE])
+     VALUES
+           ('MBOM'
+           ,'ITEM'
+           ,@USERID
+           ,@NAME
+           ,@DATE)
+	SET @BATCHID = SCOPE_IDENTITY()
+
+	INSERT INTO [dbo].[TN_80_APP_0040_MBOM_RELEASE]
+           ([CN_BATCHID]
+           ,[CN_ITEMCODE_PARENT]
+           ,[CN_PRODUCT_ITEMCODE]
+           ,[CN_SIGN_SYS]
+           ,[CN_DT_CREATE]
+           ,[CN_CREATE_BY]
+           ,[CN_CREATE_NAME]
+           ,[CN_CREATE_LOGIN])
+     VALUES
+           (@BATCHID
+           ,@ITEMCODE
+           ,''
+           ,'C'
+           ,@DATE
+           ,@USERID
+           ,@NAME
+           ,@LOGIN)
+		   
+	COMMIT TRANSACTION
+	SELECT @MSG AS MSG, @SUCCESS AS SUCCESS
+END;
+GO
