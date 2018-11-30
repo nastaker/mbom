@@ -174,7 +174,7 @@
         editCombineName: "修改合件名称",
         inputNewCombineName: "请输入新的合件名称",
         quantity: "数量",
-        process: "扣料工序",
+        process: "工序BOM",
         level:"层级",
         unit: "单位",
         ver: "MBOM版本",

@@ -13,9 +13,7 @@ var canRefresh = true;
 var isDeduction = false;
 
 //列表信息获取
-var URL_ENTER = "/MBOM/Maintenance";
 var URL_ITEMTREE = "/MBOM/List";
-var URL_DISCRETE_LIST = "/MBOM/DiscreteList";
 //虚件操作
 var URL_VIRTUAL_ITEM_SET = "/MBOM/VirtualItemSet";
 var URL_VIRTUAL_ITEM_DROP = "/MBOM/VirtualItemDrop";
@@ -51,7 +49,6 @@ var COLS = {
     Quantity: "Quantity",
     Unit: "Unit",
     IsBorrow: "IsBorrow",
-    IsAssembly: "IsAssembly",
     Type: "Type",
     Status: "Status",
     Order: "Order"

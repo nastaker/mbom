@@ -53,6 +53,8 @@ namespace Repository
         const string PROC_COMPOSITE_ITEM_DROP = "PROC_COMPOSITE_ITEM_DROP @prod_itemcode,@guid,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_LINK = "PROC_COMPOSITE_ITEM_LINK @prod_itemcode,@itemcode_parent,@guid,@userid,@name,@login";
         const string PROC_COMPOSITE_ITEM_UNLINK = "PROC_COMPOSITE_ITEM_UNLINK @prod_itemcode,@guid,@userid,@name,@login";
+        //
+        const string PROC_MBOM_PROCESS_SET = "PROC_MBOM_PROCESS_SET @guid_ver,@guid_mbom,@guid_process,@type,@userid,@name,@login";
         //引用件
         const string PROC_MBOM_ADD = "PROC_MBOM_ADD @prod_itemcode,@itemcode_parent,@itemcode,@quantity,@userid,@name,@login";
         const string PROC_MBOM_REMOVE = "PROC_MBOM_REMOVE @prod_itemcode,@guids,@userid,@name,@login";
@@ -448,13 +450,29 @@ namespace Repository
         }
 
         //MBOM物料单层数据
-        public static object ProcGetItemList(BaseDbContext db, string itemcode)
+        public static List<ProcItemTree> ProcGetItemList(BaseDbContext db, string itemcode)
         {
             SqlParameter[] param =
             {
                 new SqlParameter("@itemcode", itemcode)
             };
             var result = db.Database.SqlQuery<ProcItemTree>(PROC_GET_ITEM_TREE, param).ToList();
+            return result;
+        }
+
+        public static ProcReturnMsg ProcSetMbomProcess(BaseDbContext db, Guid guid_ver, Guid guid_mbom, string guid_process, int type, UserInfo userinfo)
+        {
+            SqlParameter[] param =
+            {
+                new SqlParameter("@guid_ver", guid_ver),
+                new SqlParameter("@guid_mbom", guid_mbom),
+                new SqlParameter("@guid_process", guid_process),
+                new SqlParameter("@type", type),
+                new SqlParameter("@userid", userinfo.UserId),
+                new SqlParameter("@name", userinfo.Name),
+                new SqlParameter("@login", userinfo.Login)
+            };
+            var result = db.Database.SqlQuery<ProcReturnMsg>(PROC_MBOM_PROCESS_SET, param).SingleOrDefault();
             return result;
         }
 

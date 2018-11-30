@@ -1,0 +1,99 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = "ProductIndex";
+}
+@section styles{
+    <!-- custom css -->
+}
+@section scripts{
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    <script type="text/javascript">
+    </script>
+    <!-- custom js -->
+    @Scripts.Render("~/bundles/common")
+    <script src="~/Scripts/views/productionline/productindex.js"></script>
+}
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',border:false" style="width:220px;border-style: solid;border-width:0 1px 0 0;border-color:#D4D4D4;">
+        <table id="dgLines"></table>
+    </div>
+    <div data-options="region:'center',border:false">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'north',border:false" style="height:250px;border-style: solid;border-width:0 0 1px 0;border-color:#D4D4D4;">
+                <div id="dgToolbar" style="padding:5px">
+                    <a href="javascript:;" class="easyui-linkbutton" onclick="addProduct()" data-options="iconCls:'icon-add'">添加产品</a>
+                    <a href="javascript:;" class="easyui-linkbutton" onclick="removeProduct()" data-options="iconCls:'icon-remove'">删除产品</a>
+                </div>
+                <table id="dgLineProducts"></table>
+            </div>
+            <div data-options="region:'center',border:false">
+                <div id="dgProcessToolbar" style="padding:5px">
+                    <a href="javascript:;" class="easyui-linkbutton" onclick="addProcess()" data-options="iconCls:'icon-add'">添加工序</a>
+                    <a href="javascript:;" class="easyui-linkbutton" onclick="removeProcess()" data-options="iconCls:'icon-remove'">删除工序</a>
+                </div>
+                <table id="dgProcess"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="win">
+    <div id="dgProductstoolbar" style="padding:5px;">
+        <form id="queryFrm">
+            <span>@Lang.Code：</span>
+            <input type="text" name="Code" class="easyui-textbox" style="width:110px" />
+            <span>@Lang.ItemCode：</span>
+            <input type="text" name="ItemCode" class="easyui-textbox" style="width:110px" />
+            <span>@Lang.Name：</span>
+            <input type="text" name="Name" class="easyui-textbox" style="width:110px" />
+            <a href="javascript:;" class="easyui-linkbutton" onclick="query()" data-options="iconCls:'icon-search'">@Lang.Find</a>
+            <a href="javascript:;" class="easyui-linkbutton" onclick="productinfo()" data-options="iconCls:'icon-search'">@Lang.ProductDetail</a>
+        </form>
+    </div>
+    <table id="dgProducts"></table>
+</div>
+
+
+<div id="dlgProcess">
+    <form id="frmProcess" method="post">
+        <input type="hidden" id="hidId" name="CN_ID" />
+        <input type="hidden" id="hidGuid" name="CN_GUID_LINE_PRODUCT" />
+        <table class="table table-striped">
+            <tr>
+                <th width="130">工序序号：</th>
+                <td width="250">
+                    <input type="text" id="txtName" name="CN_PROCESS_ORDER" class="easyui-textbox" required />
+                </td>
+            </tr>
+            <tr>
+                <th>工序名称：</th>
+                <td>
+                    <input type="text" id="txtCode" name="CN_PROCESS_NAME" class="easyui-textbox" required />
+                </td>
+            </tr>
+            <tr>
+                <th>生效日期：</th>
+                <td>
+                    <input class="easyui-datebox" id="txtEfDate" name="CN_DT_EFFECTIVE" data-options="value:'new Date().format(\'yyyy-MM-dd\')',required:true">
+                </td>
+            </tr>
+            <tr>
+                <th>失效日期：</th>
+                <td>
+                    <input class="easyui-datebox" id="txtExDate" name="CN_DT_EXPIRY" data-options="value:'2100-01-01',required:true">
+                </td>
+            </tr>
+            <tr>
+                <th>工序描述：</th>
+                <td>
+                    <input type="text" id="txtDesc" name="CN_PROCESS_INFO" class="easyui-textbox" data-options="multiline:true,height:100" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div id="dlgProcessFooter" class="text-right">
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="confirmAddProcess()">确认</a>
+        <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#dlgProcess').dialog('close')">关闭</a>
+    </div>
+</div>

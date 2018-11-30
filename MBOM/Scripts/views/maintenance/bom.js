@@ -10,7 +10,6 @@
     Quantity: "Quantity",
     Unit: "Unit",
     IsBorrow: "IsBorrow",
-    IsAssembly: "IsAssembly",
     Type: "Type",
     Status: "Status",
     Order: "Order"

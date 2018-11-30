@@ -42,6 +42,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
@@ -86,6 +87,11 @@
     <Compile Include="AppMbomVer.cs" />
     <Compile Include="AppPbomHlink.cs" />
     <Compile Include="AppProductVer.cs" />
+    <Compile Include="AppProductionLineProcessVer.cs" />
+    <Compile Include="AppProductionLineProcessVerHlink.cs" />
+    <Compile Include="AppProductionLine.cs" />
+    <Compile Include="AppProductionLineProduct.cs" />
+    <Compile Include="AppProductionLineProductProcess.cs" />
     <Compile Include="ViewCreatePublishDetail.cs" />
     <Compile Include="ViewItemByType.cs" />
     <Compile Include="ViewItemMaintenance.cs" />

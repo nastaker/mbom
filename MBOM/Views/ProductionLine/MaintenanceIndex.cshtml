@@ -1,0 +1,75 @@
+﻿@using Localization;
+@{
+    ViewBag.Title = "MaintenanceIndex";
+}
+@section styles{
+    <!-- custom css -->
+    @Styles.Render("~/bundles/mbomcss")
+}
+@section scripts{
+    <script type="text/javascript">
+        var params = { prod_itemcode: "@Request.Params["prod_itemcode"]" };
+    </script>
+    <script src="~/Scripts/jquery.serializeJSON.min.js"></script>
+    <script src="~/Scripts/jquery.scrollTo.min.js"></script>
+    <!-- custom js -->
+    @Scripts.Render("~/bundles/common")
+    <!-- @@Scripts.Render("~/bundles/processmaintenance") -->
+    <script src="~/Scripts/views/productionline/processmaintenance.js"></script>
+}
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',border:false" style="width:250px;border-right:1px solid #D4D4D4;">
+        <!-- 产品工序列表 -->
+        <div id="dgToolbar" style="padding:5px">
+            <a href="javascript:;" class="easyui-linkbutton" onclick="addProductVer()" data-options="iconCls:'icon-add'">添加新版本</a>
+        </div>
+        <table id="datagrid"></table>
+    </div>
+    <div data-options="region:'center',border:false">
+        <div id="tgToolbar" style="padding:5px">
+            <a href="javascript:;" onclick="setProcess()" class="easyui-linkbutton">设置选中件工序</a>
+            <a href="javascript:;" onclick="setNoProcess()" class="easyui-linkbutton">设为无需投料的工序</a>
+            <a href="javascript:;" onclick="reloadTable()" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">刷新树</a>
+        </div>
+        <table id="treegrid"></table>
+    </div>
+</div>
+
+<div id="winCreateProcessVer">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'west',border:false" style="width: 250px;border-right:1px solid #D4D4D4;">
+            <table id="dgProduct"></table>
+        </div>
+        <div data-options="region:'center',border:false">
+            <table id="dgProductProcess"></table>
+        </div>
+    </div>
+    <div id="winFooter" class="text-right">
+        <div style="padding-top:5px;padding-left:5px;padding-right:5px;">
+            版本号：
+            <input type="text" id="txtName" name="CN_NAME" style="width:80px;" class="easyui-textbox" required />
+            版本描述：
+            <input type="text" id="txtDesc" name="CN_DESC" style="width:400px;" class="easyui-textbox" />
+        </div>
+        <div style="padding:5px">
+            <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="confirmAddProductVer()">确认</a>
+            <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#winCreateProcessVer').window('close')">关闭</a>
+        </div>
+    </div>
+</div>
+
+<div id="winProcess">
+    <table id="dgProcess"></table>
+    <div id="winProcessFooter" class="text-right">
+        <div style="padding:5px">
+            <label>
+                <input type="radio" name="rdoProcessType" value="1" checked />是投料工序
+            </label>
+            <label>
+                <input type="radio" name="rdoProcessType" value="0" />是做成工序
+            </label>
+            <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="confirmSetMbomProcess()">确认</a>
+            <a href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="$('#winProcess').window('close')">关闭</a>
+        </div>
+    </div>
+</div>

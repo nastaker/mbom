@@ -10,6 +10,11 @@
         "iconCls": "cubes"
     },
     {
+        "text": lang.mbom.process,
+        "url": "/ProductionLine/MaintenanceIndex",
+        "iconCls": "random"
+    },
+    {
         "text": lang.maintenance.pbom,
         "url": "/Maintenance/PBOMIndex",
         "iconCls": "list-alt"

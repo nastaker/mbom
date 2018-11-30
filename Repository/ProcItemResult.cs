@@ -32,6 +32,9 @@ namespace Repository
         public int IsMbom { get; set; }
         public int IsToErp { get; set; }
         public string Type { get; set; }
+        public string Assembled { get; set; }
+        public string Feeded { get; set; }
+        public bool? IsEmpty { get; set; }
         public string Status { get; set; }
         public string Desc { get; set; }
         public int Order { get; set; }

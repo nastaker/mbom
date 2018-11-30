@@ -4,7 +4,7 @@ var URL_PROCESS = "/Item/ItemProcessByVerId"
 var dg = $("#dgProducts");
 var winProcess = $("#winProcessInfo");
 var dgProcessVer = $("#dgProcessVer");
-var dgProcess = $("#dgProcess");
+var dgProductProcess = $("#dgProcess");
 
 var arrProcess = [];
 $(function () {
@@ -65,11 +65,11 @@ $(function () {
         },
         onSelect: function (index, row) {
             var id = row["id"];
-            dgProcess.datagrid("load", { id: id });
+            dgProductProcess.datagrid("load", { id: id });
         }
     });
 
-    dgProcess.datagrid({
+    dgProductProcess.datagrid({
         height: "100%",
         striped: true,
         rownumbers: true,
@@ -88,7 +88,7 @@ $(function () {
 
     var opts = dg.datagrid("options");
     var opts2 = dgProcessVer.datagrid("options");
-    var opts3 = dgProcess.datagrid("options");
+    var opts3 = dgProductProcess.datagrid("options");
     opts.url = URL_PAGELIST;
     opts2.url = URL_PROCESSVER;
     opts3.url = URL_PROCESS;

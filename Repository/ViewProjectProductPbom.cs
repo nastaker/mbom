@@ -7,16 +7,13 @@ namespace Repository
     [Table("View_Project_Product_Pbom")]
     public partial class ViewProjectProductPbom : GroupEntity
     {
-        public int PROJECT_ID { get; set; }
-        [Key]
-        [Column(Order = 0)]
+        public int? PROJECT_ID { get; set; }
         public string CODE { get; set; }
         public string PROJECT_NAME { get; set; }
-        public int OWNER_ID { get; set; }
+        public int? OWNER_ID { get; set; }
         public string OWNER_NAME { get; set; }
-        [Key]
-        [Column(Order = 1)]
         public string PRODUCT_CODE { get; set; }
+        [Key]
         public string PRODUCT_ITEM_CODE { get; set; }
         public string PRODUCT_NAME { get; set; }
         public string PRODUCT_STATUS { get; set; }

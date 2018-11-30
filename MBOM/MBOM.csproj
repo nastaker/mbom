@@ -788,6 +788,9 @@
     <Content Include="Scripts\views\mbom\ComponentMaintenance.js" />
     <Content Include="Scripts\views\menu.js" />
     <Content Include="Scripts\views\mbom\menuData.js" />
+    <Content Include="Scripts\views\productionline\index.js" />
+    <Content Include="Scripts\views\productionline\processmaintenance.js" />
+    <Content Include="Scripts\views\productionline\productindex.js" />
     <Content Include="Scripts\views\roleright.js" />
     <Content Include="Scripts\views\maintenance\transfer.js" />
     <Content Include="Scripts\ztree\jquery.ztree.all.js" />
@@ -868,6 +871,9 @@
     <Content Include="Views\MBOM\ComponentMaintenanceIndex.cshtml" />
     <Content Include="Views\Maintenance\BOMIndex.cshtml" />
     <Content Include="Views\Maintenance\SellListIndex.cshtml" />
+    <Content Include="Views\ProductionLine\Index.cshtml" />
+    <Content Include="Views\ProductionLine\ProductIndex.cshtml" />
+    <Content Include="Views\ProductionLine\MaintenanceIndex.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -893,6 +899,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\GroupController.cs" />
+    <Compile Include="Controllers\ProductionLineController.cs" />
     <Compile Include="Controllers\UserProductLibraryController.cs" />
     <Compile Include="Filters\CustomErrorFilter.cs" />
     <Compile Include="Filters\DetailLogFilterAttribute.cs" />

@@ -31,7 +31,20 @@
         };
 
         var frmOption = {
+            onSubmit: function (param) {
+                var name = $("#txtName").val();
+                var ordr = $("#txtOrder").val();
+                if (!name) {
+                    InfoWin("请输入菜单名称");
+                    return false;
+                } else if (!ordr) {
+                    InfoWin("请输入菜单排序");
+                    return false;
+                }
+                Loading();
+            },
             success: function (data) {
+                Loaded();
                 var data = eval('(' + data + ')');
                 if (data.success) {
                     if (data.msg) {
@@ -105,44 +118,37 @@
     <table id="tgMenu"></table>
 </div>
 
-<div id="dlgMenu" class="easyui-dialog" data-options="closed:true,width:500" style="padding: 20px;">
+<div id="dlgMenu" class="easyui-dialog" data-options="closed:true,width:500,modal:true,title:'编辑页面内容'" style="padding: 20px;">
     <form id="frmMenu" class="form-horizontal" method="post">
         <input type="hidden" name="id" />
         <input type="hidden" name="parentid" />
-        <div class="form-group">
-            <label for="exampleInputEmail1" class="col-sm-2 control-label">菜单名称</label>
-            <div class="col-sm-10">
-                <input class="form-control" name="name">
+        <div class="form-row">
+            <div class="form-group col-md-8">
+                <label for="txtName" class="control-label">菜单名称</label>
+                <input class="form-control" id="txtName" name="name">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="txtOrder" class="control-label">排序</label>
+                <input class="form-control" id="txtOrder" name="order">
             </div>
         </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1" class="col-sm-2 control-label">链接</label>
-            <div class="col-sm-10">
-                <input class="form-control" name="url">
+        <div class="form-row">
+            <div class="form-group col-md-8">
+                <label for="txtUrl" class="control-label">链接</label>
+                <input class="form-control" id="txtUrl" name="url">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="txtIconcls" class="control-label">图标</label>
+                <input class="form-control" id="txtIconcls" name="iconcls">
             </div>
         </div>
-        <div class="form-group">
-            <label for="exampleInputFile" class="col-sm-2 control-label">图标</label>
-            <div class="col-sm-10">
-                <input class="form-control" name="iconcls">
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="txtDesc" class="control-label">描述</label>
+                <input class="form-control" id="txtDesc" name="description">
             </div>
         </div>
-        <div class="form-group">
-            <label for="exampleInputFile" class="col-sm-2 control-label">描述</label>
-            <div class="col-sm-10">
-                <input class="form-control" name="description">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="exampleInputFile" class="col-sm-2 control-label">排序</label>
-            <div class="col-sm-10">
-                <input class="form-control" name="order">
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default">保存</button>
-            </div>
-        </div>
+        <button type="submit" class="btn btn-default col-6">保存</button>
+        <button type="button" onclick="$('#dlgMenu').dialog('close')" class="btn btn-danger float-right col-5">关闭</button>
     </form>
 </div>

@@ -28,7 +28,6 @@ var COLS = {
     IsBorrow: "IsBorrow",
     IsMbom: "IsMbom",
     IsToErp: "IsToErp",
-    IsAssembly: "IsAssembly",
     Type: "Type",
     Status: "Status",
     Order: "Order"

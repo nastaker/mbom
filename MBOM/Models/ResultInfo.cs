@@ -86,6 +86,11 @@ namespace MBOM.Models
             };
         }
 
+        internal static ResultInfo Parse(bool v)
+        {
+            throw new NotImplementedException();
+        }
+
         internal static object Parse(List<IEnumerable> list, Type source, Type dest)
         {
             if (list.Count != 2)

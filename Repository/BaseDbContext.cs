@@ -44,6 +44,13 @@
         public virtual DbSet<AppMbomVer> AppMbomVers { get; set; }
         public virtual DbSet<AppPbomHlink> AppPbomHlinks { get; set; }
         public virtual DbSet<AppMbomHlink> AppMbomHlinks { get; set; }
+
+        public virtual DbSet<AppProductionLineProcessVer> AppProductionLineProcessVers { get; set; }
+        public virtual DbSet<AppProductionLineProcessVerHlink> AppProductionLineProcessVerHlinks { get; set; }
+        public virtual DbSet<AppProductionLine> AppProductionLines { get; set; }
+        public virtual DbSet<AppProductionLineProduct> AppProductionLineProducts { get; set; }
+        public virtual DbSet<AppProductionLineProductProcess> AppProductionLineProductProcesses { get; set; }
+
         public virtual DbSet<DicItemUnit> DicItemUnits { get; set; }
         public virtual DbSet<DictShippingAddr> DictShippingAddrs { get; set; }
         public virtual DbSet<DictCustomer> DictCustomers { get; set; }

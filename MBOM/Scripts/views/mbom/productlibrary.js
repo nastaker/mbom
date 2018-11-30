@@ -44,7 +44,7 @@ var URL_ITEMTREE = "/UserProductLibrary/List";
 var URL_ADDNODE = "/UserProductLibrary/Add"
 var URL_RENAMENODE = "/UserProductLibrary/Rename"
 var URL_DELNODE = "/UserProductLibrary/Delete"
-var URL_ADDPRODS = "/UserProductLibrary/LinkAdd"
+var URLPROD_ADD = "/UserProductLibrary/LinkAdd"
 var URL_PRODUCTDEL = "/UserProductLibrary/LinkDelete"
 
 var dgProd = $("#dgProducts");
@@ -60,10 +60,10 @@ var dgProdConfig = {
     toolbar: '#dgProductstoolbar',
     columns: [[
         { checkbox: true, field: "CN_ID" },
-        { field: "CN_CODE", title: "代号", width: 140 },
-        { field: "CN_ITEM_CODE", title: "物料编码", width: 140 },
-        { field: "CN_NAME", title: "物料名称", width: 140 },
-        { field: "CN_STATUS", title: "状态", align: "center", width: 60 }
+        { field: "CN_CODE", title: "代号", width: 120 },
+        { field: "CN_ITEM_CODE", title: "物料编码", width: 120 },
+        { field: "CN_NAME", title: "物料名称", width: 220 },
+        { field: "CN_STATUS", title: "状态", align: "center", width: 90 }
     ]],
     loadFilter: function (result) {
         if (result.success) {
@@ -83,9 +83,9 @@ var dgConfig = {
     idField: "ID",
     columns: [[
         { checkbox: true, field: "n" },
-        { field: "ItemCode", title: "物料编码", width: 140 },
-        { field: "ProductCode", title: "产品编号", width: 140 },
-        { field: "ProductName", title: "产品名称", width: 140 },
+        { field: "ItemCode", title: "物料编码", width: 200 },
+        { field: "ProductCode", title: "产品编号", width: 200 },
+        { field: "ProductName", title: "产品名称", width: 300 },
         {
             title: "操作", field: "ID", width: 60,
             formatter: function (value, row, index) {
@@ -244,10 +244,11 @@ function addProduct() {
         AlertWin("请先选择一个节点")
         return;
     }
+    dgProd.datagrid("clearSelections");
     $("#win").dialog({
         title: "选择产品放入[" + treeNode.name + "]",
-        width: 600,
-        height: 400,
+        width: 650,
+        height: 450,
         modal: true,
         buttons: [{
             text: '保存',
@@ -264,7 +265,7 @@ function addProduct() {
                     ids = prod["CN_ID"] + "," + ids;
                 }
                 ids = ids.substring(0, ids.length - 1);
-                postData(URL_ADDPRODS, { libid: treeNode.id, ids: ids }, function (result) {
+                postData(URLPROD_ADD, { libid: treeNode.id, ids: ids }, function (result) {
                     dgProd.datagrid("clearSelections");
                     if (result.success) {
                         InfoWin("保存成功")
